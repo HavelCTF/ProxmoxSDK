@@ -1,0 +1,35 @@
+name: ProxmoxSDK Push Changes to Main Repo
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  push-main:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Setup Git
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+
+    - name: Clone the central repository
+      run: |
+        git clone https://neo-jgrec:${{ secrets.APP_GITHUB_PAT_TOKEN }}@github.com/HavelCTF/epitech-monorepo.git _app_tek
+
+    - name: Pull/Add ProxmoxSDK repository as a subtree
+      working-directory: _app_tek
+      run: |
+        if [ -d "ProxmoxSDK" ]; then
+          git subtree pull --prefix=ProxmoxSDK https://neo-jgrec:${{ secrets.APP_GITHUB_PAT_TOKEN }}@github.com/HavelCTF/ProxmoxSDK.git main --squash
+        else
+          git subtree add --prefix=ProxmoxSDK https://neo-jgrec:${{ secrets.APP_GITHUB_PAT_TOKEN }}@github.com/HavelCTF/ProxmoxSDK.git main --squash
+        fi
+
+    - name: Push to central repository
+      working-directory: _app_tek
+      run: |
+        git push origin main
