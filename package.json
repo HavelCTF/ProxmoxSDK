@@ -1,0 +1,41 @@
+{
+  "name": "proxmoxsdk",
+  "description": "",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "ts-node --esm src/app.ts",
+    "start": "node dist/app.js",
+    "clean": "rm -rf dist build lib coverage *.tsbuildinfo .tmp .cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HavelCTF/ProxmoxSDK.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HavelCTF/ProxmoxSDK/issues"
+  },
+  "homepage": "https://github.com/HavelCTF/ProxmoxSDK#readme",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "dotenv": "^17.2.2",
+    "https": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  }
+}
