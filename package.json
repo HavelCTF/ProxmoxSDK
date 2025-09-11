@@ -5,7 +5,9 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "ts-node --esm src/app.ts",
@@ -26,6 +28,7 @@
   "dependencies": {
     "axios": "^1.11.0",
     "dotenv": "^17.2.2",
+    "effect": "^3.17.13",
     "https": "^1.0.0"
   },
   "devDependencies": {

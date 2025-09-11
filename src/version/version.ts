@@ -1,5 +1,6 @@
-import axios from 'axios'
-import type { AxiosResponse, AxiosInstance } from 'axios'
+import type { AxiosInstance } from 'axios'
+import { Effect } from 'effect'
+
 
 export class ProxmoxVersion {
     private versionInstance : AxiosInstance
@@ -10,17 +11,21 @@ export class ProxmoxVersion {
         this.uuid = id
     }
 
-    public async version() : Promise<AxiosResponse<any, any> | undefined> {
-        try {
+    public version = () => Effect.tryPromise({
+         try: async () => {
             const response = await this.versionInstance.get('/version')
             return response.data
-        } catch (error) {
-            if (axios.isAxiosError(error)) {
-                console.error('[%s] Version request failed: %s', this.uuid, error)
-            } else {
-                console.error()
-            }
-            return undefined
-        }
-    }
+         },
+         catch: (error) => {
+            return new Error(`[${this.uuid}] Version request failed: ${error}`)
+         }
+    }).pipe(
+        Effect.retry({ times: 3 }),
+        Effect.timeout(10000),
+
+        Effect.tapError((error) => 
+            Effect.sync(() =>
+                console.error(error.message)
+        ))
+    )
 }
