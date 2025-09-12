@@ -1,24 +1,21 @@
-import type { AxiosInstance } from 'axios'
+import { ProxmoxClient } from "../client.js";
 import { Effect } from 'effect'
 
+declare module "../client.js" {
+  interface ProxmoxClient {
+    version() : Effect.Effect<any, Error, never>;
+  }
+}
 
-export class ProxmoxVersion {
-    private versionInstance : AxiosInstance
-    private uuid : string
-
-    constructor(baseInstance : AxiosInstance, id : string) {
-        this.versionInstance = baseInstance
-        this.uuid = id
-    }
-
-    public version = () => Effect.tryPromise({
-         try: async () => {
-            const response = await this.versionInstance.get('/version')
+ProxmoxClient.prototype.version = function() {
+    return Effect.tryPromise({
+        try: async () => {
+            const response = await this.axiosInstance.get('/version')
             return response.data
-         },
-         catch: (error) => {
-            return new Error(`[${this.uuid}] Version request failed: ${error}`)
-         }
+        },
+        catch: (error) => {
+        return new Error(`[${this.uuid}] Version request failed: ${error}`)
+        }
     }).pipe(
         Effect.retry({ times: 3 }),
         Effect.timeout(10000),
