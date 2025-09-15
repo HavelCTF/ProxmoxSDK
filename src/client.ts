@@ -8,7 +8,7 @@ export class ProxmoxClient {
 
   constructor(baseUrl: string, apiToken: string, uuid: string) {
     this.axiosInstance = axios.create({
-      baseURL: baseUrl + "/api2/json",
+      baseURL: `${baseUrl}/api2/json`,
       headers: {
         Authorization: apiToken,
       },

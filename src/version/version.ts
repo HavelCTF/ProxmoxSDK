@@ -1,9 +1,15 @@
-import { ProxmoxClient } from "../client.js";
 import { Effect } from "effect";
+import { ProxmoxClient } from "../client.js";
+
+interface VersionResponse {
+  version: string;
+  release: string;
+  repoid: string;
+}
 
 declare module "../client.js" {
   interface ProxmoxClient {
-    version(): Effect.Effect<any, Error, never>;
+    version(): Effect.Effect<VersionResponse, Error, never>;
   }
 }
 
