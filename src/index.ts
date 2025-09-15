@@ -1,1 +1,2 @@
-export * from "./client.js"
+export { ProxmoxClient } from "./client.js";
+import "./version/version.js";
