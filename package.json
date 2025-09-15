@@ -12,7 +12,8 @@
     "build": "tsc -p tsconfig.json",
     "dev": "ts-node --esm src/app.ts",
     "start": "node dist/app.js",
-    "clean": "rm -rf dist build lib coverage *.tsbuildinfo .tmp .cache"
+    "clean": "rm -rf dist build lib coverage *.tsbuildinfo .tmp .cache",
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,8 @@
     "@biomejs/biome": "2.2.4",
     "@types/node": "^24.3.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "exports": {
     ".": {
