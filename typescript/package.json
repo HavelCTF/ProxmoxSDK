@@ -35,9 +35,11 @@
 	"devDependencies": {
 		"@biomejs/biome": "2.2.4",
 		"@types/node": "^24.3.1",
+		"axios-mock-adapter": "^2.1.0",
 		"ts-node": "^10.9.2",
 		"typescript": "^5.9.2",
-		"vitest": "^3.2.4"
+		"vitest": "^3.2.4",
+		"yaml": "^2.8.1"
 	},
 	"exports": {
 		".": {

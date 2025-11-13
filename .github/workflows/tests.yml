@@ -1,11 +1,11 @@
-name: Unit tests with Vitest
+name: Unit tests
 
 on:
   push:
   pull_request:
 
 jobs:
-  tests:
+  test-typescript:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -15,10 +15,36 @@ jobs:
         with:
           persist-credentials: false
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
       - name: Install dependencies
-        run: npm install
-      - name: Run tests
-        run: npx vitest run --reporter github-actions
+        run: ./build.py install --ts
+      - name: Run TypeScript tests
+        run: ./build.py test --ts
+
+  test-go:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install dependencies
+        run: ./build.py install --go
+      - name: Run Go tests
+        run: ./build.py test --go

@@ -1,0 +1,41 @@
+[
+  {
+    "name": "client_initialization_basic",
+    "description": "Client should initialize with correct base URL",
+    "input": {
+      "baseURL": "https://proxmox.example.com",
+      "apiToken": "PVEAPIToken=test-token",
+      "uuid": "test-uuid-001"
+    },
+    "expected": {
+      "baseURL": "https://proxmox.example.com/api2/json",
+      "uuid": "test-uuid-001"
+    }
+  },
+  {
+    "name": "client_initialization_https",
+    "description": "Client should handle HTTPS URLs correctly",
+    "input": {
+      "baseURL": "https://192.168.1.100:8006",
+      "apiToken": "PVEAPIToken=user@pam!token=secret",
+      "uuid": "test-uuid-002"
+    },
+    "expected": {
+      "baseURL": "https://192.168.1.100:8006/api2/json",
+      "uuid": "test-uuid-002"
+    }
+  },
+  {
+    "name": "client_initialization_trailing_slash",
+    "description": "Client should handle URLs with trailing slashes",
+    "input": {
+      "baseURL": "https://proxmox.example.com/",
+      "apiToken": "test-token",
+      "uuid": "test-uuid-003"
+    },
+    "expected": {
+      "baseURL": "https://proxmox.example.com/api2/json",
+      "uuid": "test-uuid-003"
+    }
+  }
+]
