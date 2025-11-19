@@ -1,6 +1,6 @@
 import { Effect } from "effect";
 import { ProxmoxClient } from "../client.js";
-import { NodesResponse } from "./node-schema.js"
+import type { NodesResponse } from "./node-schema.js";
 
 declare module "../client.js" {
 	interface ProxmoxClient {

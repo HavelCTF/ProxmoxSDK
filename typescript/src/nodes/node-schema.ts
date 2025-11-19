@@ -1,19 +1,23 @@
-import { Int, Number, String } from "effect/Schema"
+import type {
+	Int as EInt,
+	Number as ENumber,
+	String as EString,
+} from "effect/Schema";
 
 export interface NodesResponse {
-	nodes : Node[];
+	nodes: Node[];
 }
 
 interface Node {
-	node : String
-	status : NodeStatus
-	uptime? : Int
-	sslfingerprint? : String
-	cpu? : Number
-	level? : String
-	maxcpu? : Int
-	maxmem? : Int
-	mem? : Int
+	node: EString;
+	status: NodeStatus;
+	uptime?: EInt;
+	sslfingerprint?: EString;
+	cpu?: ENumber;
+	level?: EString;
+	maxcpu?: EInt;
+	maxmem?: EInt;
+	mem?: EInt;
 }
 
 enum NodeStatus {
