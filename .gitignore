@@ -32,7 +32,7 @@ pnpm-debug.log*
 Thumbs.db
 
 # Test output / coverage
-src/app.ts
+typescript/src/app.ts
 coverage/
 *.lcov
 
