@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	proxmox "github.com/HavelCTF/ProxmoxSDK/go"
+	"github.com/HavelCTF/ProxmoxSDK/go/proxmox"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -174,9 +174,9 @@ func TestAllSpecs(t *testing.T) {
 						require.NotNil(t, result)
 
 						if tc.Expected != nil {
-							assert.Equal(t, tc.Expected["version"], result.Version)
-							assert.Equal(t, tc.Expected["release"], result.Release)
-							assert.Equal(t, tc.Expected["repoid"], result.RepoID)
+							assert.Equal(t, tc.Expected["version"], result.Data.Version)
+							assert.Equal(t, tc.Expected["release"], result.Data.Release)
+							assert.Equal(t, tc.Expected["repoid"], result.Data.RepoID)
 						}
 					}
 
