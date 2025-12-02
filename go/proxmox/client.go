@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	retryhttp "github.com/hashicorp/go-retryablehttp"
 )
 
 // Client represents a Proxmox API client
@@ -13,18 +15,22 @@ type Client struct {
 	baseURL    string
 	apiToken   string
 	uuid       string
-	httpClient *http.Client
+	httpClient *retryhttp.Client
 }
 
 // NewClient creates a new Proxmox client instance
 func NewClient(baseURL, apiToken, uuid string) *Client {
 	// Create HTTP client with insecure TLS (matching TypeScript behavior)
-	httpClient := &http.Client{
+	httpClient := retryhttp.NewClient()
+	httpClient.HTTPClient = &http.Client{
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 		Timeout: 30 * time.Second,
 	}
+	httpClient.RetryMax = 3
+	httpClient.RetryWaitMin = 10 * time.Second
+	httpClient.RetryWaitMax = 10 * time.Second
 
 	// Remove trailing slash from baseURL
 	baseURL = strings.TrimSuffix(baseURL, "/")
