@@ -4,7 +4,7 @@ go 1.23
 
 require (
 	github.com/hashicorp/go-retryablehttp v0.7.8
-	github.com/stretchr/testify v1.9.0
+	github.com/stretchr/testify v1.11.1
 )
 
 require (

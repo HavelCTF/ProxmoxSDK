@@ -1,4 +1,4 @@
-package proxmox
+package client
 
 import (
 	"context"
@@ -19,8 +19,8 @@ type Client struct {
 	httpClient *retryhttp.Client
 }
 
-// NewClient creates a new Proxmox client instance
-func NewClient(baseURL, apiToken, uuid string) *Client {
+// New creates a new Proxmox client instance
+func New(baseURL, apiToken, uuid string) *Client {
 	// Create HTTP client with insecure TLS (matching TypeScript behavior)
 	httpClient := retryhttp.NewClient()
 	httpClient.HTTPClient = &http.Client{

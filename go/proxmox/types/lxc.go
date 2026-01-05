@@ -1,10 +1,20 @@
 package types
 
 type ContainerStatus string
+type LXCArch string
 
 const (
 	Stopped ContainerStatus = "stopped"
 	Running ContainerStatus = "running"
+)
+
+const (
+	Amd64   LXCArch = "amd64"
+	I386    LXCArch = "i386"
+	Arm64   LXCArch = "arm64"
+	Armhf   LXCArch = "armhf"
+	Riscv32 LXCArch = "riscv32"
+	Riscv64 LXCArch = "riscv64"
 )
 
 type GetLXCResponse struct {
@@ -39,4 +49,9 @@ type LXCInfo struct {
 }
 
 type LXC struct {
+	Node       string `json:"node"`
+	OSTemplate string `json:"ostemplate"`
+	VMID       int    `json:"vmid"`
+
+	Arch LXCArch `json:"arch" default:"amd64"`
 }
