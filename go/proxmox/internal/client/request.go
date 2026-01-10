@@ -8,9 +8,9 @@ import (
 	retryhttp "github.com/hashicorp/go-retryablehttp"
 )
 
-func (c *Client) NewRequest(ctx context.Context, method string, path string) (*retryhttp.Request, error) {
+func (c *Client) NewRequest(ctx context.Context, method string, path string, body any) (*retryhttp.Request, error) {
 	url := fmt.Sprintf("%s%s", c.GetBaseURL(), path)
-	req, err := retryhttp.NewRequest(method, url, nil)
+	req, err := retryhttp.NewRequest(method, url, body)
 
 	if err != nil {
 		err = fmt.Errorf("[%s] failed to create request: %w", c.uuid, err)
