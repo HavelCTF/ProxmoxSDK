@@ -40,7 +40,7 @@ func Get[T any](ctx context.Context, c *client.Client, route string) (*T, error)
 	return &getResp, nil
 }
 
-// TODO Modify POST to replace usage of json by xxx-urlencode
+// TODO Modify POST to replace usage of json by x-www-form-urlencoded
 func Post[T any, R any](ctx context.Context, c *client.Client, route string, body T) (*R, error) {
 	payload, err := json.Marshal(body)
 	if err != nil {

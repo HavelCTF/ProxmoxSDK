@@ -26,7 +26,7 @@ func (s *Service) Get() (*types.LXCInfoResponse, error) {
 	return http.Get[types.LXCInfoResponse](ctx, s.c, fmt.Sprintf("/nodes/%s/lxc", s.node))
 }
 
-// TODO Modify by encode xxx-url
+// TODO Modify by encode x-www-form-urlencoded
 func (s *Service) Post(data types.LXC) (*types.LXCResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()

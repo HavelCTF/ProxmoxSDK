@@ -6,6 +6,9 @@ type CMode string
 type Lock string
 type OSType string
 type LXCDevMode uint16
+type LXCMount string
+type LXCMountOption string
+type DiskUnit string
 
 const (
 	Stopped ContainerStatus = "stopped"
@@ -64,6 +67,34 @@ const (
 	Mode770 LXCDevMode = 0o770
 	Mode775 LXCDevMode = 0o775
 	Mode777 LXCDevMode = 0o777
+)
+const (
+	MountFUSE    LXCMount = "fuse"
+	MountNFS     LXCMount = "nfs"
+	MountCIFS    LXCMount = "cifs"
+	MountPROC    LXCMount = "proc"
+	MountSYSFS   LXCMount = "sysfs"
+	MountOVERLAY LXCMount = "overlay"
+	MountTMPFS   LXCMount = "tmpfs"
+)
+
+const (
+	// RW Only
+	LazyTime     LXCMountOption = "lazytime"
+	MountDiscard LXCMountOption = "discard"
+	MountNoAtime LXCMountOption = "noatime"
+
+	// RW + RO
+	MountNoSuid LXCMountOption = "nosuid"
+	MountNoDev  LXCMountOption = "nodev"
+	MountNoExec LXCMountOption = "noexec"
+)
+
+const (
+	KB DiskUnit = "K"
+	MB DiskUnit = "M"
+	GB DiskUnit = "G"
+	TB DiskUnit = "T"
 )
 
 type LXCInfoResponse struct {
@@ -152,7 +183,7 @@ type LXCFeatures struct {
 	Fuse       *bool
 	KeyCTL     *bool
 	MkNod      *bool
-	Mount      *string //TODO look for mount format [,mount=<fstype;fstype;...>]
+	Mount      *[]LXCMount
 	Nesting    *bool
 }
 
@@ -173,17 +204,23 @@ type LXCMp struct {
 type LXCVolume struct {
 	Volume       string
 	ACL          *bool
-	MountOptions *string //TODO: look for mountopt format [,mountoptions=<opt[;opt...]>]
+	MountOptions *[]LXCMountOption
 	Quota        *bool
 	Replicate    *bool
 	Ro           *bool
 	Shared       *bool
-	Size         *int // TODO see [,size=<DiskSize>]
+	Size         *DiskSize
 }
 
-// TODO complete struct
+type DiskSize struct {
+	Value uint64
+	Unit  DiskUnit
+}
+
 type LXCNet struct {
-	name string
+	Name   string
+	Bridge string
+	//[,bridge=<bridge>] [,firewall=<1|0>] [,gw=<GatewayIPv4>] [,gw6=<GatewayIPv6>] [,host-managed=<1|0>] [,hwaddr=<XX:XX:XX:XX:XX:XX>] [,ip=<(IPv4/CIDR|dhcp|manual)>] [,ip6=<(IPv6/CIDR|auto|dhcp|manual)>] [,link_down=<1|0>] [,mtu=<integer>] [,rate=<mbps>] [,tag=<integer>] [,trunks=<vlanid[;vlanid...]>] [,type=<veth>]
 }
 
 type LXCUnused struct {
