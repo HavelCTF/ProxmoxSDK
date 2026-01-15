@@ -9,6 +9,7 @@ type LXCDevMode uint16
 type LXCMount string
 type LXCMountOption string
 type DiskUnit string
+type LXCIP string
 
 const (
 	Stopped ContainerStatus = "stopped"
@@ -97,6 +98,20 @@ const (
 	TB DiskUnit = "T"
 )
 
+const (
+	//IPv4
+	IPv4 LXCIP = "IPv4"
+
+	//IPv6
+	IPv6 LXCIP = "IPv6"
+	Auto LXCIP = "auto"
+
+	//IPv4 + IPv6
+	CIDR   LXCIP = "CIDR"
+	DHCP   LXCIP = "dhcp"
+	Manual LXCIP = "manual"
+)
+
 type LXCInfoResponse struct {
 	LXCs []LXCInfo `json:"data"`
 }
@@ -174,8 +189,8 @@ type LXC struct {
 	RootFS   *LXCVolume
 	Dev      *[]LXCDev
 	Mp       *[]LXCMp
-	Net      *[]LXCNet
-	Unused   *[]LXCUnused
+	//Net      *[]LXCNet TODO: Network imp when proxmox ready
+	Unused *[]LXCUnused
 }
 
 type LXCFeatures struct {
@@ -218,9 +233,21 @@ type DiskSize struct {
 }
 
 type LXCNet struct {
-	Name   string
-	Bridge string
-	//[,bridge=<bridge>] [,firewall=<1|0>] [,gw=<GatewayIPv4>] [,gw6=<GatewayIPv6>] [,host-managed=<1|0>] [,hwaddr=<XX:XX:XX:XX:XX:XX>] [,ip=<(IPv4/CIDR|dhcp|manual)>] [,ip6=<(IPv6/CIDR|auto|dhcp|manual)>] [,link_down=<1|0>] [,mtu=<integer>] [,rate=<mbps>] [,tag=<integer>] [,trunks=<vlanid[;vlanid...]>] [,type=<veth>]
+	Name string
+	//TODO [,bridge=<bridge>]
+	Firewall    bool
+	GatewayIPv4 string
+	GatewayIPv6 string
+	HostManaged bool
+	HWAddr      string
+	IP          LXCIP
+	IPv6        LXCIP
+	LinkDown    bool
+	MTU         int
+	Rate        int
+	Tag         int
+	//TODO [,trunks=<vlanid[;vlanid...]>]
+	//TODO [,type=<veth>]
 }
 
 type LXCUnused struct {

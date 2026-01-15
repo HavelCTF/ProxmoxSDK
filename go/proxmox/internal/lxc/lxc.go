@@ -15,6 +15,10 @@ type Service struct {
 	node string
 }
 
+type LXCEncoder struct {
+	Data types.LXC
+}
+
 func New(c *client.Client, node string) *Service {
 	return &Service{c: c, node: node}
 }
@@ -33,3 +37,5 @@ func (s *Service) Post(data types.LXC) (*types.LXCResponse, error) {
 
 	return http.Post[types.LXC, types.LXCResponse](ctx, s.c, fmt.Sprintf("/nodes/%s/lxc", s.node), data)
 }
+
+//func ()
