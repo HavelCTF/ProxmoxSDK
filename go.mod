@@ -1,4 +1,4 @@
-module github.com/HavelCTF/ProxmoxSDK/go
+module github.com/HavelCTF/ProxmoxSDK
 
 go 1.23
 
