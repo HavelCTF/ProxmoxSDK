@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/HavelCTF/ProxmoxSDK/proxmox/internal/client"
-	"github.com/HavelCTF/ProxmoxSDK/proxmox/internal/http"
-	"github.com/HavelCTF/ProxmoxSDK/proxmox/types"
+	"github.com/HavelCTF/ProxmoxSDK/internal/client"
+	"github.com/HavelCTF/ProxmoxSDK/internal/http"
+	"github.com/HavelCTF/ProxmoxSDK/types"
 )
 
 type Service struct {

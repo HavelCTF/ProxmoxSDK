@@ -1,11 +1,11 @@
 package proxmox
 
 import (
-	"github.com/HavelCTF/ProxmoxSDK/proxmox/internal/client"
-	"github.com/HavelCTF/ProxmoxSDK/proxmox/internal/lxc"
-	"github.com/HavelCTF/ProxmoxSDK/proxmox/internal/nodes"
-	"github.com/HavelCTF/ProxmoxSDK/proxmox/internal/version"
-	"github.com/HavelCTF/ProxmoxSDK/proxmox/types"
+	"github.com/HavelCTF/ProxmoxSDK/internal/client"
+	"github.com/HavelCTF/ProxmoxSDK/internal/lxc"
+	"github.com/HavelCTF/ProxmoxSDK/internal/nodes"
+	"github.com/HavelCTF/ProxmoxSDK/internal/version"
+	"github.com/HavelCTF/ProxmoxSDK/types"
 )
 
 type Client struct {

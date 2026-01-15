@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/HavelCTF/ProxmoxSDK/proxmox"
+	proxmox "github.com/HavelCTF/ProxmoxSDK/pkg/proxmox"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
