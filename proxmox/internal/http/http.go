@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/HavelCTF/ProxmoxSDK/go/proxmox/internal/client"
+	"github.com/HavelCTF/ProxmoxSDK/proxmox/internal/client"
 )
 
 func Get[T any](ctx context.Context, c *client.Client, route string) (*T, error) {
