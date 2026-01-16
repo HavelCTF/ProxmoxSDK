@@ -34,6 +34,6 @@ func (c *Client) Nodes() (*types.NodesResponse, error) {
 	return nodes.Get(c.c)
 }
 
-func (c *Client) LXC(node string) *lxc.Service {
+func (c *Client) LXC(node string) *lxc.LXCService {
 	return lxc.New(c.c, node)
 }

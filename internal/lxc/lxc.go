@@ -8,36 +8,47 @@ import (
 	"time"
 
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
+	lxccontext "github.com/HavelCTF/ProxmoxSDK/internal/context/lxc"
 	"github.com/HavelCTF/ProxmoxSDK/internal/http"
+	"github.com/HavelCTF/ProxmoxSDK/internal/lxc/instance"
 	"github.com/HavelCTF/ProxmoxSDK/types"
 )
 
-type Service struct {
-	c    *client.Client
-	node string
+type LXCService struct {
+	ctx lxccontext.LXCContext
 }
 
 type LXCEncoder struct {
 	Data types.LXC
 }
 
-func New(c *client.Client, node string) *Service {
-	return &Service{c: c, node: node}
+func New(c *client.Client, node string) *LXCService {
+	return &LXCService{
+		ctx: lxccontext.LXCContext{
+			Client: c,
+			Node:   node,
+			VMID:   nil,
+		},
+	}
 }
 
-func (s *Service) Get() (*types.LXCInfoResponse, error) {
+func (s *LXCService) Get() (*types.LXCInfoResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	return http.Get[types.LXCInfoResponse](ctx, s.c, fmt.Sprintf("/nodes/%s/lxc", s.node))
+	return http.Get[types.LXCInfoResponse](ctx, s.ctx.Client, fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node))
 }
 
-func (s *Service) Post(data types.LXC) (*types.LXCResponse, error) {
+func (s *LXCService) Post(data types.LXC) (*types.LXCResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 	payload := LXCEncoder{Data: data}
 
-	return http.Post[types.LXCResponse](ctx, s.c, fmt.Sprintf("/nodes/%s/lxc", s.node), &payload)
+	return http.Post[types.LXCResponse](ctx, s.ctx.Client, fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node), &payload)
+}
+
+func (s *LXCService) Select(vmid int) *instance.LXCInstance{
+	return instance.New(s.ctx, vmid)
 }
 
 func (e *LXCEncoder) Encode() (url.Values, error) {

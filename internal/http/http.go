@@ -84,3 +84,32 @@ func Post[R any](ctx context.Context, c *client.Client, route string, payload UR
 	}
 	return &postResp, nil
 }
+
+func Delete[R any](ctx context.Context, c *client.Client, route string) (*R, error) {
+	req, err := c.NewRequest(ctx, "DELETE", route, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.Do(req)
+	if err != nil {
+		err = fmt.Errorf("[%s] (%s) Request failed: %w", c.GetUUID(), route, err)
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		err = fmt.Errorf("[%s] (%s) Request failed with status %d: %s",
+			c.GetUUID(), route, resp.StatusCode, string(body))
+		return nil, err
+	}
+
+	var getResp R
+	if err := json.NewDecoder(resp.Body).Decode(&getResp); err != nil {
+		err = fmt.Errorf("[%s] failed to decode version response: %w", c.GetUUID(), err)
+		return nil, err
+	}
+	return &getResp, nil
+}
