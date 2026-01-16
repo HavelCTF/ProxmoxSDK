@@ -1,28 +1,194 @@
-# Variables
-BINARY_NAME=main_wasm.wasm
+# -- GLOBAL VARIABLES --
 BUILD_DIR=build
-SRC_FILE=cmd/wasm/main_wasm.go
 
-# Déclaration des cibles qui ne sont pas des fichiers
-.PHONY: all build clean copy-glue
+# -- WASM VARIABLES --
+WASM_BINARY=main_wasm.wasm
+WASM_MAIN=cmd/wasm/main_wasm.go
 
-# Cible par défaut
-all: build
+# -- COLORS --
+GREEN=\033[0;32m
+BLUE=\033[0;34m
+YELLOW=\033[0;33m
+CYAN=\033[0;36m
+RED=\033[0;31m
+NC=\033[0m
+BOLD=\033[1m
 
-# Compilation en WebAssembly
+# -- BOX DRAWING --
+define print_header
+	@printf "\n$(BOLD)$(CYAN)+-------------------------------------------+$(NC)\n"
+	@printf "$(BOLD)$(CYAN)|$(NC) %-42s$(BOLD)$(CYAN)|$(NC)\n" "$(1)"
+	@printf "$(BOLD)$(CYAN)+-------------------------------------------+$(NC)\n\n"
+endef
+
+define print_success
+	@printf "\n$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"
+	@printf "$(BOLD)$(GREEN)|$(NC) [OK] %-37s$(BOLD)$(GREEN)|$(NC)\n" "$(1)"
+	@printf "$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"
+endef
+
+define print_error
+	@printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"
+	@printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "$(1)"
+	@printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"
+endef
+
+# ==============================================================================
+#  MAIN TARGETS
+# ==============================================================================
+
+all: build copy-glue
+	$(call print_success,Build completed successfully)
+
+# ==============================================================================
+#  BUILD
+# ==============================================================================
+
 build:
-	@echo "Création du dossier de build..."
-	mkdir -p $(BUILD_DIR)
-	@echo "Compilation de $(SRC_FILE) vers $(BUILD_DIR)/$(BINARY_NAME)..."
-	GOOS=js GOARCH=wasm go build -o $(BUILD_DIR)/$(BINARY_NAME) $(SRC_FILE)
-	@echo "Compilation terminée avec succès."
+	$(call print_header,BUILD)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Creating build directory...$(NC)"
+	@mkdir -p $(BUILD_DIR)
+	@printf " $(GREEN)[OK]$(NC)\n"
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Compiling $(WASM_MAIN) to $(BUILD_DIR)/$(WASM_BINARY)...$(NC)"
+	@if GOOS=js GOARCH=wasm go build -o $(BUILD_DIR)/$(WASM_BINARY) $(WASM_MAIN); then \
+		printf " $(GREEN)[OK]$(NC)\n"; \
+	else \
+		printf " $(RED)[FAILED]$(NC)\n"; \
+		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "WASM compilation failed"; \
+		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		exit 1; \
+	fi
 
-# Optionnel : Copier le fichier "glue" JavaScript nécessaire pour exécuter le WASM
 copy-glue: build
-	@echo "Copie de wasm_exec.js dans $(BUILD_DIR)..."
-	cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(BUILD_DIR)/
+	@printf "$(CYAN)[+]$(NC) $(BOLD)$(BLUE)Copying wasm_exec.js to $(BUILD_DIR)...$(NC)"
+	@if cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(BUILD_DIR)/; then \
+		printf " $(GREEN)[OK]$(NC)\n"; \
+	else \
+		printf " $(RED)[FAILED]$(NC)\n"; \
+		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Failed to copy wasm_exec.js"; \
+		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		exit 1; \
+	fi
 
-# Nettoyage du dossier build
+# ==============================================================================
+#  TESTING
+# ==============================================================================
+
+test:
+	$(call print_header,TESTING)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go test...$(NC)\n"
+	@if go test -v ./... ; then \
+		printf "\n$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
+		printf "$(BOLD)$(GREEN)|$(NC) [OK] %-37s$(BOLD)$(GREEN)|$(NC)\n" "All tests passed"; \
+		printf "$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
+	else \
+		printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Some tests failed"; \
+		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		exit 1; \
+	fi
+
+test-coverage:
+	$(call print_header,TEST COVERAGE)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Running tests with coverage...$(NC)\n"
+	@if go test -v -coverprofile=coverage.out ./... ; then \
+		printf " $(GREEN)[OK]$(NC)\n"; \
+	else \
+		printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Tests failed during coverage"; \
+		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Generating coverage report...$(NC)"
+	@go tool cover -html=coverage.out -o coverage.html || \
+		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+	$(call print_success,Coverage report: coverage.html)
+
+# ==============================================================================
+#  LINTING & FORMATTING
+# ==============================================================================
+
+lint:
+	$(call print_header,LINTING)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go vet...$(NC)\n"
+	@if go vet ./... 2>&1; then \
+		printf "\n$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
+		printf "$(BOLD)$(GREEN)|$(NC) [OK] %-37s$(BOLD)$(GREEN)|$(NC)\n" "Linting passed"; \
+		printf "$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
+	else \
+		printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Linting errors found"; \
+		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		exit 1; \
+	fi
+
+fmt:
+	$(call print_header,FORMATTING)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go fmt...$(NC)"
+	@go fmt ./... || \
+		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+	$(call print_success,Code formatted)
+
+# ==============================================================================
+#  DEPENDENCIES
+# ==============================================================================
+
+deps:
+	$(call print_header,DEPENDENCIES)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Downloading Go modules...$(NC)"
+	@go mod download || \
+		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Tidying Go modules...$(NC)"
+	@go mod tidy || \
+		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+	$(call print_success,Dependencies installed)
+
+# ==============================================================================
+#  CLEANUP
+# ==============================================================================
+
 clean:
-	@echo "Suppression du dossier $(BUILD_DIR)..."
-	rm -rf $(BUILD_DIR)
+	$(call print_header,CLEANUP)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(YELLOW)Removing $(BUILD_DIR) directory...$(NC)"
+	@rm -rf $(BUILD_DIR)
+	@printf " $(GREEN)[OK]$(NC)\n"
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(YELLOW)Removing coverage files...$(NC)"
+	@rm -f coverage.out coverage.html
+	@printf " $(GREEN)[OK]$(NC)\n"
+	$(call print_success,Clean completed)
+
+# ==============================================================================
+#  CI/CD
+# ==============================================================================
+
+ci: lint test build
+	$(call print_success,CI pipeline completed successfully)
+
+# ==============================================================================
+#  HELP
+# ==============================================================================
+
+help:
+	@printf "\n$(BOLD)$(CYAN)+-------------------------------------------+$(NC)\n"
+	@printf "$(BOLD)$(CYAN)|$(NC) %-42s$(BOLD)$(CYAN)|$(NC)\n" "ProxmoxSDK Build System"
+	@printf "$(BOLD)$(CYAN)+-------------------------------------------+$(NC)\n\n"
+	@printf "$(BOLD)Usage:$(NC) make $(CYAN)<target>$(NC)\n\n"
+	@printf "$(BOLD)Targets:$(NC)\n"
+	@printf "  $(CYAN)all$(NC)            Build the WASM binary (default)\n"
+	@printf "  $(CYAN)build$(NC)          Compile Go to WASM\n"
+	@printf "  $(CYAN)test$(NC)           Run all tests\n"
+	@printf "  $(CYAN)test-coverage$(NC)  Run tests with coverage report\n"
+	@printf "  $(CYAN)lint$(NC)           Run go vet linter\n"
+	@printf "  $(CYAN)fmt$(NC)            Format code with go fmt\n"
+	@printf "  $(CYAN)deps$(NC)           Download and tidy Go modules\n"
+	@printf "  $(CYAN)clean$(NC)          Remove build artifacts\n"
+	@printf "  $(CYAN)ci$(NC)             Run lint, test, and build (for CI/CD)\n"
+	@printf "  $(CYAN)help$(NC)           Show this help message\n"
+
+.PHONY: all build copy-glue test test-coverage fmt lint deps clean ci help
