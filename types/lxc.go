@@ -232,6 +232,7 @@ type DiskSize struct {
 	Unit  DiskUnit
 }
 
+/* TODO: Net COnfiguration For LXC
 type LXCNet struct {
 	Name string
 	//TODO [,bridge=<bridge>]
@@ -249,6 +250,7 @@ type LXCNet struct {
 	//TODO [,trunks=<vlanid[;vlanid...]>]
 	//TODO [,type=<veth>]
 }
+*/
 
 type LXCUnused struct {
 	Volume string
