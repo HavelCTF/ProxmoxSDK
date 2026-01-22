@@ -26,6 +26,10 @@ func (i *LXCInstance) Delete() (*types.LXCResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
 
-	return http.Delete[types.LXCResponse](ctx, i.ctx.Client,
-		fmt.Sprintf("/nodes/%s/lxc/%d", i.ctx.Node, *i.ctx.VMID))
+	return http.DoRequest[types.LXCResponse](ctx, i.ctx.Client,
+		http.RequestContent{
+			Method: "DELETE",
+			Route:  fmt.Sprintf("/nodes/%s/lxc/%d", i.ctx.Node, *i.ctx.VMID),
+		},
+	)
 }

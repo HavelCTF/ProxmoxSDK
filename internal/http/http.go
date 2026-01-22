@@ -16,84 +16,44 @@ type URLRequestEncoder interface {
 	Encode() (url.Values, error)
 }
 
-func Get[R any](ctx context.Context, c *client.Client, route string) (*R, error) {
-	req, err := c.NewRequest(ctx, "GET", route, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := c.Do(req)
-	if err != nil {
-		err = fmt.Errorf("[%s] (%s) Request failed: %w", c.GetUUID(), route, err)
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		err = fmt.Errorf("[%s] (%s) Request failed with status %d: %s",
-			c.GetUUID(), route, resp.StatusCode, string(body))
-		return nil, err
-	}
-
-	var getResp R
-	if err := json.NewDecoder(resp.Body).Decode(&getResp); err != nil {
-		err = fmt.Errorf("[%s] failed to decode version response: %w", c.GetUUID(), err)
-		return nil, err
-	}
-	return &getResp, nil
+type RequestContent struct {
+	Method string
+	Route  string
+	Body   URLRequestEncoder
+	//TODO Manage OptionalParameters (DELETE LXC)
 }
 
-func Post[R any](ctx context.Context, c *client.Client, route string, payload URLRequestEncoder) (*R, error) {
+func getPayload(payload URLRequestEncoder) (io.Reader, error) {
 	var data = url.Values{}
 
-	if payload != nil {
-		var err error
-		data, err = payload.Encode()
-		if err != nil {
-			err = fmt.Errorf("[%s] (%s) Failed to encode request payload: %w", c.GetUUID(), route, err)
-			return nil, err
-		}
+	if payload == nil {
+		return nil, nil
 	}
-
-	req, err := c.NewRequest(ctx, "POST", route, strings.NewReader(data.Encode()))
+	data, err := payload.Encode()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Failed to encode request payload: %w", err)
 	}
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Accept", "application/json")
-	resp, err := c.Do(req)
-	if err != nil {
-		err = fmt.Errorf("[%s] (%s) Request failed: %w", c.GetUUID(), route, err)
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		body, _ := io.ReadAll(resp.Body)
-		err = fmt.Errorf("[%s] (%s) Request failed with status %d: %s",
-			c.GetUUID(), route, resp.StatusCode, string(body))
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var postResp R
-	if err := json.NewDecoder(resp.Body).Decode(&postResp); err != nil {
-		err = fmt.Errorf("[%s] failed to decode version response: %w", c.GetUUID(), err)
-		return nil, err
-	}
-	return &postResp, nil
+	return strings.NewReader(data.Encode()), nil
 }
 
-func Delete[R any](ctx context.Context, c *client.Client, route string) (*R, error) {
-	req, err := c.NewRequest(ctx, "DELETE", route, nil)
+func DoRequest[R any](ctx context.Context, c *client.Client, content RequestContent) (*R, error) {
+	payload, err := getPayload(content.Body)
+	if err != nil {
+		return nil, fmt.Errorf("[%s] (%s) %w", c.GetUUID(), content.Route, err)
+	}
+
+	req, err := c.NewRequest(ctx, content.Method, content.Route, payload)
 	if err != nil {
 		return nil, err
+	}
+	if content.Method == "POST" {
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		req.Header.Set("Accept", "application/json")
 	}
 
 	resp, err := c.Do(req)
 	if err != nil {
-		err = fmt.Errorf("[%s] (%s) Request failed: %w", c.GetUUID(), route, err)
+		err = fmt.Errorf("[%s] (%s) Request failed: %w", c.GetUUID(), content.Route, err)
 		return nil, err
 	}
 
@@ -102,14 +62,15 @@ func Delete[R any](ctx context.Context, c *client.Client, route string) (*R, err
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
 		err = fmt.Errorf("[%s] (%s) Request failed with status %d: %s",
-			c.GetUUID(), route, resp.StatusCode, string(body))
+			c.GetUUID(), content.Route, resp.StatusCode, string(body))
 		return nil, err
 	}
 
-	var getResp R
-	if err := json.NewDecoder(resp.Body).Decode(&getResp); err != nil {
+	var response R
+	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
 		err = fmt.Errorf("[%s] failed to decode version response: %w", c.GetUUID(), err)
 		return nil, err
 	}
-	return &getResp, nil
+	return &response, nil
+
 }

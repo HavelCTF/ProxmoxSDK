@@ -36,7 +36,12 @@ func (s *LXCService) Get() (*types.LXCInfoResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	return http.Get[types.LXCInfoResponse](ctx, s.ctx.Client, fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node))
+	return http.DoRequest[types.LXCInfoResponse](ctx, s.ctx.Client,
+		http.RequestContent{
+			Method: "GET",
+			Route:  fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node),
+		},
+	)
 }
 
 func (s *LXCService) Post(data types.LXC) (*types.LXCResponse, error) {
@@ -44,10 +49,16 @@ func (s *LXCService) Post(data types.LXC) (*types.LXCResponse, error) {
 	defer cancel()
 	payload := LXCEncoder{Data: data}
 
-	return http.Post[types.LXCResponse](ctx, s.ctx.Client, fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node), &payload)
+	return http.DoRequest[types.LXCResponse](ctx, s.ctx.Client,
+		http.RequestContent{
+			Method: "POST",
+			Route:  fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node),
+			Body:   &payload,
+		},
+	)
 }
 
-func (s *LXCService) Select(vmid int) *instance.LXCInstance{
+func (s *LXCService) Select(vmid int) *instance.LXCInstance {
 	return instance.New(s.ctx, vmid)
 }
 

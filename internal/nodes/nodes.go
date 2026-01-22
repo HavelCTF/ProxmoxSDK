@@ -14,5 +14,10 @@ func Get(c *client.Client) (*types.NodesResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	return http.Get[types.NodesResponse](ctx, c, "/nodes")
+	return http.DoRequest[types.NodesResponse](ctx, c,
+		http.RequestContent{
+			Method: "GET",
+			Route:  "/nodes",
+		},
+	)
 }

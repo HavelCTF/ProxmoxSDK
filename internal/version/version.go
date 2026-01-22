@@ -14,5 +14,10 @@ func Get(c *client.Client) (*types.VersionResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	return http.Get[types.VersionResponse](ctx, c, "/version")
+	return http.DoRequest[types.VersionResponse](ctx, c,
+		http.RequestContent{
+			Method: "GET",
+			Route:  "/version",
+		},
+	)
 }
