@@ -1,3 +1,5 @@
+// Package client provides tools to create a client capable of communicating
+// with the Proxmox API using a retryable HTTP configuration.
 package client
 
 import (
@@ -11,7 +13,6 @@ import (
 	retryhttp "github.com/hashicorp/go-retryablehttp"
 )
 
-// Client represents a Proxmox API client
 type Client struct {
 	baseURL    string
 	apiToken   string
@@ -19,20 +20,23 @@ type Client struct {
 	httpClient *retryhttp.Client
 }
 
-// New creates a new Proxmox client instance
-func New(baseURL, apiToken, uuid string) *Client {
-	// Create HTTP client with insecure TLS (matching TypeScript behavior)
+// NewClient creates an HTTP client for Proxmox with retryable HTTP request options.
+func NewClient(baseURL string, apiToken string, uuid string) *Client {
 	httpClient := retryhttp.NewClient()
 	httpClient.HTTPClient = &http.Client{
 		Transport: &http.Transport{
+			// Skip TLS verification for self-signed Proxmox certificates
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 		Timeout: 60 * time.Second,
 	}
+
+	// Retry configuration: max 3 attempts with 5 second fixed wait
 	httpClient.RetryMax = 3
 	httpClient.RetryWaitMin = 5 * time.Second
 	httpClient.RetryWaitMax = 5 * time.Second
 
+	// Prevent retries on client errors (e.g., 401 Unauthorized). Network errors and 5xx still trigger retries.
 	httpClient.ErrorHandler = func(resp *http.Response, err error, numTries int) (*http.Response, error) {
 		if resp != nil {
 			return resp, nil
@@ -40,6 +44,7 @@ func New(baseURL, apiToken, uuid string) *Client {
 		return nil, err
 	}
 
+	// Disable retries for POST requests to avoid duplicate operations
 	httpClient.CheckRetry = func(ctx context.Context, resp *http.Response, err error) (bool, error) {
 		if resp != nil {
 			rreq, _ := retryhttp.FromRequest(resp.Request)
@@ -50,7 +55,6 @@ func New(baseURL, apiToken, uuid string) *Client {
 		return retryhttp.DefaultRetryPolicy(ctx, resp, err)
 	}
 
-	// Remove trailing slash from baseURL
 	baseURL = strings.TrimSuffix(baseURL, "/")
 
 	return &Client{
@@ -61,12 +65,10 @@ func New(baseURL, apiToken, uuid string) *Client {
 	}
 }
 
-// GetBaseURL returns the base URL for API requests
 func (c *Client) GetBaseURL() string {
 	return fmt.Sprintf("%s/api2/json", c.baseURL)
 }
 
-// GetUUID returns the client's UUID
 func (c *Client) GetUUID() string {
 	return c.uuid
 }

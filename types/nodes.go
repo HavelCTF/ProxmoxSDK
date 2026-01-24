@@ -12,6 +12,14 @@ type NodesResponse struct {
 	Nodes []Node `json:"data"`
 }
 
+type NodeResponse struct {
+	Node []NodeProperty `json:"data"`
+}
+
+type NodeProperty struct {
+	Name string `json:"name"`
+}
+
 type Node struct {
 	Node           string     `json:"node"`
 	Status         NodeStatus `json:"status"`
