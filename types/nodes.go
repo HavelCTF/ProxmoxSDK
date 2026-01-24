@@ -8,18 +8,12 @@ const (
 	Offline NodeStatus = "offline"
 )
 
+// NodesResponse represents the response from the Proxmox /nodes endpoint.
 type NodesResponse struct {
 	Nodes []Node `json:"data"`
 }
 
-type NodeResponse struct {
-	Node []NodeProperty `json:"data"`
-}
-
-type NodeProperty struct {
-	Name string `json:"name"`
-}
-
+// Node contains Proxmox node informations.
 type Node struct {
 	Node           string     `json:"node"`
 	Status         NodeStatus `json:"status"`
@@ -30,4 +24,15 @@ type Node struct {
 	MaxCPU         int        `json:"maxcpu,omitempty"`
 	MaxMEM         int        `json:"maxmem,omitempty"`
 	MEM            int        `json:"mem,omitempty"`
+}
+
+// NodeResponse represents the response from the Proxmox /nodes/{node}
+// endpoint.
+type NodeResponse struct {
+	Node []NodeProperty `json:"data"`
+}
+
+// NodeProperty contains Proxmox node property name.
+type NodeProperty struct {
+	Name string `json:"name"`
 }
