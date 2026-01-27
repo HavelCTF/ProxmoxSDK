@@ -20,18 +20,17 @@ type Client struct {
 	httpClient *retryhttp.Client
 }
 
-// NewClient creates an HTTP client for Proxmox with retryable HTTP request options.
+// NewClient creates an HTTP client for Proxmox using baseUrl and apiToken.
+// The client enables retryable requests and logging with uuid.
 func NewClient(baseURL string, apiToken string, uuid string) *Client {
 	httpClient := retryhttp.NewClient()
 	httpClient.HTTPClient = &http.Client{
 		Transport: &http.Transport{
-			// Skip TLS verification for self-signed Proxmox certificates
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},
 		Timeout: 60 * time.Second,
 	}
 
-	// Retry configuration: max 3 attempts with 5 second fixed wait
 	httpClient.RetryMax = 3
 	httpClient.RetryWaitMin = 5 * time.Second
 	httpClient.RetryWaitMax = 5 * time.Second
