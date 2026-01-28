@@ -125,6 +125,14 @@ lint:
 		exit 1; \
 	fi
 
+fmt-check:
+	$(call print_header,FORMATTING)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Checking go fmt...$(NC)"
+	@test -z "$$(gofmt -l .)" || \
+		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+	$(call print_success,Code formatted)
+
 fmt:
 	$(call print_header,FORMATTING)
 	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go fmt...$(NC)"
