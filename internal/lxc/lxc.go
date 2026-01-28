@@ -38,8 +38,8 @@ func (s *LXCService) Get() (*types.LXCInfoResponse, error) {
 
 	return http.DoRequest[types.LXCInfoResponse](ctx, s.ctx.Client,
 		http.RequestContent{
-			Method: "GET",
-			Route:  fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node),
+			Method:   "GET",
+			Endpoint: fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node),
 		},
 	)
 }
@@ -51,9 +51,9 @@ func (s *LXCService) Post(data types.LXC) (*types.LXCResponse, error) {
 
 	return http.DoRequest[types.LXCResponse](ctx, s.ctx.Client,
 		http.RequestContent{
-			Method: "POST",
-			Route:  fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node),
-			Body:   &payload,
+			Method:   "POST",
+			Endpoint: fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node),
+			Body:     &payload,
 		},
 	)
 }

@@ -28,8 +28,8 @@ func (i *LXCInstance) Delete() (*types.LXCResponse, error) {
 
 	return http.DoRequest[types.LXCResponse](ctx, i.ctx.Client,
 		http.RequestContent{
-			Method: "DELETE",
-			Route:  fmt.Sprintf("/nodes/%s/lxc/%d", i.ctx.Node, *i.ctx.VMID),
+			Method:   "DELETE",
+			Endpoint: fmt.Sprintf("/nodes/%s/lxc/%d", i.ctx.Node, *i.ctx.VMID),
 		},
 	)
 }
