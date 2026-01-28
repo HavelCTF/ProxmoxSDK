@@ -39,12 +39,10 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
+          go-version: '1.23'
       - name: Install dependencies
-        run: ./build.py install --go
+        run: make deps
       - name: Run Go linter
-        run: ./build.py lint --go
+        run: make lint
+      - name: Run Go format
+        run: make fmt-check
