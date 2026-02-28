@@ -4,6 +4,7 @@ package proxmox
 
 import (
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
+	"github.com/HavelCTF/ProxmoxSDK/internal/cluster"
 	"github.com/HavelCTF/ProxmoxSDK/internal/lxc"
 	"github.com/HavelCTF/ProxmoxSDK/internal/nodes"
 	"github.com/HavelCTF/ProxmoxSDK/internal/version"
@@ -47,4 +48,8 @@ func (c *Client) Node(node string) (*types.NodeResponse, error) {
 
 func (c *Client) LXC(node string) *lxc.LXCService {
 	return lxc.New(c.c, node)
+}
+
+func (c *Client) Cluster() *cluster.ClusterService {
+	return cluster.New(c.c)
 }
