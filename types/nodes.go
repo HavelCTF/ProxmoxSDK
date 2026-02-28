@@ -10,11 +10,11 @@ const (
 
 // NodesResponse represents the response from the Proxmox /nodes endpoint.
 type NodesResponse struct {
-	Nodes []Node `json:"data"`
+	Data []NodesData `json:"data"`
 }
 
 // Node contains Proxmox node informations.
-type Node struct {
+type NodesData struct {
 	Node           string     `json:"node"`
 	Status         NodeStatus `json:"status"`
 	Uptime         int        `json:"uptime,omitempty"`
@@ -29,10 +29,39 @@ type Node struct {
 // NodeResponse represents the response from the Proxmox /nodes/{node}
 // endpoint.
 type NodeResponse struct {
-	Node []NodeProperty `json:"data"`
+	Data []NodeData `json:"data"`
 }
 
 // NodeProperty contains Proxmox node property name.
-type NodeProperty struct {
+type NodeData struct {
 	Name string `json:"name"`
+}
+
+type NodeTasksResponse struct {
+	Data []NodeTasksData `json:"data"`
+}
+
+type NodeTasksData struct {
+	ID        string `json:"id"`
+	Node      string `json:"node"`
+	PID       int    `json:"pid"`
+	PStart    int    `json:"pstart"`
+	StartTime int    `json:"starttime"`
+	Type      string `json:"type"`
+	UPID      string `json:"upid"`
+	User      string `json:"user"`
+	EndTime   int    `json:"endtime,omitempty"`
+	Status    string `json:"status,omitempty"`
+}
+
+type NodeTaskResponse struct {
+	Data []NodeTaskData `json:"data"`
+}
+
+type NodeTaskData struct {
+	Name string `json:"name"`
+}
+
+type NodeTaskDeleteResponse struct {
+	Data string `json:"data"`
 }
