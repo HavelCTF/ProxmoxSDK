@@ -1,6 +1,6 @@
 module github.com/HavelCTF/ProxmoxSDK
 
-go 1.23
+go 1.26.0
 
 require github.com/hashicorp/go-retryablehttp v0.7.8
 
