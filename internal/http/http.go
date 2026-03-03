@@ -46,7 +46,7 @@ func encodeBody(enc Encoder) (io.Reader, error) {
 func DoRequest[R any](ctx context.Context, c *client.Client, content RequestContent) (*R, error) {
 	body, err := encodeBody(content.Body)
 	if err != nil {
-		return nil, fmt.Errorf("[%s] (%s) %w", c.GetUUID(), content.Endpoint, err)
+		return nil, fmt.Errorf("[%s] (%s) %w", c.UUID(), content.Endpoint, err)
 	}
 
 	req, err := c.NewRequest(ctx, content.Method, content.Endpoint, body)
@@ -60,7 +60,7 @@ func DoRequest[R any](ctx context.Context, c *client.Client, content RequestCont
 
 	resp, err := c.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("[%s] (%s) Request failed: %w", c.GetUUID(), content.Endpoint, err)
+		return nil, fmt.Errorf("[%s] (%s) Request failed: %w", c.UUID(), content.Endpoint, err)
 	}
 
 	defer resp.Body.Close()
@@ -68,12 +68,12 @@ func DoRequest[R any](ctx context.Context, c *client.Client, content RequestCont
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
 		return nil, fmt.Errorf("[%s] (%s) Request failed with status %d: %s",
-			c.GetUUID(), content.Endpoint, resp.StatusCode, string(body))
+			c.UUID(), content.Endpoint, resp.StatusCode, string(body))
 	}
 
 	var response R
 	if err := json.NewDecoder(resp.Body).Decode(&response); err != nil {
-		return nil, fmt.Errorf("[%s] failed to decode version response: %w", c.GetUUID(), err)
+		return nil, fmt.Errorf("[%s] failed to decode version response: %w", c.UUID(), err)
 	}
 	return &response, nil
 }

@@ -4,6 +4,7 @@ package proxmox
 
 import (
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
+	"github.com/HavelCTF/ProxmoxSDK/internal/cluster"
 	"github.com/HavelCTF/ProxmoxSDK/internal/lxc"
 	"github.com/HavelCTF/ProxmoxSDK/internal/nodes"
 	"github.com/HavelCTF/ProxmoxSDK/internal/version"
@@ -22,29 +23,32 @@ func NewClient(baseURL string, token string, uuid string) *Client {
 	}
 }
 
-func (c *Client) GetUUID() string {
-	return c.c.GetUUID()
+func (c *Client) UUID() string {
+	return c.c.UUID()
 }
 
-func (c *Client) GetBaseURL() string {
-	return c.c.GetBaseURL()
+func (c *Client) BaseURL() string {
+	return c.c.BaseURL()
 }
 
-// Version retrieves Proxmox /version endpoint.
-func (c *Client) Version() (*types.VersionResponse, error) {
-	return version.Get(c.c)
+func (c *Client) Cluster() *cluster.ClusterService {
+	return cluster.New(c.c)
 }
 
 // Nodes retrieves Proxmox /nodes endpoint.
-func (c *Client) Nodes() (*types.NodesResponse, error) {
-	return nodes.Get(c.c)
+func (c *Client) GetNodes() (*types.NodesResponse, error) {
+	return nodes.GetNodes(c.c)
 }
 
-// Node retrieves Proxmox /nodes/{node} endpoint.
-func (c *Client) Node(node string) (*types.NodeResponse, error) {
-	return nodes.GetNode(c.c, node)
+func (c *Client) Node(node string) *nodes.NodeService {
+	return nodes.New(c.c, node)
 }
 
 func (c *Client) LXC(node string) *lxc.LXCService {
 	return lxc.New(c.c, node)
+}
+
+// GetVersion retrieves Proxmox /version endpoint.
+func (c *Client) GetVersion() (*types.VersionResponse, error) {
+	return version.GetVersion(c.c)
 }

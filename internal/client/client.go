@@ -64,10 +64,10 @@ func NewClient(baseURL string, apiToken string, uuid string) *Client {
 	}
 }
 
-func (c *Client) GetBaseURL() string {
+func (c *Client) BaseURL() string {
 	return fmt.Sprintf("%s/api2/json", c.baseURL)
 }
 
-func (c *Client) GetUUID() string {
+func (c *Client) UUID() string {
 	return c.uuid
 }

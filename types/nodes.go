@@ -8,13 +8,14 @@ const (
 	Offline NodeStatus = "offline"
 )
 
-// NodesResponse represents the response from the Proxmox /nodes endpoint.
+// NodesResponse maps to the GET /nodes API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes
 type NodesResponse struct {
-	Nodes []Node `json:"data"`
+	Data []NodesData `json:"data"`
 }
 
-// Node contains Proxmox node informations.
-type Node struct {
+type NodesData struct {
 	Node           string     `json:"node"`
 	Status         NodeStatus `json:"status"`
 	Uptime         int        `json:"uptime,omitempty"`
@@ -26,13 +27,57 @@ type Node struct {
 	MEM            int        `json:"mem,omitempty"`
 }
 
-// NodeResponse represents the response from the Proxmox /nodes/{node}
-// endpoint.
+// NodeResponse maps to the GET /nodes/{node} API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}
 type NodeResponse struct {
-	Node []NodeProperty `json:"data"`
+	Data []NodeData `json:"data"`
 }
 
-// NodeProperty contains Proxmox node property name.
-type NodeProperty struct {
+type NodeData struct {
 	Name string `json:"name"`
+}
+
+// NodeTasksResponse maps to the GET /nodes/{node}/tasks API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/tasks
+type NodeTasksResponse struct {
+	Data []NodeTasksData `json:"data"`
+}
+
+type NodeTaskBase struct {
+	ID        string `json:"id"`
+	Node      string `json:"node"`
+	PID       int    `json:"pid"`
+	PStart    int    `json:"pstart"`
+	StartTime int    `json:"starttime"`
+	Type      string `json:"type"`
+	UPID      string `json:"upid"`
+	User      string `json:"user"`
+}
+
+type NodeTasksData struct {
+	NodeTaskBase
+	EndTime int    `json:"endtime,omitempty"`
+	Status  string `json:"status,omitempty"`
+}
+
+// NodeTaskStatusResponse maps to the GET /nodes/{node}/tasks/{upid}/status API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/tasks/{upid}/status
+type NodeTaskStatusResponse struct {
+	Data NodeTaskStatusData `json:"data"`
+}
+
+type NodeTaskStatusData struct {
+	NodeTaskBase
+	Status     string `json:"status"`
+	ExitStatus string `json:"exitstatus,omitempty"`
+}
+
+// NodeTaskDeleteResponse maps to the DELETE /nodes/{node}/tasks/{upid} API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/tasks/{upid}
+type NodeTaskDeleteResponse struct {
+	Data string `json:"data"`
 }
