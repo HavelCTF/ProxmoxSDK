@@ -15,6 +15,8 @@ ProxmoxSDK/
 │   ├── client
 │   │   ├── client.go
 │   │   └── request.go
+│   ├── cluster
+│   │   └── cluster.go
 │   ├── context
 │   │   └── lxc
 │   │       └── context.go
@@ -25,7 +27,9 @@ ProxmoxSDK/
 │   │   │   └── instance.go
 │   │   └── lxc.go
 │   ├── nodes
-│   │   └── nodes.go
+│   │   ├── nodes.go
+│   │   └── tasks
+│   │       └── tasks.go
 │   └── version
 │       └── version.go
 ├── Makefile
@@ -35,9 +39,8 @@ ProxmoxSDK/
 │   └── typescript
 │       └── example.ts
 ├── README.md
-├── test
-│   └── spec_runner_test.go
 └── types
+    ├── cluster.go
     ├── lxc.go
     ├── nodes.go
     └── version.go
@@ -47,7 +50,7 @@ ProxmoxSDK/
 
 ### Prerequisites
 
-- **Go** (v1.23+)
+- **Go** (v1.26+)
 
 ### Installation
 
@@ -95,7 +98,7 @@ func main() {
     )
 
     // Get version information
-    version, err := client.Version()
+    version, err := client.GetVersion()
     if err != nil {
         log.Fatal(err)
     }

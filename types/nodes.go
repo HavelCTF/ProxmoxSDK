@@ -8,12 +8,13 @@ const (
 	Offline NodeStatus = "offline"
 )
 
-// NodesResponse represents the response from the Proxmox /nodes endpoint.
+// NodesResponse maps to the GET /nodes API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes
 type NodesResponse struct {
 	Data []NodesData `json:"data"`
 }
 
-// Node contains Proxmox node informations.
 type NodesData struct {
 	Node           string     `json:"node"`
 	Status         NodeStatus `json:"status"`
@@ -26,17 +27,20 @@ type NodesData struct {
 	MEM            int        `json:"mem,omitempty"`
 }
 
-// NodeResponse represents the response from the Proxmox /nodes/{node}
-// endpoint.
+// NodeResponse maps to the GET /nodes/{node} API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}
 type NodeResponse struct {
 	Data []NodeData `json:"data"`
 }
 
-// NodeProperty contains Proxmox node property name.
 type NodeData struct {
 	Name string `json:"name"`
 }
 
+// NodeTasksResponse maps to the GET /nodes/{node}/tasks API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/tasks
 type NodeTasksResponse struct {
 	Data []NodeTasksData `json:"data"`
 }
@@ -58,6 +62,9 @@ type NodeTasksData struct {
 	Status  string `json:"status,omitempty"`
 }
 
+// NodeTaskStatusResponse maps to the GET /nodes/{node}/tasks/{upid}/status API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/tasks/{upid}/status
 type NodeTaskStatusResponse struct {
 	Data NodeTaskStatusData `json:"data"`
 }
@@ -68,6 +75,9 @@ type NodeTaskStatusData struct {
 	ExitStatus string `json:"exitstatus,omitempty"`
 }
 
+// NodeTaskDeleteResponse maps to the DELETE /nodes/{node}/tasks/{upid} API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/tasks/{upid}
 type NodeTaskDeleteResponse struct {
 	Data string `json:"data"`
 }

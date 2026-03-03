@@ -10,7 +10,6 @@ import (
 	"github.com/HavelCTF/ProxmoxSDK/types"
 )
 
-// GetVersion retrieves response of /version endpoint.
 func GetVersion(c *client.Client) (*types.VersionResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()

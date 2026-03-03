@@ -1,3 +1,4 @@
+// Package tasks provides functions for the Proxmox API nodes/tasks/{upid} endpoint.
 package tasks
 
 import (

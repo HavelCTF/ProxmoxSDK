@@ -1,3 +1,4 @@
+// Package cluster provides functions for the Proxmox API /cluster endpoint.
 package cluster
 
 import (

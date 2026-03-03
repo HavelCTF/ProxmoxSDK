@@ -1,4 +1,4 @@
-// Package version provides functions for the Proxmox API nodes endpoint.
+// Package version provides functions for the Proxmox API /nodes & /nodes/{node} endpoints.
 package nodes
 
 import (
@@ -25,7 +25,6 @@ func New(c *client.Client, node string) *NodeService {
 	return &NodeService{c: c, node: node}
 }
 
-// GetNode retrieves response of /nodes/{node} endpoint.
 func (s *NodeService) GetNode() (*types.NodeResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -38,7 +37,6 @@ func (s *NodeService) GetNode() (*types.NodeResponse, error) {
 	)
 }
 
-// GetNodes retrieves response of /nodes endpoint.
 func GetNodes(c *client.Client) (*types.NodesResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -51,7 +49,6 @@ func GetNodes(c *client.Client) (*types.NodesResponse, error) {
 	)
 }
 
-// GetTasks retrieves response of /nodes/{node}/tasks endpoint.
 func (s *NodeService) GetTasks() (*types.NodeTasksResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
