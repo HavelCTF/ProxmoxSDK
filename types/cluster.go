@@ -1,7 +1,7 @@
 package types
 
 type ClusterNextIdResponse struct {
-	VMID int `json:"data"`
+	VMID string `json:"data"`
 }
 
 type ClusterTasksResponse struct {

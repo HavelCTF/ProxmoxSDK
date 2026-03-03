@@ -23,7 +23,7 @@ type TaskContext struct {
 }
 
 func New(ctx TaskContext) *TaskService {
-	return &TaskService{c: ctx.C, node: ctx.Node}
+	return &TaskService{c: ctx.C, node: ctx.Node, upid: ctx.UPID}
 }
 
 func (s *TaskService) Node() string {
@@ -34,14 +34,14 @@ func (s *TaskService) UPID() string {
 	return s.upid
 }
 
-func (s *TaskService) GetTask() (*types.NodeTaskResponse, error) {
+func (s *TaskService) GetTaskStatus() (*types.NodeTaskStatusResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	return http.DoRequest[types.NodeTaskResponse](ctx, s.c,
+	return http.DoRequest[types.NodeTaskStatusResponse](ctx, s.c,
 		http.RequestContent{
 			Method:   "GET",
-			Endpoint: fmt.Sprintf("/nodes/%s/tasks/%s", s.node, s.upid),
+			Endpoint: fmt.Sprintf("/nodes/%s/tasks/%s/status", s.node, s.upid),
 		},
 	)
 }

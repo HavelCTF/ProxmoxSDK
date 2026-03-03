@@ -41,7 +41,7 @@ type NodeTasksResponse struct {
 	Data []NodeTasksData `json:"data"`
 }
 
-type NodeTasksData struct {
+type NodeTaskBase struct {
 	ID        string `json:"id"`
 	Node      string `json:"node"`
 	PID       int    `json:"pid"`
@@ -50,16 +50,22 @@ type NodeTasksData struct {
 	Type      string `json:"type"`
 	UPID      string `json:"upid"`
 	User      string `json:"user"`
-	EndTime   int    `json:"endtime,omitempty"`
-	Status    string `json:"status,omitempty"`
 }
 
-type NodeTaskResponse struct {
-	Data []NodeTaskData `json:"data"`
+type NodeTasksData struct {
+	NodeTaskBase
+	EndTime int    `json:"endtime,omitempty"`
+	Status  string `json:"status,omitempty"`
 }
 
-type NodeTaskData struct {
-	Name string `json:"name"`
+type NodeTaskStatusResponse struct {
+	Data NodeTaskStatusData `json:"data"`
+}
+
+type NodeTaskStatusData struct {
+	NodeTaskBase
+	Status     string `json:"status"`
+	ExitStatus string `json:"exitstatus,omitempty"`
 }
 
 type NodeTaskDeleteResponse struct {
