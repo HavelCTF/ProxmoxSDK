@@ -8,6 +8,12 @@ const (
 	Offline NodeStatus = "offline"
 )
 
+// TaskBaseResponse contains the UPID returned by Proxmox for asynchronous operations
+// like container/VM creation, deletion, or modification.
+type TaskBaseResponse struct {
+	UPID string `json:"data"`
+}
+
 // NodesResponse maps to the GET /nodes API response
 // from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/nodes
