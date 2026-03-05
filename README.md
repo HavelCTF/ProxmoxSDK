@@ -17,14 +17,11 @@ ProxmoxSDK/
 │   │   └── request.go
 │   ├── cluster
 │   │   └── cluster.go
-│   ├── context
-│   │   └── lxc
-│   │       └── context.go
 │   ├── http
 │   │   └── http.go
 │   ├── lxc
-│   │   ├── instance
-│   │   │   └── instance.go
+│   │   ├── container
+│   │   │   └── container.go
 │   │   └── lxc.go
 │   ├── nodes
 │   │   ├── nodes.go
@@ -41,6 +38,7 @@ ProxmoxSDK/
 ├── README.md
 └── types
     ├── cluster.go
+    ├── container.go
     ├── lxc.go
     ├── nodes.go
     └── version.go
