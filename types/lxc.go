@@ -136,11 +136,11 @@ type LXCsData struct {
 	Name               string    `json:"name,omitempty"`
 	NetIn              int       `json:"netin,omitempty"`
 	NetOut             int       `json:"netout,omitempty"`
-	PressureCPUSome    float32   `json:"pressurecpusome,omitempty"`
-	PressureIOFull     float32   `json:"pressureiofull,omitempty"`
-	PressureIOSome     float32   `json:"pressureiosome,omitempty"`
-	PressureMemoryFull float32   `json:"pressurememoryfull,omitempty"`
-	PressureMemorySome float32   `json:"pressurememorysome,omitempty"`
+	PressureCPUSome    string    `json:"pressurecpusome,omitempty"`
+	PressureIOFull     string    `json:"pressureiofull,omitempty"`
+	PressureIOSome     string    `json:"pressureiosome,omitempty"`
+	PressureMemoryFull string    `json:"pressurememoryfull,omitempty"`
+	PressureMemorySome string    `json:"pressurememorysome,omitempty"`
 	Tags               string    `json:"tags,omitempty"`
 	Template           bool      `json:"template,omitempty"`
 	Uptime             int       `json:"uptime,omitempty"`
