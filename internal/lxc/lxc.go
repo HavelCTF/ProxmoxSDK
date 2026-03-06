@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/google/go-querystring/query"
+
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 	"github.com/HavelCTF/ProxmoxSDK/internal/http"
 	"github.com/HavelCTF/ProxmoxSDK/internal/lxc/container"
@@ -39,6 +41,23 @@ func (s *LXCService) GetLXCs() (*types.LXCsResponse, error) {
 	)
 }
 
+func (s *LXCService) PostLXC(data types.CreateLXCData) (*types.CreateLXCResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
+	defer cancel()
+	values, err := query.Values(data)
+	if err != nil {
+		return nil, fmt.Errorf("[%s] Failed to query request: %w", s.c.UUID(), err)
+	}
+
+	return http.DoRequest[types.CreateLXCResponse](ctx, s.c,
+		http.RequestContent{
+			Method:   "POST",
+			Endpoint: fmt.Sprintf("/nodes/%s/lxc", s.node),
+			Body:     &values,
+		},
+	)
+}
+
 func (s *LXCService) Container(vmid int) *container.ContainerService {
 	return container.New(
 		container.ContainerContext{
@@ -48,33 +67,3 @@ func (s *LXCService) Container(vmid int) *container.ContainerService {
 		},
 	)
 }
-
-// type LXCEncoder struct {
-// 	Data types.LXC
-// }
-
-// func (s *LXCService) Post(data types.LXC) (*types.LXCResponse, error) {
-// 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
-// 	defer cancel()
-// 	payload := LXCEncoder{Data: data}
-
-// 	return http.DoRequest[types.LXCResponse](ctx, s.ctx.Client,
-// 		http.RequestContent{
-// 			Method:   "POST",
-// 			Endpoint: fmt.Sprintf("/nodes/%s/lxc", s.ctx.Node),
-// 			Body:     &payload,
-// 		},
-// 	)
-// }
-
-// func (e *LXCEncoder) Encode() (url.Values, error) {
-// 	data := url.Values{}
-// 	if e.Data.Node == "" || e.Data.OSTemplate == "" || e.Data.VMID < 100 {
-// 		return nil, fmt.Errorf("Required parameter missing:\nnode: %s\nostemplate: %s\nvmid: %d",
-// 			e.Data.Node, e.Data.OSTemplate, e.Data.VMID)
-// 	}
-// 	data.Set("node", e.Data.Node)
-// 	data.Set("ostemplate", e.Data.OSTemplate)
-// 	data.Set("vmid", strconv.Itoa(e.Data.VMID))
-// 	return data, nil
-// }

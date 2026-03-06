@@ -2,20 +2,12 @@ package types
 
 type LXCStatus string
 
-// type LXCArch string
-// type CMode string
-// type Lock string
-// type OSType string
-// type LXCDevMode uint16
-// type LXCMount string
-// type LXCMountOption string
-// type DiskUnit string
-// type LXCIP string
-
 const (
 	Stopped LXCStatus = "stopped"
 	Running LXCStatus = "running"
 )
+
+// type LXCArch string
 
 // const (
 // 	Amd64   LXCArch = "amd64"
@@ -26,91 +18,26 @@ const (
 // 	Riscv64 LXCArch = "riscv64"
 // )
 
+// type LXCConsoleMode string
+
 // const (
-// 	Shell   CMode = "shell"
-// 	Console CMode = "console"
-// 	TTY     CMode = "tty"
+// 	Shell   LXCConsoleMode = "shell"
+// 	Console LXCConsoleMode = "console"
+// 	TTY     LXCConsoleMode = "tty"
 // )
 
-// const (
-// 	Backup         Lock = "backup"
-// 	Create         Lock = "create"
-// 	Destroyed      Lock = "destroyed"
-// 	Disk           Lock = "disk"
-// 	Fstrim         Lock = "fstrim"
-// 	Migrate        Lock = "migrate"
-// 	Mounted        Lock = "mounted"
-// 	Rollback       Lock = "rollback"
-// 	Snapshot       Lock = "snapshot"
-// 	SnapshotDelete Lock = "snapshot-delete"
-// )
+// type LXCDeviceMode uint32
 
 // const (
-// 	Debian    OSType = "debian"
-// 	Devuan    OSType = "devuan"
-// 	Ubuntu    OSType = "ubuntu"
-// 	Centos    OSType = "centos"
-// 	Fedora    OSType = "fedora"
-// 	Opensuse  OSType = "opensuse"
-// 	ArchLinux OSType = "archlinux"
-// 	Alpine    OSType = "alpine"
-// 	Gentoo    OSType = "gentoo"
-// 	NixOS     OSType = "nixos"
-// 	Unmanaged OSType = "unmanaged"
-// )
-
-// const (
-// 	Mode600 LXCDevMode = 0o600
-// 	Mode644 LXCDevMode = 0o644
-// 	Mode660 LXCDevMode = 0o660
-// 	Mode664 LXCDevMode = 0o664
-// 	Mode700 LXCDevMode = 0o700
-// 	Mode755 LXCDevMode = 0o755
-// 	Mode770 LXCDevMode = 0o770
-// 	Mode775 LXCDevMode = 0o775
-// 	Mode777 LXCDevMode = 0o777
-// )
-// const (
-// 	MountFUSE    LXCMount = "fuse"
-// 	MountNFS     LXCMount = "nfs"
-// 	MountCIFS    LXCMount = "cifs"
-// 	MountPROC    LXCMount = "proc"
-// 	MountSYSFS   LXCMount = "sysfs"
-// 	MountOVERLAY LXCMount = "overlay"
-// 	MountTMPFS   LXCMount = "tmpfs"
-// )
-
-// const (
-// 	// RW Only
-// 	LazyTime     LXCMountOption = "lazytime"
-// 	MountDiscard LXCMountOption = "discard"
-// 	MountNoAtime LXCMountOption = "noatime"
-
-// 	// RW + RO
-// 	MountNoSuid LXCMountOption = "nosuid"
-// 	MountNoDev  LXCMountOption = "nodev"
-// 	MountNoExec LXCMountOption = "noexec"
-// )
-
-// const (
-// 	KB DiskUnit = "K"
-// 	MB DiskUnit = "M"
-// 	GB DiskUnit = "G"
-// 	TB DiskUnit = "T"
-// )
-
-// const (
-// 	//IPv4
-// 	IPv4 LXCIP = "IPv4"
-
-// 	//IPv6
-// 	IPv6 LXCIP = "IPv6"
-// 	Auto LXCIP = "auto"
-
-// 	//IPv4 + IPv6
-// 	CIDR   LXCIP = "CIDR"
-// 	DHCP   LXCIP = "dhcp"
-// 	Manual LXCIP = "manual"
+// 	OwnerR        LXCDeviceMode = 0400 // r--------
+// 	OwnerRW       LXCDeviceMode = 0600 // rw-------
+// 	OwnerRWX      LXCDeviceMode = 0700 // rwx------
+// 	OwnerGroupR   LXCDeviceMode = 0440 // r--r-----
+// 	OwnerGroupRW  LXCDeviceMode = 0660 // rw-rw----
+// 	OwnerGroupRWX LXCDeviceMode = 0770 // rwxrwx---
+// 	AllR          LXCDeviceMode = 0444 // r--r--r--
+// 	AllRW         LXCDeviceMode = 0666 // rw-rw-rw-
+// 	AllRWX        LXCDeviceMode = 0777 // rwxrwxrwx
 // )
 
 // LXCsResponse maps to the GET /nodes/{node}/lxc API response
@@ -146,116 +73,46 @@ type LXCsData struct {
 	Uptime             int       `json:"uptime,omitempty"`
 }
 
-// type LXC struct {
-// 	Node       string
-// 	OSTemplate string
-// 	VMID       int
+// CreateLXCData maps to the POST /nodes/{node}/lxc API request content
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc
+type CreateLXCData struct {
+	Node       string `url:"node"`
+	OSTemplate string `url:"ostemplate"`
+	VMID       int    `url:"vmid"`
+	// Arch           *LXCArch
+	// BandwidthLimit *float32
+	// ConsoleMode    *LXCConsoleMode
+	// Console        *bool
+	// Cores          *int
+	// CPULimit       *float32
+	// CPUUnits       *int
+	// Debug          *bool
+	// Description    *string
+	// Device         *[]LXCDevice
+	// EntryPoint     *string
+	// Env            *map[string]string
+	// Features       *LXCFeatures
+}
 
-// 	Arch               LXCArch
-// 	BwLimit            float32
-// 	CMode              CMode
-// 	Console            bool
-// 	Cores              int
-// 	CPULimit           float32
-// 	CPUUnits           int
-// 	Debug              bool
-// 	Description        string
-// 	EntryPoint         string
-// 	Env                string
-// 	Force              bool
-// 	HAManaged          bool
-// 	HookScript         string
-// 	Hostname           string
-// 	IgnoreUnpackErrors bool
-// 	Lock               Lock
-// 	Memory             int
-// 	Nameserver         string
-// 	OnBoot             bool
-// 	OSType             OSType
-// 	Password           string
-// 	Pool               string
-// 	Protection         bool
-// 	Restore            bool
-// 	SearchDomain       string
-// 	SSHPublicKeys      string
-// 	Start              bool
-// 	Startup            string
-// 	Storage            string
-// 	Swap               int
-// 	Tags               string
-// 	Template           bool
-// 	TimeZone           string
-// 	TTY                int
-// 	Unique             bool
-// 	Unprivileged       bool
-
-// 	Features *LXCFeatures
-// 	RootFS   *LXCVolume
-// 	Dev      *[]LXCDev
-// 	Mp       *[]LXCMp
-// 	//Net      *[]LXCNet TODO: Network imp when proxmox ready
-// 	Unused *[]LXCUnused
-// }
-
-// type LXCFeatures struct {
-// 	ForceRwSys bool
-// 	Fuse       *bool
-// 	KeyCTL     *bool
-// 	MkNod      *bool
-// 	Mount      *[]LXCMount
-// 	Nesting    *bool
-// }
-
-// type LXCDev struct {
+// type LXCDevice struct {
 // 	Path      string
 // 	DenyWrite *bool
 // 	GID       *int
-// 	Mode      *LXCDevMode
+// 	Mode      *LXCDeviceMode
 // 	UID       *int
 // }
 
-// type LXCMp struct {
-// 	Volume LXCVolume
-// 	Mp     string
-// 	Backup *bool
+// type LXCFeatures struct {
+// 	ForceRWSys bool
+// 	Fuse       *bool
+// 	KeyCTL     *bool
+// 	MkNod      *bool
+// 	Mount      *[]string
+// 	Nesting    *bool
 // }
 
-// type LXCVolume struct {
-// 	Volume       string
-// 	ACL          *bool
-// 	MountOptions *[]LXCMountOption
-// 	Quota        *bool
-// 	Replicate    *bool
-// 	Ro           *bool
-// 	Shared       *bool
-// 	Size         *DiskSize
-// }
-
-// type DiskSize struct {
-// 	Value uint64
-// 	Unit  DiskUnit
-// }
-
-/* TODO: Net COnfiguration For LXC
-type LXCNet struct {
-	Name string
-	//TODO [,bridge=<bridge>]
-	Firewall    bool
-	GatewayIPv4 string
-	GatewayIPv6 string
-	HostManaged bool
-	HWAddr      string
-	IP          LXCIP
-	IPv6        LXCIP
-	LinkDown    bool
-	MTU         int
-	Rate        int
-	Tag         int
-	//TODO [,trunks=<vlanid[;vlanid...]>]
-	//TODO [,type=<veth>]
-}
-*/
-
-// type LXCUnused struct {
-// 	Volume string
-// }
+// CreateLXCResponse maps to the POST /nodes/{node}/lxc API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc
+type CreateLXCResponse TaskBaseResponse
