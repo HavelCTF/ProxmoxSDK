@@ -8,7 +8,6 @@ import (
 
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 	"github.com/HavelCTF/ProxmoxSDK/internal/http"
-	"github.com/HavelCTF/ProxmoxSDK/internal/nodes/tasks"
 	"github.com/HavelCTF/ProxmoxSDK/types"
 )
 
@@ -45,28 +44,6 @@ func GetNodes(c *client.Client) (*types.NodesResponse, error) {
 		http.RequestContent{
 			Method:   "GET",
 			Endpoint: "/nodes",
-		},
-	)
-}
-
-func (s *NodeService) GetTasks() (*types.NodeTasksResponse, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	return http.DoRequest[types.NodeTasksResponse](ctx, s.c,
-		http.RequestContent{
-			Method:   "GET",
-			Endpoint: fmt.Sprintf("/nodes/%s/tasks", s.node),
-		},
-	)
-}
-
-func (s *NodeService) Tasks(UPID string) *tasks.TaskService {
-	return tasks.New(
-		tasks.TaskContext{
-			C:    s.c,
-			Node: s.node,
-			UPID: UPID,
 		},
 	)
 }
