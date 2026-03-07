@@ -1,44 +1,16 @@
 package types
 
+import (
+	"fmt"
+	"net/url"
+)
+
 type LXCStatus string
 
 const (
 	Stopped LXCStatus = "stopped"
 	Running LXCStatus = "running"
 )
-
-// type LXCArch string
-
-// const (
-// 	Amd64   LXCArch = "amd64"
-// 	I386    LXCArch = "i386"
-// 	Arm64   LXCArch = "arm64"
-// 	Armhf   LXCArch = "armhf"
-// 	Riscv32 LXCArch = "riscv32"
-// 	Riscv64 LXCArch = "riscv64"
-// )
-
-// type LXCConsoleMode string
-
-// const (
-// 	Shell   LXCConsoleMode = "shell"
-// 	Console LXCConsoleMode = "console"
-// 	TTY     LXCConsoleMode = "tty"
-// )
-
-// type LXCDeviceMode uint32
-
-// const (
-// 	OwnerR        LXCDeviceMode = 0400 // r--------
-// 	OwnerRW       LXCDeviceMode = 0600 // rw-------
-// 	OwnerRWX      LXCDeviceMode = 0700 // rwx------
-// 	OwnerGroupR   LXCDeviceMode = 0440 // r--r-----
-// 	OwnerGroupRW  LXCDeviceMode = 0660 // rw-rw----
-// 	OwnerGroupRWX LXCDeviceMode = 0770 // rwxrwx---
-// 	AllR          LXCDeviceMode = 0444 // r--r--r--
-// 	AllRW         LXCDeviceMode = 0666 // rw-rw-rw-
-// 	AllRWX        LXCDeviceMode = 0777 // rwxrwxrwx
-// )
 
 // LXCsResponse maps to the GET /nodes/{node}/lxc API response
 // from Proxmox. See:
@@ -77,42 +49,36 @@ type LXCsData struct {
 // from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc
 type CreateLXCData struct {
-	Node       string `url:"node"`
-	OSTemplate string `url:"ostemplate"`
-	VMID       int    `url:"vmid"`
-	// Arch           *LXCArch
-	// BandwidthLimit *float32
-	// ConsoleMode    *LXCConsoleMode
-	// Console        *bool
-	// Cores          *int
-	// CPULimit       *float32
-	// CPUUnits       *int
-	// Debug          *bool
-	// Description    *string
-	// Device         *[]LXCDevice
-	// EntryPoint     *string
-	// Env            *map[string]string
-	// Features       *LXCFeatures
+	Node       string       `url:"node"`
+	OSTemplate string       `url:"ostemplate"`
+	VMID       int          `url:"vmid"`
+	Features   *LXCFeatures `url:"features,omitempty"`
 }
 
-// type LXCDevice struct {
-// 	Path      string
-// 	DenyWrite *bool
-// 	GID       *int
-// 	Mode      *LXCDeviceMode
-// 	UID       *int
-// }
+type LXCFeatures struct {
+	Nesting bool
+}
 
-// type LXCFeatures struct {
-// 	ForceRWSys bool
-// 	Fuse       *bool
-// 	KeyCTL     *bool
-// 	MkNod      *bool
-// 	Mount      *[]string
-// 	Nesting    *bool
-// }
+// EncodeValues implements query.Encoder.
+func (f LXCFeatures) EncodeValues(key string, v *url.Values) error {
+	v.Set(key, f.Encode())
+	return nil
+}
+
+func (f LXCFeatures) Encode() string {
+	val := 0
+	if f.Nesting {
+		val = 1
+	}
+	return fmt.Sprintf("nesting=%d", val)
+}
 
 // CreateLXCResponse maps to the POST /nodes/{node}/lxc API response
 // from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc
 type CreateLXCResponse TaskBaseResponse
+
+// DeleteLXCResponse maps to the DELETE /nodes/{node}/lxc/{vmid} API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}
+type DeleteLXCResponse TaskBaseResponse

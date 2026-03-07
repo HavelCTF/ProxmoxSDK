@@ -1,4 +1,4 @@
-package lxc
+package nodes
 
 import (
 	"context"
@@ -7,29 +7,12 @@ import (
 
 	"github.com/google/go-querystring/query"
 
-	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 	"github.com/HavelCTF/ProxmoxSDK/internal/http"
-	"github.com/HavelCTF/ProxmoxSDK/internal/lxc/container"
+	"github.com/HavelCTF/ProxmoxSDK/internal/nodes/lxc"
 	"github.com/HavelCTF/ProxmoxSDK/types"
 )
 
-type LXCService struct {
-	c    *client.Client
-	node string
-}
-
-func (s *LXCService) Node() string {
-	return s.node
-}
-
-func New(c *client.Client, node string) *LXCService {
-	return &LXCService{
-		c:    c,
-		node: node,
-	}
-}
-
-func (s *LXCService) GetLXCs() (*types.LXCsResponse, error) {
+func (s *NodeService) GetLXCs() (*types.LXCsResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
@@ -41,7 +24,7 @@ func (s *LXCService) GetLXCs() (*types.LXCsResponse, error) {
 	)
 }
 
-func (s *LXCService) PostLXC(data types.CreateLXCData) (*types.CreateLXCResponse, error) {
+func (s *NodeService) PostLXC(data types.CreateLXCData) (*types.CreateLXCResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
 	values, err := query.Values(data)
@@ -58,9 +41,9 @@ func (s *LXCService) PostLXC(data types.CreateLXCData) (*types.CreateLXCResponse
 	)
 }
 
-func (s *LXCService) Container(vmid int) *container.ContainerService {
-	return container.New(
-		container.ContainerContext{
+func (s *NodeService) LXC(vmid int) *lxc.LXCService {
+	return lxc.New(
+		lxc.LXCContext{
 			Client: s.c,
 			Node:   s.node,
 			VMID:   vmid,
