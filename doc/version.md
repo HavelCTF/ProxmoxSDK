@@ -30,12 +30,6 @@ func main() {
     // ... Client initialization
 
     version, err := client.GetVersion() // *types.VersionResponse, error
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-
-    fmt.Println(version)
 }
 ```
 

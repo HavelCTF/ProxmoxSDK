@@ -8,11 +8,11 @@
 - [Go](#go)
   - [Initialization](#initialization)
   - [GetTasks](#gettasks)
-  - [GetNextID](#getnextid)
+  - [GetNextId](#getnextid)
 - [TypeScript](#typescript)
   - [Initialization](#initialization-1)
   - [GetTasks](#gettasks-1)
-  - [GetNextID](#getnextid-1)
+  - [GetNextId](#getnextid-1)
 - [See Also](#see-also)
 
 ## Prerequisites
@@ -43,17 +43,17 @@ tasks, err := client.Cluster().GetTasks()
 
 > See [`ClusterTasksResponse`](../types/cluster.go) for the full list of available fields.
 
-### GetNextID
+### GetNextId
 
 > Return next available VMID for LXC / VM creation.
 ```go
 // ... Client initialization
 
-nextID, err := cluster.GetNextId() // *types.ClusterNextIdResponse, error
+nextId, err := cluster.GetNextId() // *types.ClusterNextIdResponse, error
 
 // OR
 
-nextID, err := client.Cluster().GetNextID()
+nextId, err := client.Cluster().GetNextId()
 ```
 
 > See [`ClusterNextIdResponse`](../types/cluster.go) for the full list of available fields.
@@ -68,7 +68,7 @@ nextID, err := client.Cluster().GetNextID()
 
 > Work In Progress
 
-### GetNextID
+### GetNextId
 
 > Work In Progress
 
