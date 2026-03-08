@@ -50,7 +50,7 @@ func main() {
 <details>
 <summary>Next</summary>
 
-- [Node](./nodes/node.md)
+- [Node](./nodes/nodes.md)
 - [Version](version.md)
 - [Cluster](./cluster/cluster.md)
 

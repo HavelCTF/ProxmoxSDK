@@ -22,7 +22,7 @@ Requires an initialized client. See the [Client documentation](../client.md).
 
 Initialize a cluster service from an existing client.
 ```go
-cluster := client.Cluster()
+clusterService := client.Cluster()
 ```
 
 ### GetTasks
@@ -30,7 +30,7 @@ cluster := client.Cluster()
 Return all in progress tasks.
 
 ```go
-tasks, err := cluster.GetTasks() // *types.ClusterTasksResponse, error
+tasks, err := clusterService.GetTasks() // *types.ClusterTasksResponse, error
 
 // OR
 
@@ -44,7 +44,7 @@ See the [ClusterTasksResponse](../../types/cluster.go) type for available fields
 Return next available VMID for LXC / VM creation.
 
 ```go
-nextId, err := cluster.GetNextId() // *types.ClusterNextIdResponse, error
+nextId, err := clusterService.GetNextId() // *types.ClusterNextIdResponse, error
 
 // OR
 
