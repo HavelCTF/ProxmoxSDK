@@ -15,41 +15,26 @@ import (
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 )
 
-// Encoder encodes Proxmox request data into URL-encoded form values.
-type Encoder interface {
-	Encode() (url.Values, error)
-}
-
 type RequestContent struct {
 	Method   string
 	Endpoint string
-	Body     Encoder
+	Body     *url.Values
 	// TODO Manage OptionalParameters (DELETE LXC)
 }
 
-// encode converts the encoder's data into URL-encoded form data.
-// Returns nil if enc is nil
-func encodeBody(enc Encoder) (io.Reader, error) {
-	var data = url.Values{}
-	if enc == nil {
-		return nil, nil
+func encodeBody(body *url.Values) io.Reader {
+	if body == nil {
+		return nil
 	}
-	data, err := enc.Encode()
-	if err != nil {
-		return nil, fmt.Errorf("Failed to encode request payload: %w", err)
-	}
-	return strings.NewReader(data.Encode()), nil
+	return strings.NewReader(body.Encode())
 }
 
 // DoRequest executes a Proxmox API request and decodes the response into type R.
 // POST bodies are URL-encoded.
 func DoRequest[R any](ctx context.Context, c *client.Client, content RequestContent) (*R, error) {
-	body, err := encodeBody(content.Body)
-	if err != nil {
-		return nil, fmt.Errorf("[%s] (%s) %w", c.UUID(), content.Endpoint, err)
-	}
+	encodedBody := encodeBody(content.Body)
 
-	req, err := c.NewRequest(ctx, content.Method, content.Endpoint, body)
+	req, err := c.NewRequest(ctx, content.Method, content.Endpoint, encodedBody)
 	if err != nil {
 		return nil, err
 	}

@@ -1,4 +1,4 @@
-package container
+package lxc
 
 import (
 	"context"
@@ -10,39 +10,39 @@ import (
 	"github.com/HavelCTF/ProxmoxSDK/types"
 )
 
-type ContainerService struct {
+type LXCService struct {
 	c    *client.Client
 	node string
 	vmid int
 }
 
-type ContainerContext struct {
+type LXCContext struct {
 	Client *client.Client
 	Node   string
 	VMID   int
 }
 
-func (s *ContainerService) Node() string {
+func (s *LXCService) Node() string {
 	return s.node
 }
 
-func (s *ContainerService) VMID() int {
+func (s *LXCService) VMID() int {
 	return s.vmid
 }
 
-func New(ctx ContainerContext) *ContainerService {
-	return &ContainerService{
+func New(ctx LXCContext) *LXCService {
+	return &LXCService{
 		c:    ctx.Client,
 		node: ctx.Node,
 		vmid: ctx.VMID,
 	}
 }
 
-func (s *ContainerService) Delete() (*types.ContainerDeleteResponse, error) {
+func (s *LXCService) DeleteLXC() (*types.DeleteLXCResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()
 
-	return http.DoRequest[types.ContainerDeleteResponse](ctx, s.c,
+	return http.DoRequest[types.DeleteLXCResponse](ctx, s.c,
 		http.RequestContent{
 			Method:   "DELETE",
 			Endpoint: fmt.Sprintf("/nodes/%s/lxc/%d", s.node, s.vmid),
