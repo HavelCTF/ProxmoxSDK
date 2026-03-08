@@ -43,19 +43,15 @@ func main() {
 
 ## TypeScript
 
-### Initialization
-
-```
-Work In Progress
-```
+> Work In Progress
 
 ## See Also
 
 <details>
 <summary>Next</summary>
 
-- [Node](node.md)
+- [Node](./nodes/node.md)
 - [Version](version.md)
-- [Cluster](cluster.md)
+- [Cluster](./cluster/cluster.md)
 
 </details>
