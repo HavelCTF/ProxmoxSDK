@@ -37,7 +37,7 @@ tasks, err := clusterService.GetTasks() // *types.ClusterTasksResponse, error
 tasks, err := client.Cluster().GetTasks() // *types.ClusterTasksResponse, error
 ```
 
-See the [ClusterTasksResponse](types/cluster.go) type for available fields.
+See the [ClusterTasksResponse](/types/cluster.go) type for available fields.
 
 ### GetNextId
 
@@ -51,7 +51,7 @@ nextId, err := clusterService.GetNextId() // *types.ClusterNextIdResponse, error
 nextId, err := client.Cluster().GetNextId() // *types.ClusterNextIdResponse, error
 ```
 
-See the [ClusterNextIdResponse](types/cluster.go) type for available fields.
+See the [ClusterNextIdResponse](/types/cluster.go) type for available fields.
 
 ## TypeScript
 

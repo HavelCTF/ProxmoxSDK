@@ -32,7 +32,7 @@ Returns all nodes in the cluster.
 nodes, err := client.GetNodes() // *types.NodesResponse, error
 ```
 
-See the [NodesResponse](types/nodes.go) type for available fields.
+See the [NodesResponse](/types/nodes.go) type for available fields.
 
 ### GetNode
 
@@ -45,7 +45,7 @@ node, err := nodeService.GetNode() // *types.NodeResponse, error
 node, err := client.Node("node-name").GetNode() // *types.NodeResponse, error
 ```
 
-See the [NodeResponse](types/nodes.go) type for available fields.
+See the [NodeResponse](/types/nodes.go) type for available fields.
 
 ## TypeScript
 
