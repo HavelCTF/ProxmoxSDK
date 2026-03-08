@@ -64,7 +64,7 @@ lxcData :=  types.CreateLXCData{
 res, err := nodeService.PostLXC(lxcData) // *types.CreateLXCResponse, error
 ```
 
-Creation request is asynchronous. Check task progress using the returned UPID. See [Node Documentation](../nodes.md).
+Creation request is asynchronous. Check task progress using the returned UPID. See [Tasks Documentation](../tasks/tasks.md).
 
 See the [CreateLXCResponse](/types/lxc.go) type for available fields.
 
@@ -80,7 +80,7 @@ res, err := lxcService.DeleteLXC() // *types.DeleteLXCResponse, error
 res, err := nodeService.LXC(vmid).DeleteLXC() // *types.DeleteLXCResponse, error
 ```
 
-Deletion request is asynchronous. Check task progress using the returned UPID. See [Node Documentation](../nodes.md).
+Deletion request is asynchronous. Check task progress using the returned UPID. See [Tasks Documentation](../tasks/tasks.md).
 
 See the [DeleteLXCResponse](/types/lxc.go) type for available fields.
 
