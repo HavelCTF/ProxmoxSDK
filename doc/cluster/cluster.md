@@ -6,7 +6,7 @@
 
 - [Prerequisites](#prerequisites)
 - [Go](#go)
-  - [Initialization](#initialization)
+  - [Service Initialization](#service-initialization)
   - [GetTasks](#gettasks)
   - [GetNextId](#getnextid)
 - [TypeScript](#typescript)
@@ -18,9 +18,9 @@ Requires an initialized client. See the [Client documentation](../client.md).
 
 ## Go
 
-### Initialization
+### Service Initialization
 
-Initialize a cluster service from an existing client.
+Initializes a cluster service from an existing client.
 ```go
 clusterService := client.Cluster()
 ```

@@ -19,7 +19,7 @@ Requires an initialized client. See the [Client documentation](../client.md).
 
 ### GetVersion
 
-Return Proxmox instance version.
+Returns Proxmox instance version.
 
 ```go
 version, err := client.GetVersion() // *types.VersionResponse, error

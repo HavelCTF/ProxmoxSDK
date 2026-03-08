@@ -6,7 +6,7 @@
 
 - [Prerequisites](#prerequisites)
 - [Go](#go)
-  - [Initialization](#initialization)
+  - [Service Initialization](#service-initialization)
   - [GetNodes](#getnodes)
   - [GetNode](#getnode)
 - [TypeScript](#typescript)
@@ -18,9 +18,9 @@ Requires an initialized client. See the [Client documentation](../client.md).
 
 ## Go
 
-### Initialization
+### Service Initialization
 
-Initialize a node service from an existing client.
+Initializes a node service from an existing client.
 ```go
 nodeService := client.Node("node-name")
 ```

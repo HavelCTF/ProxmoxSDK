@@ -6,7 +6,7 @@
 
 - [Prerequisites](#prerequisites)
 - [Go](#go)
-  - [Initialization](#initialization)
+  - [Service Initialization](#service-initialization)
   - [GetTasks](#gettasks)
   - [GetTaskStatus](#gettaskstatus)
   - [DeleteTask](#deletetask)
@@ -19,9 +19,9 @@ Requires an initialized node service. See the [Node documentation](../nodes.md).
 
 ## Go
 
-### Initialization
+### Service Initialization
 
-Initialize a task service from an existing node service.
+Initializes a task service from an existing node service.
 ```go
 taskService := nodeService.Tasks("task-upid")
 

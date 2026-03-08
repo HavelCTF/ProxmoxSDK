@@ -21,7 +21,7 @@ Requires an initialized node service. See the [Node documentation](../nodes.md).
 
 ### Service Initialization
 
-Initialize an LXC service from an existing node service.
+Initializes an LXC service from an existing node service.
 ```go
 lxcService := nodeService.LXC(vmid)
 
