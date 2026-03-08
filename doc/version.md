@@ -25,7 +25,7 @@ Returns Proxmox instance version.
 version, err := client.GetVersion() // *types.VersionResponse, error
 ```
 
-See the [VersionResponse](types/version.go) type for available fields.
+See the [VersionResponse](/types/version.go) type for available fields.
 
 ## TypeScript
 
