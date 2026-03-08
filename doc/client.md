@@ -51,7 +51,7 @@ func main() {
 <summary>Next</summary>
 
 - [Nodes](./nodes/nodes.md)
-- [Version](version.md)
+- [Version](./version.md)
 - [Cluster](./cluster/cluster.md)
 
 </details>

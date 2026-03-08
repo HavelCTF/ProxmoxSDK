@@ -37,7 +37,7 @@ Returns all LXCs information from a node.
 lxcs, err := nodeService.GetLXCs() // *types.LXCsResponse, error
 ```
 
-See the [LXCsResponse](../../../types/lxc.go) type for available fields.
+See the [LXCsResponse](types/lxc.go) type for available fields.
 
 ### PostLXC
 
@@ -66,7 +66,7 @@ res, err := nodeService.PostLXC(lxcData) // *types.CreateLXCResponse, error
 
 Creation request is asynchronous. Check task progress using the returned UPID. See [Node Documentation](../nodes.md).
 
-See the [CreateLXCResponse](../../../types/lxc.go) type for available fields.
+See the [CreateLXCResponse](types/lxc.go) type for available fields.
 
 ### DeleteLXC
 
@@ -82,7 +82,7 @@ res, err := nodeService.LXC(vmid).DeleteLXC() // *types.DeleteLXCResponse, error
 
 Deletion request is asynchronous. Check task progress using the returned UPID. See [Node Documentation](../nodes.md).
 
-See the [DeleteLXCResponse](../../../types/lxc.go) type for available fields.
+See the [DeleteLXCResponse](types/lxc.go) type for available fields.
 
 ## TypeScript
 

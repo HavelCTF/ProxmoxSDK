@@ -12,7 +12,7 @@
 
 ## Prerequisites
 
-Requires an initialized client. See the [Client documentation](../client.md).
+Requires an initialized client. See the [Client documentation](./client.md).
 
 
 ## Go
@@ -25,7 +25,7 @@ Returns Proxmox instance version.
 version, err := client.GetVersion() // *types.VersionResponse, error
 ```
 
-See the [VersionResponse](../types/version.go) type for available fields.
+See the [VersionResponse](types/version.go) type for available fields.
 
 ## TypeScript
 
@@ -36,6 +36,6 @@ See the [VersionResponse](../types/version.go) type for available fields.
 <details>
 <summary>Previous</summary>
 
-- [Client](client.md)
+- [Client](./client.md)
 
 </details>

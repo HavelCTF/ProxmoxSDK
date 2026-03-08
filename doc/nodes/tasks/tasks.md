@@ -37,7 +37,7 @@ Returns task history from a node.
 tasks, err := nodeService.GetTasks() // *types.NodeTasksResponse, error
 ```
 
-See the [NodeTasksResponse](../../types/nodes.go) type for available fields.
+See the [NodeTasksResponse](types/nodes.go) type for available fields.
 
 ### GetTaskStatus
 
@@ -51,7 +51,7 @@ task, err := taskService.GetTaskStatus() // *types.NodeTaskStatusResponse, error
 task, err := nodeService.Tasks("task-upid").GetTaskStatus() // *types.NodeTaskStatusResponse, error
 ```
 
-See the [NodeTaskStatusResponse](../../types/nodes.go) type for available fields.
+See the [NodeTaskStatusResponse](types/nodes.go) type for available fields.
 
 ### DeleteTask
 
