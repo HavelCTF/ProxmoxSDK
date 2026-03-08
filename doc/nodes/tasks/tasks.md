@@ -24,6 +24,9 @@ Requires an initialized node service. See the [Node documentation](../nodes.md).
 Initialize a task service from an existing node service.
 ```go
 taskService := nodeService.Tasks("task-upid")
+
+fmt.Println(taskService.Node())
+fmt.Println(taskService.UPID())
 ```
 
 ### GetTasks
