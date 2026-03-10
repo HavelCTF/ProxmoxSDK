@@ -22,7 +22,7 @@ Requires an initialized lxc service. See the [LXC documentation](../lxc.md).
 
 Initializes a Status service from an existing lxc service.
 ```go
-lxcService := lxcService.Status()
+statusService := lxcService.Status()
 ```
 
 ### StartLXC
@@ -30,7 +30,7 @@ lxcService := lxcService.Status()
 Starts a container.
 
 ```go
-lxcs, err := statusService.StartLXC() // *types.StartLXCResponse, error
+upid, err := statusService.StartLXC() // *types.StartLXCResponse, error
 ```
 
 Start request is asynchronous. Check task progress using the returned UPID. See [Tasks Documentation](../../tasks/tasks.md).
@@ -42,7 +42,7 @@ See the [StartLXCResponse](/types/lxc.go) type for available fields.
 Stops a container.
 
 ```go
-lxcs, err := statusService.StopLXC() // *types.StopLXCResponse, error
+upid, err := statusService.StopLXC() // *types.StopLXCResponse, error
 ```
 
 Stop request is asynchronous. Check task progress using the returned UPID. See [Tasks Documentation](../../tasks/tasks.md).
