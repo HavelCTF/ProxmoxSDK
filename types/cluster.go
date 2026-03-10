@@ -8,7 +8,7 @@ type ClusterNextIdResponse struct {
 }
 
 // ClusterTasksResponse maps to the GET /cluster/tasks API response
-// from Proxmox. See:https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}/clone
+// from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/cluster/tasks
 type ClusterTasksResponse struct {
 	Data []ClusterTasksData `json:"data"`
