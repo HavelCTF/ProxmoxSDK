@@ -49,7 +49,6 @@ type LXCsData struct {
 // from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc
 type CreateLXCData struct {
-	Node       string       `url:"node"`
 	OSTemplate string       `url:"ostemplate"`
 	VMID       int          `url:"vmid"`
 	Features   *LXCFeatures `url:"features,omitempty"`
@@ -73,12 +72,35 @@ func (f LXCFeatures) Encode() string {
 	return fmt.Sprintf("nesting=%d", val)
 }
 
+// CloneLXCData maps to the POST /nodes/{node}/lxc/{vmid}/clone API request content
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}/clone
+type CloneLXCData struct {
+	NewId  int     `url:"newid"`
+	Target *string `url:"target,omitempty"`
+}
+
 // CreateLXCResponse maps to the POST /nodes/{node}/lxc API response
 // from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc
 type CreateLXCResponse TaskBaseResponse
 
+// CloneLXCResponse maps to the POST /nodes/{node}/lxc/{vmid}/clone API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}/clone
+type CloneLXCResponse TaskBaseResponse
+
 // DeleteLXCResponse maps to the DELETE /nodes/{node}/lxc/{vmid} API response
 // from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}
 type DeleteLXCResponse TaskBaseResponse
+
+// StartLXCResponse maps to the POST /nodes/{node}/lxc/{vmid}/status/start API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}/status/start
+type StartLXCResponse TaskBaseResponse
+
+// StopLXCResponse maps to the POST /nodes/{node}/lxc/{vmid}/status/stop API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}/status/stop
+type StopLXCResponse TaskBaseResponse

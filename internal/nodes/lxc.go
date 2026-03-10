@@ -27,7 +27,11 @@ func (s *NodeService) GetLXCs() (*types.LXCsResponse, error) {
 func (s *NodeService) PostLXC(data types.CreateLXCData) (*types.CreateLXCResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 	defer cancel()
-	values, err := query.Values(data)
+	finalData := CreateLXCFinalData{
+		Node:          s.node,
+		CreateLXCData: data,
+	}
+	values, err := query.Values(finalData)
 	if err != nil {
 		return nil, fmt.Errorf("[%s] Failed to query request: %w", s.c.UUID(), err)
 	}
