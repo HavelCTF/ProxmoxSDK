@@ -10,6 +10,7 @@
   - [GetLXCs](#getlxcs)
   - [PostLXC](#postlxc)
   - [DeleteLXC](#deletelxc)
+  - [CloneLXC](#clonelxc)
 - [TypeScript](#typescript)
 - [See Also](#see-also)
 
@@ -50,7 +51,6 @@ import (
 
 lxcData :=  types.CreateLXCData{
     // Mandatory
-    Node: nodeService.Node(),
     OSTemplate: "path-to-template", // e.g : local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst
     VMID: 2222, // Use strconv.Atoi(nodeService.Cluster().GetNextId()) result
 
@@ -84,6 +84,29 @@ Deletion request is asynchronous. Check task progress using the returned UPID. S
 
 See the [DeleteLXCResponse](/types/lxc.go) type for available fields.
 
+### CloneLXC
+
+Clone a container.
+
+```go
+res, err := lxcService.CloneLXC(
+    types.CloneLXCData{
+        // Mandatory
+        NewId : 2223, // Use strconv.Atoi(nodeService.Cluster().GetNextId()) result
+
+        // Optional
+        Target : "node-target", // Clone to designated node 
+    }) // *types.CloneLXCResponse, error
+
+// OR
+
+res, err := nodeService.LXC(vmid).CloneLXC(...) // *types.CloneLXCResponse, error
+```
+
+Clone request is asynchronous. Check task progress using the returned UPID. See [Tasks Documentation](../tasks/tasks.md).
+
+See the [CloneLXCResponse](/types/lxc.go) type for available fields.
+
 ## TypeScript
 
 > Work In Progress
@@ -94,5 +117,12 @@ See the [DeleteLXCResponse](/types/lxc.go) type for available fields.
 <summary>Previous</summary>
 
 - [Nodes](../nodes.md)
+
+</details>
+
+<details>
+<summary>Next</summary>
+
+- [Status](./status/status.md)
 
 </details>

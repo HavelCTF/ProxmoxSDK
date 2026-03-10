@@ -4,7 +4,8 @@
 
 ## Services
 
-- **[LXC](./lxc.md):** GetLXCs, PostLXC, DeleteLXC
+- **[LXC](./lxc.md):** GetLXCs, PostLXC, DeleteLXC, CloneLXC
+- **[Status](./status)**
 
 ## Useful Links
 
