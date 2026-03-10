@@ -1,4 +1,4 @@
-# Status
+# LXC Status
 
 > Entry point for all lxc-status-scoped services from selected lxc (start, stop, ...).
 

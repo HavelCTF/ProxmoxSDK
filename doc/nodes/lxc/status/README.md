@@ -4,7 +4,7 @@
 
 ## Services
 
-- **[Status](./lxc.md):** StartLXC, StopLXC
+- **[Status](./status.md):** StartLXC, StopLXC
 
 ## Useful Links
 
