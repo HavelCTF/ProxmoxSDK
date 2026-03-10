@@ -7,6 +7,7 @@ import (
 
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 	"github.com/HavelCTF/ProxmoxSDK/internal/http"
+	"github.com/HavelCTF/ProxmoxSDK/internal/nodes/lxc/status"
 	"github.com/HavelCTF/ProxmoxSDK/types"
 )
 
@@ -46,6 +47,16 @@ func (s *LXCService) DeleteLXC() (*types.DeleteLXCResponse, error) {
 		http.RequestContent{
 			Method:   "DELETE",
 			Endpoint: fmt.Sprintf("/nodes/%s/lxc/%d", s.node, s.vmid),
+		},
+	)
+}
+
+func (s *LXCService) Status() *status.StatusService {
+	return status.New(
+		status.StatusContext{
+			Client: s.c,
+			Node:   s.node,
+			VMID:   s.vmid,
 		},
 	)
 }

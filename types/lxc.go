@@ -82,3 +82,13 @@ type CreateLXCResponse TaskBaseResponse
 // from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}
 type DeleteLXCResponse TaskBaseResponse
+
+// StartLXCResponse maps to the POST /nodes/{node}/lxc/{vmid}/status/start API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}/status/start
+type StartLXCResponse TaskBaseResponse
+
+// StopLXCResponse maps to the POST /nodes/{node}/lxc/{vmid}/status/stop API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}/status/stop
+type StopLXCResponse TaskBaseResponse
