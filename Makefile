@@ -1,6 +1,9 @@
 # -- GLOBAL VARIABLES --
 BUILD_DIR=build
 
+# -- TYPESCRIPT VARIABLES --
+TS_DIR=pkg/typescript
+
 # -- WASM VARIABLES --
 WASM_BINARY=main_wasm.wasm
 WASM_MAIN=cmd/wasm/main_wasm.go
@@ -37,7 +40,7 @@ endef
 #  MAIN TARGETS
 # ==============================================================================
 
-all: build copy-glue
+all: build copy-glue build-ts
 	$(call print_success,Build completed successfully)
 
 # ==============================================================================
@@ -71,6 +74,12 @@ copy-glue: build
 		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
 		exit 1; \
 	fi
+
+build-ts:
+	@printf "$(CYAN)[+]$(NC) $(BOLD)$(BLUE)Compiling TypeScript...$(NC)"
+	@cd $(TS_DIR) && npm run build
+	@printf " $(GREEN)[OK]$(NC)\n"
+
 
 # ==============================================================================
 #  TESTING
@@ -199,4 +208,4 @@ help:
 	@printf "  $(CYAN)ci$(NC)             Run lint, test, and build (for CI/CD)\n"
 	@printf "  $(CYAN)help$(NC)           Show this help message\n"
 
-.PHONY: all build copy-glue test test-coverage fmt lint deps clean ci help
+.PHONY: all build copy-glue build-ts test test-coverage fmt lint deps clean ci help
