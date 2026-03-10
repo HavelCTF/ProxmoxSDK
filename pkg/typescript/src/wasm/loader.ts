@@ -1,36 +1,34 @@
 export class WasmLoader {
-    private static isLoaded = false;
+    private static loaded = false;
+    private static goExited: Promise<void> | null = null;
 
-    public static async init(wasmSource: string | Buffer | Uint8Array): Promise<void> {
-        if (this.isLoaded) return;
+    public static async init(source: string | Buffer | Uint8Array): Promise<void> {
+        if (this.loaded) return;
 
-        // Bypass TypeScript pour vérifier l'existence sur globalThis
         if (typeof (globalThis as any).Go === 'undefined') {
-            throw new Error("[ProxmoxSDK] L'objet 'Go' est introuvable. Importez 'wasm_exec.js' avant d'initialiser le SDK.");
+            throw new Error('wasm_exec.js must be loaded before initializing the SDK');
         }
 
-        // On peut maintenant instancier Go sereinement
         const go = new globalThis.Go();
-        let instance: WebAssembly.Instance;
+        const isBrowser = typeof window !== 'undefined' && typeof source === 'string';
 
+        let instance: WebAssembly.Instance;
         try {
-            console.debug(`[WasmLoader] Chargement du WASM depuis source : ${typeof wasmSource === 'string' ? wasmSource : 'Buffer/Uint8Array'}`);
-            if (typeof window !== 'undefined' && typeof wasmSource === 'string') {
-                console.log(`[WasmLoader] Chargement du WASM depuis URL : ${wasmSource}`);
-                const response = await fetch(wasmSource);
-                const wasmObj = await WebAssembly.instantiateStreaming(response, go.importObject);
-                instance = wasmObj.instance;
-                go.run(instance);
-                this.isLoaded = true;
+            if (isBrowser) {
+                const result = await WebAssembly.instantiateStreaming(await fetch(source), go.importObject);
+                instance = result.instance;
             } else {
-                console.log(`[WasmLoader] Chargement du WASM depuis Buffer/Uint8Array...`);
-                const wasmObj = await WebAssembly.instantiate(wasmSource as ArrayBuffer | Uint8Array, go.importObject) as any;
-                instance = wasmObj.instance;
-                go.run(instance);
-                this.isLoaded = true;
+                const result = await WebAssembly.instantiate(source as BufferSource, go.importObject);
+                instance = (result as WebAssembly.WebAssemblyInstantiatedSource).instance;
             }
-        } catch (error) {
-            throw new Error(`[ProxmoxSDK] Échec du chargement WASM : ${error}`);
+        } catch (err) {
+            throw new Error(`Failed to load WASM binary: ${err instanceof Error ? err.message : err}`);
         }
+
+        this.goExited = go.run(instance).catch((err: unknown) => {
+            console.error('[ProxmoxSDK] Go runtime exited unexpectedly:', err);
+        });
+
+        this.loaded = true;
     }
 }
