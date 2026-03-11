@@ -1,0 +1,39 @@
+name: Check if everything builds on PR
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: pkg/typescript/package-lock.json
+
+      - name: Build WASM binary
+        run: make build copy-glue
+
+      - name: Install TS dependencies
+        working-directory: pkg/typescript
+        run: npm ci
+
+      - name: Build TS package
+        working-directory: pkg/typescript
+        run: npm run build
