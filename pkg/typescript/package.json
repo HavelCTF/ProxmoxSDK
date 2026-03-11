@@ -1,7 +1,7 @@
 {
   "name": "@havelctf/proxmox-sdk",
   "version": "1.0.0",
-  "description": "TypeScript SDK for the Proxmox VE API (Go/WASM powered)",
+  "description": "TypeScript SDK for the Proxmox VE API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": ["dist"],
@@ -9,7 +9,7 @@
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["proxmox", "sdk", "wasm"],
+  "keywords": ["proxmox", "sdk", "typescript"],
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {

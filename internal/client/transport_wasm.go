@@ -2,11 +2,19 @@
 
 package client
 
-import "net/http"
+import (
+	"net/http"
+	"time"
+)
 
-// newPlatformHTTPClient returns an HTTP client that uses the default transport.
-// In GOOS=js/GOARCH=wasm, http.DefaultTransport is a fetch-based round-tripper
-// that bridges Go's net/http to the JavaScript fetch API automatically.
+// newPlatformHTTPClient returns an HTTP client for the WASM target.
+// Go 1.24+ disables its built-in fetch transport when detecting Node.js,
+// so we use our own fetchTransport that calls JavaScript's fetch() directly.
+// In browsers, Go's DefaultTransport already uses fetch, but we use our
+// transport unconditionally for consistency.
 func newPlatformHTTPClient() *http.Client {
-	return &http.Client{}
+	return &http.Client{
+		Transport: &fetchTransport{},
+		Timeout:   60 * time.Second,
+	}
 }
