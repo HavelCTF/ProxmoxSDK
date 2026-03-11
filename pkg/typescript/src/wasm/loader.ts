@@ -1,5 +1,5 @@
 export async function loadWasm(source: string | Buffer | Uint8Array): Promise<void> {
-    if (typeof (globalThis as any).Go === 'undefined') {
+    if (typeof globalThis.Go === 'undefined') {
         throw new Error('wasm_exec.js must be loaded before calling loadWasm()');
     }
 

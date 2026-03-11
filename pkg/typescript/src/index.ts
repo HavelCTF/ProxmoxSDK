@@ -1,5 +1,5 @@
-import { loadWasm } from './wasm/loader';
 import { ClusterModule } from './modules/cluster';
+import { loadWasm } from './wasm/loader';
 
 export * from './types/cluster';
 
@@ -10,7 +10,13 @@ export interface ProxmoxSDKOptions {
 export class ProxmoxSDK {
     public readonly cluster = new ClusterModule();
 
-    static async create(host: string, token: string, uuid: string, wasmSource: string | Buffer | Uint8Array, options?: ProxmoxSDKOptions): Promise<ProxmoxSDK> {
+    static async create(
+        host: string,
+        token: string,
+        uuid: string,
+        wasmSource: string | Buffer | Uint8Array,
+        options?: ProxmoxSDKOptions,
+    ): Promise<ProxmoxSDK> {
         if (options?.insecure && typeof process !== 'undefined') {
             process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         }

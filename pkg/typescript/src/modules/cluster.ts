@@ -1,4 +1,4 @@
-import { ClusterNextIdResponse, ClusterNextIdResponseSchema } from '../types/cluster';
+import { type ClusterNextIdResponse, ClusterNextIdResponseSchema } from '../types/cluster';
 
 export class ClusterModule {
     async getNextId(): Promise<ClusterNextIdResponse> {

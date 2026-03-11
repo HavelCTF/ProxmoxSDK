@@ -4,15 +4,25 @@
   "description": "TypeScript SDK for the Proxmox VE API",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format .",
+    "format:fix": "biome format --write ."
   },
-  "keywords": ["proxmox", "sdk", "typescript"],
+  "keywords": [
+    "proxmox",
+    "sdk",
+    "typescript"
+  ],
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
+    "@biomejs/biome": "2.4.6",
     "@types/node": "^25.3.3",
     "typescript": "^5.9.3"
   },
