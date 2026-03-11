@@ -1,0 +1,82 @@
+name: Build and Publish
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build WASM binary
+        run: make build copy-glue
+
+      - name: Install TS dependencies
+        working-directory: pkg/typescript
+        run: npm ci
+
+      - name: Build TS package
+        working-directory: pkg/typescript
+        run: npm run build
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Run Go tests
+        run: go test -v ./...
+
+  publish-gpr:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com/
+
+      - name: Build WASM binary
+        run: make build copy-glue
+
+      - name: Install TS dependencies
+        working-directory: pkg/typescript
+        run: npm ci
+
+      - name: Build TS package
+        working-directory: pkg/typescript
+        run: npm run build
+
+      - name: Publish to GitHub Packages
+        working-directory: pkg/typescript
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

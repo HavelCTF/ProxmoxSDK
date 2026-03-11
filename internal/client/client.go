@@ -4,7 +4,6 @@ package client
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"net/http"
 	"strings"
@@ -24,12 +23,7 @@ type Client struct {
 // The client enables retryable requests and logging with uuid.
 func NewClient(baseURL string, apiToken string, uuid string) *Client {
 	httpClient := retryhttp.NewClient()
-	httpClient.HTTPClient = &http.Client{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		},
-		Timeout: 60 * time.Second,
-	}
+	httpClient.HTTPClient = newPlatformHTTPClient()
 
 	httpClient.RetryMax = 3
 	httpClient.RetryWaitMin = 5 * time.Second
