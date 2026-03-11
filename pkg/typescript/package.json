@@ -1,0 +1,35 @@
+{
+  "name": "@havelctf/proxmox-sdk",
+  "version": "1.0.0",
+  "description": "TypeScript SDK for the Proxmox VE API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "format": "biome format .",
+    "format:fix": "biome format --write ."
+  },
+  "keywords": [
+    "proxmox",
+    "sdk",
+    "typescript"
+  ],
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@biomejs/biome": "2.4.6",
+    "@types/node": "^25.3.3",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "zod": "^4.3.6"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

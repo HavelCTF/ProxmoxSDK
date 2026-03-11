@@ -1,0 +1,47 @@
+name: Code quality
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  lint-typescript:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: pkg/typescript/package-lock.json
+      - name: Install dependencies
+        working-directory: pkg/typescript
+        run: npm ci
+      - name: Run Biome check
+        working-directory: pkg/typescript
+        run: npx biome check .
+
+  lint-go:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Run Go linter
+        run: make lint
+      - name: Run Go format check
+        run: make fmt-check
