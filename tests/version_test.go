@@ -1,43 +1,35 @@
 package tests
 
 import (
-	"net/http"
 	"testing"
 
-	"github.com/HavelCTF/ProxmoxSDK/pkg/proxmox"
+	"github.com/HavelCTF/ProxmoxSDK/tests/mocks"
 	"github.com/h2non/gock"
 	"github.com/stretchr/testify/assert"
 )
 
-const (
-	TestURI string = "http://test.localhost"
-)
-
-func version(baseUrl string) {
-	versionJSON := `
-{
-    "data": {
-        "repoid": "9a1b2c3d",
-        "release": "9.1",
-        "version": "9.1-1"
-    }
-}`
-	gock.New(baseUrl).
-		Get("/version").
-		Reply(200).
-		JSON(versionJSON)
-}
-
 func TestGetVersion(t *testing.T) {
-	defer gock.Off()
-	httpClient := http.DefaultClient
-	gock.InterceptClient(httpClient)
+	testTable := []struct {
+		name string
+		mock func(string)
+	}{
+		{"nominal", mocks.Version},
+		{"retry on 500", mocks.VersionWithServiceUnavailable},
+	}
 
-	mockClient := proxmox.NewClient(TestURI, "testoken", "testuuid",
-		proxmox.WithHTTPClient(httpClient))
-	version(mockClient.BaseURL())
-	v, err := mockClient.GetVersion()
+	for _, test := range testTable {
+		t.Run(test.name, func(t *testing.T) {
+			defer gock.Off()
+			mockClient := initTestClient()
+			test.mock(mockClient.BaseURL())
 
-	assert.Nil(t, err)
-	assert.Equal(t, "9.1-1", v.Data.Version)
+			v, err := mockClient.GetVersion()
+
+			assert.NoError(t, err)
+			assert.Equal(t, "9.1-1", v.Data.Version)
+			assert.Equal(t, "9a1b2c3d", v.Data.RepoID)
+			assert.Equal(t, "9.1", v.Data.Release)
+			assert.True(t, gock.IsDone())
+		})
+	}
 }
