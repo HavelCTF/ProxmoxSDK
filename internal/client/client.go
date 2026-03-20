@@ -65,3 +65,7 @@ func (c *Client) BaseURL() string {
 func (c *Client) UUID() string {
 	return c.uuid
 }
+
+func (c *Client) SetHTTPClient(httpClient *http.Client) {
+	c.httpClient.HTTPClient = httpClient
+}
