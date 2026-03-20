@@ -20,7 +20,7 @@ func TestClusterGetNextId(t *testing.T) {
 	assert.True(t, gock.IsDone())
 }
 
-func TestGetTasks(t *testing.T) {
+func TestClusterGetTasks(t *testing.T) {
 	defer gock.Off()
 	mockClient := initTestClient()
 	mocks.ClusterTasks(mockClient.BaseURL())
