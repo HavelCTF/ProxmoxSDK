@@ -40,7 +40,6 @@ func Tasks(baseUrl string) {
 }
 
 func TasksStatus(baseUrl string) {
-	// GET /nodes/{node}/tasks/{upid}/status - Get task status (running)
 	gock.New(baseUrl).
 		Persist().
 		Get("/nodes/node1/tasks/UPID:node1:00000001:00000001:00000001:test:running:root@pam:/status").
@@ -60,7 +59,6 @@ func TasksStatus(baseUrl string) {
     }
 }`)
 
-	// GET /nodes/{node}/tasks/{upid}/status - Get task status (stopped/completed)
 	gock.New(baseUrl).
 		Persist().
 		Get("/nodes/node1/tasks/UPID:node1:00000002:00000002:00000002:test:completed:root@pam:/status").
@@ -82,7 +80,6 @@ func TasksStatus(baseUrl string) {
 	}
 }`)
 
-	// GET /nodes/{node}/tasks/{upid}/status - Get task status (failed)
 	gock.New(baseUrl).
 		Persist().
 		Get("/nodes/node1/tasks/UPID:node1:00000003:00000003:00000003:test:failed:root@pam:/status").
