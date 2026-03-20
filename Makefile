@@ -102,7 +102,7 @@ test:
 test-coverage:
 	$(call print_header,TEST COVERAGE)
 	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Running tests with coverage...$(NC)\n"
-	@if go test -v -coverprofile=coverage.out ./... ; then \
+	@if go test -covermode=count -coverpkg=./... -coverprofile=coverage.out -v ./... ; then \
 		printf " $(GREEN)[OK]$(NC)\n"; \
 	else \
 		printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
