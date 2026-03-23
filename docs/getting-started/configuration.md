@@ -144,7 +144,7 @@ func newProductionClient(url, token string) *proxmox.Client {
 
 After configuring your client:
 
-1. **[Read service guides](../guides/)** - Learn to use specific features:
+1. **[Read service guides](../guides/)** - Learn to use specific features
 2. **[API Reference](../reference/api-reference.md)** - Complete method documentation
 
 ## See Also
