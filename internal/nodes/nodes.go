@@ -3,7 +3,6 @@ package nodes
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
@@ -22,18 +21,6 @@ func (s *NodeService) Node() string {
 
 func New(c *client.Client, node string) *NodeService {
 	return &NodeService{c: c, node: node}
-}
-
-func (s *NodeService) GetNode() (*types.NodeResponse, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	return http.DoRequest[types.NodeResponse](ctx, s.c,
-		http.RequestContent{
-			Method:   "GET",
-			Endpoint: fmt.Sprintf("/nodes/%s", s.node),
-		},
-	)
 }
 
 func GetNodes(c *client.Client) (*types.NodesResponse, error) {
