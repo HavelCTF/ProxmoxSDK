@@ -54,7 +54,22 @@ func main() {
 				if err != nil {
 					return nil, err
 				}
-				return map[string]any{"id": res.VMID}, nil
+				return map[string]any{"VMID": res.VMID}, nil
+			}),
+			"GetTasks": asyncWrapper(func() (any, error) {
+				res, err := clusterService.GetTasks()
+				if err != nil {
+					return nil, err
+				}
+
+				jsData := make([]any, len(res.Data))
+				for i, task := range res.Data {
+					jsData[i] = map[string]any{
+						"UPID": task.UPID,
+					}
+				}
+
+				return map[string]any{"Data": jsData}, nil
 			}),
 		},
 	}))

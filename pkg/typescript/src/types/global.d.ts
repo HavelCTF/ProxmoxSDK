@@ -2,7 +2,8 @@ declare global {
     var ProxmoxWASM: {
         initClient: (host: string, token: string, uuid: string) => boolean;
         cluster: {
-            GetNextId: () => Promise<{ id: string }>;
+            GetNextId: () => Promise<{ VMID: string }>;
+            GetTasks: () => Promise<{ Data: { UPID: string }[] }>;
         };
     };
 
