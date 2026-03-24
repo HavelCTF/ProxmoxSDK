@@ -6,6 +6,7 @@ import (
 
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 	"github.com/HavelCTF/ProxmoxSDK/internal/cluster"
+	"github.com/HavelCTF/ProxmoxSDK/internal/nodes"
 	"github.com/HavelCTF/ProxmoxSDK/internal/version"
 )
 
@@ -88,6 +89,31 @@ func main() {
 						"Console": string(res.Data.Console),
 					},
 				}, nil
+			}),
+		},
+		"nodes": map[string]any{
+			"GetNodes": asyncWrapper(func() (any, error) {
+				res, err := nodes.GetNodes(proxmoxClient)
+				if err != nil {
+					return nil, err
+				}
+
+				jsData := make([]any, len(res.Data))
+				for i, n := range res.Data {
+					jsData[i] = map[string]any{
+						"Node":           n.Node,
+						"Status":         string(n.Status),
+						"Uptime":         n.Uptime,
+						"SslFingerprint": n.SslFingerprint,
+						"CPU":            n.CPU,
+						"Level":          n.Level,
+						"MaxCPU":         n.MaxCPU,
+						"MaxMEM":         n.MaxMEM,
+						"MEM":            n.MEM,
+					}
+				}
+
+				return map[string]any{"Data": jsData}, nil
 			}),
 		},
 	}))
