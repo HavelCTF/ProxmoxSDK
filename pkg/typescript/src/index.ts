@@ -1,11 +1,13 @@
 import { ClusterModule } from './modules/cluster';
 import { VersionModule } from './modules/version';
 import { NodesModule } from './modules/nodes';
+import { TasksModule } from './modules/tasks';
 import { loadWasm } from './wasm/loader';
 
 export * from './types/cluster';
 export * from './types/version';
 export * from './types/nodes';
+export * from './types/tasks';
 
 export interface ProxmoxSDKOptions {
     insecure?: boolean;
@@ -15,6 +17,7 @@ export class ProxmoxSDK {
     public readonly cluster = new ClusterModule();
     public readonly version = new VersionModule();
     public readonly nodes = new NodesModule();
+    public readonly tasks = new TasksModule();
 
     static async create(
         host: string,

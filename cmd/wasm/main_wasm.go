@@ -7,6 +7,7 @@ import (
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 	"github.com/HavelCTF/ProxmoxSDK/internal/cluster"
 	"github.com/HavelCTF/ProxmoxSDK/internal/nodes"
+	"github.com/HavelCTF/ProxmoxSDK/internal/nodes/tasks"
 	"github.com/HavelCTF/ProxmoxSDK/internal/version"
 )
 
@@ -21,6 +22,28 @@ func asyncWrapper(fn func() (any, error)) js.Func {
 
 			go func() {
 				res, err := fn()
+				if err != nil {
+					reject.Invoke(err.Error())
+					return
+				}
+				resolve.Invoke(res)
+			}()
+			return nil
+		})
+
+		promiseConstructor := js.Global().Get("Promise")
+		return promiseConstructor.New(handler)
+	})
+}
+
+func asyncWrapperArgs(fn func(args []js.Value) (any, error)) js.Func {
+	return js.FuncOf(func(this js.Value, args []js.Value) any {
+		handler := js.FuncOf(func(this js.Value, promiseArgs []js.Value) any {
+			resolve := promiseArgs[0]
+			reject := promiseArgs[1]
+
+			go func() {
+				res, err := fn(args)
 				if err != nil {
 					reject.Invoke(err.Error())
 					return
@@ -114,6 +137,55 @@ func main() {
 				}
 
 				return map[string]any{"Data": jsData}, nil
+			}),
+		},
+		"tasks": map[string]any{
+			"GetTaskStatus": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				upid := args[1].String()
+
+				taskSvc := tasks.New(tasks.TaskContext{
+					C:    proxmoxClient,
+					Node: node,
+					UPID: upid,
+				})
+
+				res, err := taskSvc.GetTaskStatus()
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{
+					"Data": map[string]any{
+						"ID":         res.Data.ID,
+						"Node":       res.Data.Node,
+						"PID":        res.Data.PID,
+						"PStart":     res.Data.PStart,
+						"StartTime":  res.Data.StartTime,
+						"Type":       res.Data.Type,
+						"UPID":       res.Data.UPID,
+						"User":       res.Data.User,
+						"Status":     res.Data.Status,
+						"ExitStatus": res.Data.ExitStatus,
+					},
+				}, nil
+			}),
+			"DeleteTask": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				upid := args[1].String()
+
+				taskSvc := tasks.New(tasks.TaskContext{
+					C:    proxmoxClient,
+					Node: node,
+					UPID: upid,
+				})
+
+				res, err := taskSvc.DeleteTask()
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{"Data": res.Data}, nil
 			}),
 		},
 	}))

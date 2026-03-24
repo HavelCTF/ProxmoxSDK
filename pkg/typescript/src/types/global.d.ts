@@ -11,25 +11,24 @@ declare global {
         nodes: {
             GetNodes: () => Promise<{
                 Data: {
-                    Node: string;
-                    Status: string;
-                    Uptime?: number;
-                    SslFingerprint?: string;
-                    CPU?: number;
-                    Level?: string;
-                    MaxCPU?: number;
-                    MaxMEM?: number;
-                    MEM?: number;
+                    Node: string; Status: string; Uptime?: number; SslFingerprint?: string;
+                    CPU?: number; Level?: string; MaxCPU?: number; MaxMEM?: number; MEM?: number;
                 }[]
             }>;
+        };
+        tasks: {
+            GetTaskStatus: (node: string, upid: string) => Promise<{
+                Data: {
+                    ID: string; Node: string; PID: number; PStart: number; StartTime: number;
+                    Type: string; UPID: string; User: string; Status: string; ExitStatus?: string;
+                }
+            }>;
+            DeleteTask: (node: string, upid: string) => Promise<{ Data: string }>;
         };
     };
 
     var Go: {
-        new (): {
-            importObject: WebAssembly.Imports;
-            run(instance: WebAssembly.Instance): Promise<void>;
-        };
+        new (): { importObject: WebAssembly.Imports; run(instance: WebAssembly.Instance): Promise<void>; };
     };
 }
 
