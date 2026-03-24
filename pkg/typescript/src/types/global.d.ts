@@ -5,6 +5,9 @@ declare global {
             GetNextId: () => Promise<{ VMID: string }>;
             GetTasks: () => Promise<{ Data: { UPID: string }[] }>;
         };
+        version: {
+            GetVersion: () => Promise<{ Data: { Version: string; Release: string; RepoID: string; Console: string; } }>;
+        };
     };
 
     var Go: {

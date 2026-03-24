@@ -6,6 +6,7 @@ import (
 
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 	"github.com/HavelCTF/ProxmoxSDK/internal/cluster"
+	"github.com/HavelCTF/ProxmoxSDK/internal/version"
 )
 
 var proxmoxClient *client.Client
@@ -70,6 +71,23 @@ func main() {
 				}
 
 				return map[string]any{"Data": jsData}, nil
+			}),
+		},
+		"version": map[string]any{
+			"GetVersion": asyncWrapper(func() (any, error) {
+				res, err := version.GetVersion(proxmoxClient)
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{
+					"Data": map[string]any{
+						"Version": res.Data.Version,
+						"Release": res.Data.Release,
+						"RepoID":  res.Data.RepoID,
+						"Console": string(res.Data.Console),
+					},
+				}, nil
 			}),
 		},
 	}))
