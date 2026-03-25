@@ -15,7 +15,8 @@ Requires an initialized client. See the [Client documentation](../getting-starte
 
 ## GetTasks
 
-Returns all cluster-wide tasks. Tasks are created by any asynchronous operation on the cluster (VM start/stop, migration, backup, snapshot, ...).
+Returns all cluster-wide tasks. Tasks are created by any asynchronous operation on the cluster (VM start/stop, migration, backup, snapshot, ...).  
+**Proxmox API:** [`GET /cluster/tasks`](https://pve.proxmox.com/pve-docs/api-viewer/#/cluster/tasks)
 
 **Go**
 ```go
@@ -34,6 +35,9 @@ for _, task := range tasks.Data {
 
 Returns [`*types.ClusterTasksResponse`](/types/cluster.go).
 
+> [!NOTE]
+> Requests time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
+
 **TypeScript**
 ```typescript
 // Work In Progress
@@ -45,7 +49,8 @@ Returns [`*types.ClusterTasksResponse`](/types/cluster.go).
 
 ## GetNextId
 
-Returns the next available VMID for VM or LXC container creation.
+Returns the next available VMID for VM or LXC container creation.  
+**Proxmox API:** [`GET /cluster/nextid`](https://pve.proxmox.com/pve-docs/api-viewer/#/cluster/nextid)
 
 **Go**
 ```go
@@ -61,6 +66,9 @@ fmt.Println(nextId.Data) // e.g. 105
 ```
 
 Returns [`*types.ClusterNextIdResponse`](/types/cluster.go).
+
+> [!NOTE]
+> Requests time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
 
 **TypeScript**
 ```typescript

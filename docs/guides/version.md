@@ -14,7 +14,8 @@ Requires an initialized client. See the [Client documentation](../getting-starte
 
 ## GetVersion
 
-Returns the version of the Proxmox instance.
+Returns the version of the Proxmox instance.  
+**Proxmox API:** [`GET /version`](https://pve.proxmox.com/pve-docs/api-viewer/#/version)
 
 **Go**
 ```go
@@ -30,6 +31,9 @@ fmt.Println(version.Data.Version) // e.g. 8.1.4
 ```
 
 Returns [`*types.VersionResponse`](/types/version.go).
+
+> [!NOTE]
+> Requests time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
 
 **TypeScript**
 ```typescript
