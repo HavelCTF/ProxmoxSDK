@@ -10,7 +10,7 @@
 
 ## Prerequisites
 
-Requires an initialized client. See the [Client documentation](../getting-started/authentication.md).
+Requires an initialized client. See the [Client documentation](/docs/getting-started/authentication.md).
 
 ## GetNodes
 
@@ -50,7 +50,7 @@ Returns [`*types.NodesResponse`](/types/nodes.go).
 
 ## See Also
 
-- [Client documentation](../getting-started/authentication.md)
+- [Client documentation](/docs/getting-started/authentication.md)
 - [Other Guides](/docs/guides/)
 - [Nodes associated types](/types/nodes.go)
 - [Proxmox API - Nodes endpoints](https://pve.proxmox.com/pve-docs/api-viewer/#/nodes)

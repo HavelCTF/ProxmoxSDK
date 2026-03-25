@@ -12,7 +12,7 @@
 
 ## Prerequisites
 
-Requires at least an initialized client. See the [Client documentation](../getting-started/authentication.md).
+Requires at least an initialized client. See the [Client documentation](/docs/getting-started/authentication.md).
 Requires an initialized node service. See the [Nodes documentation](./nodes.md).
 
 ## GetTasks
@@ -114,9 +114,9 @@ Returns [`*types.NodeTaskDeleteResponse`](/types/nodes.go).
 
 ## See Also
 
-- [Client documentation](../getting-started/authentication.md)
+- [Client documentation](/docs/getting-started/authentication.md)
 - [Other Guides](/docs/guides/)
-- [Cluster Tasks Guide](./cluster.md#gettasks)
+- [Cluster Tasks Guide](../cluster.md#gettasks)
 - [Tasks associated types](/types/nodes.go)
 - [Proxmox API - Tasks endpoints](https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/tasks)
 - [Proxmox Wiki - Tasks](https://pve.proxmox.com/wiki/Proxmox_VE_API#Tasks)
