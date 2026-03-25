@@ -39,7 +39,7 @@ Returns [`*types.ClusterTasksResponse`](/types/cluster.go).
 // Work In Progress
 ```
 
-> An empty slice is a valid response — it means no tasks have been recorded yet.
+> An empty slice is a valid response. It means no tasks have been recorded yet.
 
 ---
 
