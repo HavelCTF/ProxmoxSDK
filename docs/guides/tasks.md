@@ -75,9 +75,6 @@ Returns [`*types.NodeTaskStatusResponse`](/types/nodes.go).
 // Work In Progress
 ```
 
-> [!IMPORTANT]
-> `client.Node("node-name").Tasks("upid")` initializes a task-scoped service. The UPID must match exactly the value returned by `GetTasks()` or `GetTaskStatus()`.
-
 ---
 
 ## DeleteTask
@@ -107,6 +104,11 @@ Returns [`*types.NodeTaskDeleteResponse`](/types/nodes.go).
 
 > [!WARNING]
 > On success, the response body is `nil` with HTTP status 200. Discard the return value and check only the error.
+
+---
+
+> [!IMPORTANT]
+> `client.Node("node-name").Tasks("upid")` initializes a task-scoped service. The UPID must match exactly the value returned by `GetTasks()` or `GetTaskStatus()`.
 
 ---
 

@@ -34,7 +34,7 @@ for _, node := range nodes.Data {
 
 Returns [`*types.NodesResponse`](/types/nodes.go).
 > [!NOTE]
-> Requests time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
+> Request time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
 
 **TypeScript**
 ```typescript

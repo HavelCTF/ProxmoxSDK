@@ -33,7 +33,7 @@ fmt.Println(version.Data.Version) // e.g. 8.1.4
 Returns [`*types.VersionResponse`](/types/version.go).
 
 > [!NOTE]
-> Requests time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
+> Request time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
 
 **TypeScript**
 ```typescript

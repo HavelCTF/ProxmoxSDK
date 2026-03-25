@@ -36,7 +36,7 @@ for _, task := range tasks.Data {
 Returns [`*types.ClusterTasksResponse`](/types/cluster.go).
 
 > [!NOTE]
-> Requests time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
+> Request time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
 
 **TypeScript**
 ```typescript
@@ -68,7 +68,7 @@ fmt.Println(nextId.Data) // e.g. 105
 Returns [`*types.ClusterNextIdResponse`](/types/cluster.go).
 
 > [!NOTE]
-> Requests time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
+> Request time out after 30 seconds. A timeout returns a wrapped error. Check with `errors.Is(err, context.DeadlineExceeded)`.
 
 **TypeScript**
 ```typescript
