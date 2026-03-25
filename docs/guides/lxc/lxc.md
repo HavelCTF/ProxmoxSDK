@@ -13,7 +13,7 @@
 
 ## Prerequisites
 
-Requires at least an initialized client. See the [Client documentation](/docs/getting-started/authentication.md). 
+Requires at least an initialized client. See the [Client documentation](/docs/getting-started/authentication.md).  
 Requires at most an initialized node service. See the [Nodes documentation](../nodes/nodes.md).
 
 ## GetLXCs
