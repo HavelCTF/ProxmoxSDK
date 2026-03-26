@@ -124,7 +124,7 @@ test-coverage:
 #  LINTING & FORMATTING
 # ==============================================================================
 
-lint:
+lint: deps
 	$(call print_header,LINTING)
 	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Running go vet...$(NC)\n"
 	@if go vet ./... 2>&1; \
