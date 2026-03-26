@@ -9,11 +9,11 @@ export const NodesDataSchema = z.object({
     Level: z.string().optional(),
     MaxCPU: z.number().optional(),
     MaxMEM: z.number().optional(),
-    MEM: z.number().optional()
+    MEM: z.number().optional(),
 });
 export type NodesData = z.infer<typeof NodesDataSchema>;
 
 export const NodesResponseSchema = z.object({
-    Data: z.array(NodesDataSchema)
+    Data: z.array(NodesDataSchema),
 });
 export type NodesResponse = z.infer<typeof NodesResponseSchema>;

@@ -1,8 +1,8 @@
-import { 
-    type ClusterNextIdResponse, 
+import {
+    type ClusterNextIdResponse,
     ClusterNextIdResponseSchema,
     type ClusterTasksResponse,
-    ClusterTasksResponseSchema 
+    ClusterTasksResponseSchema,
 } from '../types/cluster';
 
 export class ClusterModule {

@@ -1,14 +1,13 @@
 import { z } from 'zod';
 
-// --- Types existants (Clone, TaskBase...) ---
 export const CloneLXCDataSchema = z.object({
     NewId: z.number(),
-    Target: z.string().optional()
+    Target: z.string().optional(),
 });
 export type CloneLXCData = z.infer<typeof CloneLXCDataSchema>;
 
 export const TaskBaseResponseSchema = z.object({
-    Data: z.string()
+    Data: z.string(),
 });
 export type TaskBaseResponse = z.infer<typeof TaskBaseResponseSchema>;
 
@@ -19,14 +18,14 @@ export type StopLXCResponse = TaskBaseResponse;
 export type CreateLXCResponse = TaskBaseResponse; // Ajout pour la création
 
 export const LXCFeaturesSchema = z.object({
-    Nesting: z.boolean()
+    Nesting: z.boolean(),
 });
 export type LXCFeatures = z.infer<typeof LXCFeaturesSchema>;
 
 export const CreateLXCDataSchema = z.object({
     OSTemplate: z.string(),
     VMID: z.number(),
-    Features: LXCFeaturesSchema.optional()
+    Features: LXCFeaturesSchema.optional(),
 });
 export type CreateLXCData = z.infer<typeof CreateLXCDataSchema>;
 
@@ -53,11 +52,11 @@ export const LXCsDataSchema = z.object({
     PressureMemorySome: z.string().optional(),
     Tags: z.string().optional(),
     Template: z.boolean().optional(),
-    Uptime: z.number().optional()
+    Uptime: z.number().optional(),
 });
 export type LXCsData = z.infer<typeof LXCsDataSchema>;
 
 export const LXCsResponseSchema = z.object({
-    LXCs: z.array(LXCsDataSchema)
+    LXCs: z.array(LXCsDataSchema),
 });
 export type LXCsResponse = z.infer<typeof LXCsResponseSchema>;

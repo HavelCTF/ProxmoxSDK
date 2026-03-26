@@ -1,15 +1,15 @@
 import { ClusterModule } from './modules/cluster';
-import { VersionModule } from './modules/version';
+import { LxcModule } from './modules/lxc';
 import { NodesModule } from './modules/nodes';
 import { TasksModule } from './modules/tasks';
-import { LxcModule } from './modules/lxc';
+import { VersionModule } from './modules/version';
 import { loadWasm } from './wasm/loader';
 
 export * from './types/cluster';
-export * from './types/version';
+export * from './types/lxc';
 export * from './types/nodes';
 export * from './types/tasks';
-export * from './types/lxc';
+export * from './types/version';
 
 export interface ProxmoxSDKOptions {
     insecure?: boolean;
