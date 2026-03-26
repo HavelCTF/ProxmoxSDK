@@ -25,7 +25,8 @@ func asyncWrapper(fn func() (any, error)) js.Func {
 			go func() {
 				res, err := fn()
 				if err != nil {
-					reject.Invoke(err.Error())
+					errObj := js.Global().Get("Error").New(err.Error())
+					reject.Invoke(errObj)
 					return
 				}
 				resolve.Invoke(res)
@@ -47,7 +48,8 @@ func asyncWrapperArgs(fn func(args []js.Value) (any, error)) js.Func {
 			go func() {
 				res, err := fn(args)
 				if err != nil {
-					reject.Invoke(err.Error())
+					errObj := js.Global().Get("Error").New(err.Error())
+					reject.Invoke(errObj)
 					return
 				}
 				resolve.Invoke(res)
