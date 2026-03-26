@@ -4,6 +4,8 @@ import { NodesModule } from './modules/nodes';
 import { TasksModule } from './modules/tasks';
 import { VersionModule } from './modules/version';
 import { loadWasm } from './wasm/loader';
+import * as fs from 'fs';
+import * as path from 'path';
 
 export * from './types/cluster';
 export * from './types/lxc';
@@ -26,14 +28,18 @@ export class ProxmoxSDK {
         host: string,
         token: string,
         uuid: string,
-        wasmSource: string | Buffer | Uint8Array,
         options?: ProxmoxSDKOptions,
     ): Promise<ProxmoxSDK> {
         if (options?.insecure && typeof process !== 'undefined') {
             process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         }
+
+        const wasmPath = path.join(__dirname, 'main_wasm.wasm');
+        const wasmSource = fs.readFileSync(wasmPath);
+
         await loadWasm(wasmSource);
         globalThis.ProxmoxWASM.initClient(host, token, uuid);
+
         return new ProxmoxSDK();
     }
 }

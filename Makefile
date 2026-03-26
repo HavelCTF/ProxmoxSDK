@@ -1,5 +1,5 @@
 # -- GLOBAL VARIABLES --
-BUILD_DIR=build
+# Plus de BUILD_DIR !
 
 # -- TYPESCRIPT VARIABLES --
 TS_DIR=pkg/typescript
@@ -40,7 +40,7 @@ endef
 #  MAIN TARGETS
 # ==============================================================================
 
-all: build copy-glue build-ts
+all: copy-glue build-ts build
 	$(call print_success,Build completed successfully)
 
 # ==============================================================================
@@ -49,11 +49,11 @@ all: build copy-glue build-ts
 
 build:
 	$(call print_header,BUILD)
-	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Creating build directory...$(NC)"
-	@mkdir -p $(BUILD_DIR)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Creating WASM output directory...$(NC)"
+	@mkdir -p $(TS_DIR)/dist
 	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Compiling $(WASM_MAIN) to $(BUILD_DIR)/$(WASM_BINARY)...$(NC)"
-	@if GOOS=js GOARCH=wasm go build -o $(BUILD_DIR)/$(WASM_BINARY) $(WASM_MAIN); \
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Compiling $(WASM_MAIN) to $(TS_DIR)/dist/$(WASM_BINARY)...$(NC)"
+	@if GOOS=js GOARCH=wasm go build -o $(TS_DIR)/dist/$(WASM_BINARY) $(WASM_MAIN); \
 	then \
 		printf " $(GREEN)[OK]$(NC)\n"; \
 	else \
@@ -64,9 +64,10 @@ build:
 		exit 1; \
 	fi
 
-copy-glue: build
-	@printf "$(CYAN)[+]$(NC) $(BOLD)$(BLUE)Copying wasm_exec.js to $(BUILD_DIR)...$(NC)"
-	@if cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(BUILD_DIR)/; then \
+copy-glue:
+	@printf "$(CYAN)[+]$(NC) $(BOLD)$(BLUE)Copying wasm_exec.js to TypeScript source...$(NC)"
+	@mkdir -p $(TS_DIR)/src/wasm
+	@if cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(TS_DIR)/src/wasm/; then \
 		printf " $(GREEN)[OK]$(NC)\n"; \
 	else \
 		printf " $(RED)[FAILED]$(NC)\n"; \
@@ -77,10 +78,13 @@ copy-glue: build
 	fi
 
 build-ts:
-	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Installing NPM dependencies...$(NC)\n"
+	@printf "$(CYAN)[1/3]$(NC) $(BOLD)$(BLUE)Installing NPM dependencies...$(NC)\n"
 	@cd $(TS_DIR) && npm install
-	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Compiling TypeScript...$(NC)\n"
+	@printf "$(CYAN)[2/3]$(NC) $(BOLD)$(BLUE)Compiling TypeScript...$(NC)\n"
 	@cd $(TS_DIR) && npm run build
+	@printf "$(CYAN)[3/3]$(NC) $(BOLD)$(BLUE)Copying wasm_exec.js to dist...$(NC)\n"
+	@mkdir -p $(TS_DIR)/dist/wasm
+	@cp $(TS_DIR)/src/wasm/wasm_exec.js $(TS_DIR)/dist/wasm/
 	@printf " $(GREEN)[OK]$(NC)\n"
 
 
@@ -191,14 +195,14 @@ deps:
 
 clean:
 	$(call print_header,CLEANUP)
-	@printf "$(CYAN)[1/3]$(NC) $(BOLD)$(YELLOW)Removing $(BUILD_DIR) directory...$(NC)"
-	@rm -rf $(BUILD_DIR)
-	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[2/3]$(NC) $(BOLD)$(YELLOW)Removing coverage files...$(NC)"
+	@printf "$(CYAN)[1/3]$(NC) $(BOLD)$(YELLOW)Removing coverage files...$(NC)"
 	@rm -f coverage.out coverage.html
 	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[3/3]$(NC) $(BOLD)$(YELLOW)Removing node_modules...$(NC)"
+	@printf "$(CYAN)[2/3]$(NC) $(BOLD)$(YELLOW)Removing node_modules and dist...$(NC)"
 	@rm -rf $(TS_DIR)/node_modules $(TS_DIR)/dist
+	@printf " $(GREEN)[OK]$(NC)\n"
+	@printf "$(CYAN)[3/3]$(NC) $(BOLD)$(YELLOW)Removing wasm_exec.js...$(NC)"
+	@rm -f $(TS_DIR)/src/wasm/wasm_exec.js
 	@printf " $(GREEN)[OK]$(NC)\n"
 	$(call print_success,Clean completed)
 
@@ -206,7 +210,7 @@ clean:
 #  CI/CD
 # ==============================================================================
 
-ci: lint test build
+ci: lint test all
 	$(call print_success,CI pipeline completed successfully)
 
 # ==============================================================================
@@ -219,7 +223,7 @@ help:
 	@printf "$(BOLD)$(CYAN)+-------------------------------------------+$(NC)\n\n"
 	@printf "$(BOLD)Usage:$(NC) make $(CYAN)<target>$(NC)\n\n"
 	@printf "$(BOLD)Targets:$(NC)\n"
-	@printf "  $(CYAN)all$(NC)            Build the WASM binary (default)\n"
+	@printf "  $(CYAN)all$(NC)            Build the WASM binary and TS (default)\n"
 	@printf "  $(CYAN)build$(NC)          Compile Go to WASM\n"
 	@printf "  $(CYAN)test$(NC)           Run all tests\n"
 	@printf "  $(CYAN)test-coverage$(NC)  Run tests with coverage report\n"
@@ -230,4 +234,4 @@ help:
 	@printf "  $(CYAN)ci$(NC)             Run lint, test, and build (for CI/CD)\n"
 	@printf "  $(CYAN)help$(NC)           Show this help message\n"
 
-.PHONY: all build copy-glue build-ts test test-coverage fmt lint deps clean ci help
+.PHONY: all build copy-glue build-ts test test-coverage fmt-check fmt lint deps clean ci help
