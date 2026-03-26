@@ -1,11 +1,11 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { ClusterModule } from './modules/cluster';
 import { LxcModule } from './modules/lxc';
 import { NodesModule } from './modules/nodes';
 import { TasksModule } from './modules/tasks';
 import { VersionModule } from './modules/version';
 import { loadWasm } from './wasm/loader';
-import * as fs from 'fs';
-import * as path from 'path';
 
 export * from './types/cluster';
 export * from './types/lxc';
@@ -24,12 +24,7 @@ export class ProxmoxSDK {
     public readonly tasks = new TasksModule();
     public readonly lxc = new LxcModule();
 
-    static async create(
-        host: string,
-        token: string,
-        uuid: string,
-        options?: ProxmoxSDKOptions,
-    ): Promise<ProxmoxSDK> {
+    static async create(host: string, token: string, uuid: string, options?: ProxmoxSDKOptions): Promise<ProxmoxSDK> {
         if (options?.insecure && typeof process !== 'undefined') {
             process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         }
