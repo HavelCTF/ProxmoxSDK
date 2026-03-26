@@ -53,7 +53,8 @@ build:
 	@mkdir -p $(BUILD_DIR)
 	@printf " $(GREEN)[OK]$(NC)\n"
 	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Compiling $(WASM_MAIN) to $(BUILD_DIR)/$(WASM_BINARY)...$(NC)"
-	@if GOOS=js GOARCH=wasm go build -o $(BUILD_DIR)/$(WASM_BINARY) $(WASM_MAIN); then \
+	@if GOOS=js GOARCH=wasm go build -o $(BUILD_DIR)/$(WASM_BINARY) $(WASM_MAIN); \
+	then \
 		printf " $(GREEN)[OK]$(NC)\n"; \
 	else \
 		printf " $(RED)[FAILED]$(NC)\n"; \
@@ -76,7 +77,9 @@ copy-glue: build
 	fi
 
 build-ts:
-	@printf "$(CYAN)[+]$(NC) $(BOLD)$(BLUE)Compiling TypeScript...$(NC)"
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Installing NPM dependencies...$(NC)\n"
+	@cd $(TS_DIR) && npm install
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Compiling TypeScript...$(NC)\n"
 	@cd $(TS_DIR) && npm run build
 	@printf " $(GREEN)[OK]$(NC)\n"
 
@@ -88,7 +91,8 @@ build-ts:
 test:
 	$(call print_header,TESTING)
 	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go test...$(NC)\n"
-	@if go test -v ./... ; then \
+	@if go test -v ./... ; \
+	then \
 		printf "\n$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
 		printf "$(BOLD)$(GREEN)|$(NC) [OK] %-37s$(BOLD)$(GREEN)|$(NC)\n" "All tests passed"; \
 		printf "$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
@@ -123,7 +127,8 @@ test-coverage:
 lint:
 	$(call print_header,LINTING)
 	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go vet...$(NC)\n"
-	@if go vet ./... 2>&1; then \
+	@if go vet ./... 2>&1; \
+	then \
 		printf "\n$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
 		printf "$(BOLD)$(GREEN)|$(NC) [OK] %-37s$(BOLD)$(GREEN)|$(NC)\n" "Linting passed"; \
 		printf "$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
@@ -156,12 +161,16 @@ fmt:
 
 deps:
 	$(call print_header,DEPENDENCIES)
-	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Downloading Go modules...$(NC)"
+	@printf "$(CYAN)[1/3]$(NC) $(BOLD)$(BLUE)Downloading Go modules...$(NC)"
 	@go mod download || \
 		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
 	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Tidying Go modules...$(NC)"
+	@printf "$(CYAN)[2/3]$(NC) $(BOLD)$(BLUE)Tidying Go modules...$(NC)"
 	@go mod tidy || \
+		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+	@printf "$(CYAN)[3/3]$(NC) $(BOLD)$(BLUE)Installing NPM modules...$(NC)\n"
+	@cd $(TS_DIR) && npm install || \
 		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
 	@printf " $(GREEN)[OK]$(NC)\n"
 	$(call print_success,Dependencies installed)
@@ -172,11 +181,14 @@ deps:
 
 clean:
 	$(call print_header,CLEANUP)
-	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(YELLOW)Removing $(BUILD_DIR) directory...$(NC)"
+	@printf "$(CYAN)[1/3]$(NC) $(BOLD)$(YELLOW)Removing $(BUILD_DIR) directory...$(NC)"
 	@rm -rf $(BUILD_DIR)
 	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(YELLOW)Removing coverage files...$(NC)"
+	@printf "$(CYAN)[2/3]$(NC) $(BOLD)$(YELLOW)Removing coverage files...$(NC)"
 	@rm -f coverage.out coverage.html
+	@printf " $(GREEN)[OK]$(NC)\n"
+	@printf "$(CYAN)[3/3]$(NC) $(BOLD)$(YELLOW)Removing node_modules...$(NC)"
+	@rm -rf $(TS_DIR)/node_modules $(TS_DIR)/dist
 	@printf " $(GREEN)[OK]$(NC)\n"
 	$(call print_success,Clean completed)
 
@@ -203,8 +215,8 @@ help:
 	@printf "  $(CYAN)test-coverage$(NC)  Run tests with coverage report\n"
 	@printf "  $(CYAN)lint$(NC)           Run go vet linter\n"
 	@printf "  $(CYAN)fmt$(NC)            Format code with go fmt\n"
-	@printf "  $(CYAN)deps$(NC)           Download and tidy Go modules\n"
-	@printf "  $(CYAN)clean$(NC)          Remove build artifacts\n"
+	@printf "  $(CYAN)deps$(NC)           Download Go modules and NPM dependencies\n"
+	@printf "  $(CYAN)clean$(NC)          Remove build artifacts (including node_modules)\n"
 	@printf "  $(CYAN)ci$(NC)             Run lint, test, and build (for CI/CD)\n"
 	@printf "  $(CYAN)help$(NC)           Show this help message\n"
 
