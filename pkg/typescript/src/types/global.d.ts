@@ -25,6 +25,14 @@ declare global {
             }>;
             DeleteTask: (node: string, upid: string) => Promise<{ Data: string }>;
         };
+        lxc: {
+            GetLXCs: (node: string) => Promise<{ LXCs: any[] }>;
+            PostLXC: (node: string, data: { OSTemplate: string, VMID: number, Features?: { Nesting: boolean } }) => Promise<{ Data: string }>;
+            StartLXC: (node: string, vmid: number) => Promise<{ Data: string }>;
+            StopLXC: (node: string, vmid: number) => Promise<{ Data: string }>;
+            DeleteLXC: (node: string, vmid: number) => Promise<{ Data: string }>;
+            CloneLXC: (node: string, vmid: number, data: { NewId: number, Target?: string }) => Promise<{ Data: string }>;
+        };
     };
 
     var Go: {

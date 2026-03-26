@@ -7,8 +7,10 @@ import (
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 	"github.com/HavelCTF/ProxmoxSDK/internal/cluster"
 	"github.com/HavelCTF/ProxmoxSDK/internal/nodes"
+	"github.com/HavelCTF/ProxmoxSDK/internal/nodes/lxc"
 	"github.com/HavelCTF/ProxmoxSDK/internal/nodes/tasks"
 	"github.com/HavelCTF/ProxmoxSDK/internal/version"
+	"github.com/HavelCTF/ProxmoxSDK/types"
 )
 
 var proxmoxClient *client.Client
@@ -186,6 +188,154 @@ func main() {
 				}
 
 				return map[string]any{"Data": res.Data}, nil
+			}),
+		},
+		"lxc": map[string]any{
+			"StartLXC": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				vmid := args[1].Int()
+
+				svc := lxc.New(lxc.LXCContext{
+					Client: proxmoxClient,
+					Node:   node,
+					VMID:   vmid,
+				})
+
+				res, err := svc.Status().StartLXC()
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{"Data": res.UPID}, nil
+			}),
+			"StopLXC": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				vmid := args[1].Int()
+
+				svc := lxc.New(lxc.LXCContext{
+					Client: proxmoxClient,
+					Node:   node,
+					VMID:   vmid,
+				})
+
+				res, err := svc.Status().StopLXC()
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{"Data": res.UPID}, nil
+			}),
+			"DeleteLXC": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				vmid := args[1].Int()
+
+				svc := lxc.New(lxc.LXCContext{
+					Client: proxmoxClient,
+					Node:   node,
+					VMID:   vmid,
+				})
+
+				res, err := svc.DeleteLXC()
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{"Data": res.UPID}, nil
+			}),
+			"CloneLXC": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				vmid := args[1].Int()
+				dataObj := args[2]
+
+				newId := dataObj.Get("NewId").Int()
+				var target *string
+				if t := dataObj.Get("Target"); !t.IsUndefined() && !t.IsNull() {
+					targetStr := t.String()
+					target = &targetStr
+				}
+
+				svc := lxc.New(lxc.LXCContext{
+					Client: proxmoxClient,
+					Node:   node,
+					VMID:   vmid,
+				})
+
+				res, err := svc.CloneLXC(types.CloneLXCData{
+					NewId:  newId,
+					Target: target,
+				})
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{"Data": res.UPID}, nil
+			}),
+			"GetLXCs": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				nodeName := args[0].String()
+				nodeSvc := nodes.New(proxmoxClient, nodeName)
+
+				res, err := nodeSvc.GetLXCs()
+				if err != nil {
+					return nil, err
+				}
+
+				jsData := make([]any, len(res.LXCs))
+				for i, lxcData := range res.LXCs {
+					jsData[i] = map[string]any{
+						"Status":             string(lxcData.Status),
+						"VMID":               lxcData.VMID,
+						"CPU":                lxcData.CPU,
+						"CPUS":               lxcData.CPUS,
+						"Disk":               lxcData.Disk,
+						"DiskRead":           lxcData.DiskRead,
+						"DiskWrite":          lxcData.DiskWrite,
+						"Lock":               lxcData.Lock,
+						"MaxDisk":            lxcData.MaxDisk,
+						"MaxMem":             lxcData.MaxMem,
+						"MaxSwap":            lxcData.MaxSwap,
+						"Mem":                lxcData.Mem,
+						"Name":               lxcData.Name,
+						"NetIn":              lxcData.NetIn,
+						"NetOut":             lxcData.NetOut,
+						"PressureCPUSome":    lxcData.PressureCPUSome,
+						"PressureIOFull":     lxcData.PressureIOFull,
+						"PressureIOSome":     lxcData.PressureIOSome,
+						"PressureMemoryFull": lxcData.PressureMemoryFull,
+						"PressureMemorySome": lxcData.PressureMemorySome,
+						"Tags":               lxcData.Tags,
+						"Template":           lxcData.Template,
+						"Uptime":             lxcData.Uptime,
+					}
+				}
+
+				return map[string]any{"LXCs": jsData}, nil
+			}),
+			"PostLXC": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				nodeName := args[0].String()
+				dataObj := args[1]
+
+				nodeSvc := nodes.New(proxmoxClient, nodeName)
+
+				osTemplate := dataObj.Get("OSTemplate").String()
+				vmid := dataObj.Get("VMID").Int()
+
+				var features *types.LXCFeatures
+				if f := dataObj.Get("Features"); !f.IsUndefined() && !f.IsNull() {
+					features = &types.LXCFeatures{
+						Nesting: f.Get("Nesting").Bool(),
+					}
+				}
+
+				res, err := nodeSvc.PostLXC(types.CreateLXCData{
+					OSTemplate: osTemplate,
+					VMID:       vmid,
+					Features:   features,
+				})
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{"Data": res.UPID}, nil
 			}),
 		},
 	}))
