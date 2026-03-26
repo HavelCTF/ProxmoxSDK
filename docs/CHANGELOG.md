@@ -20,3 +20,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI/CD: Makefile (format & lint, build, tests, deps, cleanup, help)
 - Documentation: Getting Started (installation, authentication, configuration)
 - Documentation: Guides (cluster, nodes, tasks, lxc, lxc status, version)
+- Documentation: Contributing (architecture, contributing, testing)
