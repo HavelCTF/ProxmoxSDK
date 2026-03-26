@@ -126,15 +126,25 @@ test-coverage:
 
 lint:
 	$(call print_header,LINTING)
-	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go vet...$(NC)\n"
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Running go vet...$(NC)\n"
 	@if go vet ./... 2>&1; \
 	then \
+		printf " $(GREEN)[OK]$(NC)\n"; \
+	else \
+		printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Go Linting errors found"; \
+		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Running TypeScript linter (Biome)...$(NC)\n"
+	@if cd $(TS_DIR) && npm run lint; \
+	then \
 		printf "\n$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
-		printf "$(BOLD)$(GREEN)|$(NC) [OK] %-37s$(BOLD)$(GREEN)|$(NC)\n" "Linting passed"; \
+		printf "$(BOLD)$(GREEN)|$(NC) [OK] %-37s$(BOLD)$(GREEN)|$(NC)\n" "All Linting passed"; \
 		printf "$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
 	else \
 		printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
-		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Linting errors found"; \
+		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "TS Linting errors found"; \
 		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
 		exit 1; \
 	fi
