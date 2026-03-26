@@ -26,3 +26,7 @@
 ## Reference
 
 ## Contributing
+
+- [Architecture](./contributing/architecture.md)
+- [Contributing](./contributing/contributing.md)
+- [Testing](./contributing/testing.md)
