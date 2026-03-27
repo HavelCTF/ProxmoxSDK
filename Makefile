@@ -174,4 +174,4 @@ help:
 	@printf "  $(CYAN)ci$(NC)             Run lint, test, and build (for CI/CD)\n"
 	@printf "  $(CYAN)help$(NC)           Show this help message\n"
 
-.PHONY: all build build-wasm copy-glue build-ts test fmt-check fmt lint deps clean ci help
+.PHONY: all build build-wasm copy-glue build-ts test fmt-check fmt lint lint-go lint-ts deps deps-go deps-ts clean ci help
