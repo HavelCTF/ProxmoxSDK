@@ -40,7 +40,15 @@ Returns [`*types.ClusterTasksResponse`](/types/cluster.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const clusterTasks = await client.cluster().getTasks();
+if (clusterTasks instanceof Error) {
+	console.error("cluster.getTasks:", clusterTasks);
+    return;
+}
+
+for (const task of clusterTasks.Data) {
+    console.log(`[${task.StartTime}] ${task.Type} on ${task.Node} — ${task.Status}`);
+}
 ```
 
 > An empty slice is a valid response. It means no tasks have been recorded yet.
@@ -72,7 +80,13 @@ Returns [`*types.ClusterNextIdResponse`](/types/cluster.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const nextId = await client.cluster().getNextId()
+if (nextId instanceof Error) {
+	console.error("cluster.getNextId:", nextId);
+    return;
+}
+
+console.log(nextId.Data); // e.g. 105
 ```
 
 > [!WARNING]
