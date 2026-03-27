@@ -12,7 +12,7 @@ export class TaskService {
         );
     }
 
-    async delete(): Promise<void> {
+    async deleteTask(): Promise<void> {
         await globalThis.ProxmoxWASM.tasks.DeleteTask(this.nodeName, this.upid);
     }
 }
