@@ -61,6 +61,7 @@ build-wasm:
 	fi
 
 copy-glue:
+	$(call print_header,COPYING GLUE CODE)
 	@printf "$(CYAN)[+]$(NC) $(BOLD)$(BLUE)Copying wasm_exec.js to $(TS_DIR)/src/wasm...$(NC)"
 	@mkdir -p $(TS_DIR)/src/wasm
 	@if cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(TS_DIR)/src/wasm/; then \
@@ -70,6 +71,7 @@ copy-glue:
 	fi
 
 build-ts:
+	$(call print_header,BUILDING TYPESCRIPT)
 	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Compiling TypeScript...$(NC)\n"
 	@cd $(TS_DIR) && npm run build
 	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Copying wasm_exec.js to dist/wasm...$(NC)\n"
@@ -81,15 +83,20 @@ build-ts:
 #  DEPENDENCIES
 # ==============================================================================
 
-deps:
-	$(call print_header,DEPENDENCIES)
-	@printf "$(CYAN)[1/3]$(NC) $(BOLD)$(BLUE)Downloading Go modules...$(NC)"
+deps: deps-go deps-ts
+
+deps-go:
+	$(call print_header,GO DEPENDENCIES)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Downloading Go modules...$(NC)"
 	@go mod download || (printf " $(RED)[FAILED]$(NC)\n" && exit 1)
 	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[2/3]$(NC) $(BOLD)$(BLUE)Tidying Go modules...$(NC)"
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Tidying Go modules...$(NC)"
 	@go mod tidy || (printf " $(RED)[FAILED]$(NC)\n" && exit 1)
 	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[3/3]$(NC) $(BOLD)$(BLUE)Installing NPM modules ($(NPM_CMD))...$(NC)\n"
+
+deps-ts:
+	$(call print_header,TYPECRIPT DEPENDENCIES)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Installing NPM modules ($(NPM_CMD))...$(NC)\n"
 	@cd $(TS_DIR) && $(NPM_CMD) || (printf " $(RED)[FAILED]$(NC)\n" && exit 1)
 	@printf " $(GREEN)[OK]$(NC)\n"
 
@@ -119,16 +126,16 @@ fmt:
 #  LINTING
 # ==============================================================================
 
-lint: deps lint-go lint-ts
+lint: lint-go lint-ts
 	$(call print_success,All Linting passed)
 
-lint-go: deps
+lint-go: deps-go
 	$(call print_header,GO LINTING)
 	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go vet...$(NC)\n"
 	@go vet ./... || exit 1
 	$(call print_success,Go linting passed)
 
-lint-ts: deps
+lint-ts: deps-ts
 	$(call print_header,TYPESCRIPT LINTING)
 	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running TypeScript linter...$(NC)\n"
 	@cd $(TS_DIR) && npm run lint || exit 1
@@ -163,7 +170,7 @@ help:
 	@printf "  $(CYAN)fmt-check$(NC)      Check if Go code is formatted properly\n"
 	@printf "  $(CYAN)fmt$(NC)            Format Go code\n"
 	@printf "  $(CYAN)lint$(NC)           Run Go and TypeScript linters (use lint-go or lint-ts for individual checks)\n"
-	@printf "  $(CYAN)deps$(NC)           Download Go modules and NPM dependencies\n"
+	@printf "  $(CYAN)deps$(NC)           Download Go modules and NPM dependencies\n (use deps-go or deps-ts for individual steps)\n"
 	@printf "  $(CYAN)clean$(NC)          Remove build artifacts (dist, node_modules)\n"
 	@printf "  $(CYAN)ci$(NC)             Run lint, test, and build (for CI/CD)\n"
 	@printf "  $(CYAN)help$(NC)           Show this help message\n"
