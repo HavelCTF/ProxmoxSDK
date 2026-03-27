@@ -41,7 +41,15 @@ Returns [`*types.NodeTasksResponse`](/types/nodes.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const tasks = await client.Node("pve1").getTasks();
+if (tasks instanceof Error) {
+    console.error("node.getTasks:", tasks);
+    return;
+}
+
+for (const task of tasks.Data) {
+    console.log(`[${task.StartTime}] ${task.Type} - ${task.Status}`);
+}
 ```
 
 > An empty slice is a valid response. It means no tasks have been recorded on this node yet.
@@ -72,7 +80,13 @@ Returns [`*types.NodeTaskStatusResponse`](/types/nodes.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const taskStatus = await client.Node("pve1").Tasks("UPID:pve1:...").getTaskStatus();
+if (taskStatus instanceof Error) {
+    console.error("tasks.getTaskStatus:", taskStatus);
+    return;
+}
+
+console.log(taskStatus.Data.Status); // e.g. OK
 ```
 
 ---
@@ -99,7 +113,13 @@ Returns [`*types.NodeTaskDeleteResponse`](/types/nodes.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const deleteResponse = await client.Node("pve1").Tasks("UPID:pve1:...").deleteTask();
+if (deleteResponse instanceof Error) {
+    console.error("tasks.deleteTask:", deleteResponse);
+    return;
+}
+
+console.log("task stopped");
 ```
 
 > [!WARNING]
