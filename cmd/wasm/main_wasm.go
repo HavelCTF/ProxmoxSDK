@@ -14,7 +14,6 @@ import (
 )
 
 var proxmoxClient *client.Client
-var clusterService *cluster.ClusterService
 
 func asyncWrapper(fn func() (any, error)) js.Func {
 	return js.FuncOf(func(this js.Value, args []js.Value) any {
@@ -68,7 +67,6 @@ func initClient(this js.Value, args []js.Value) any {
 	uuid := args[2].String()
 
 	proxmoxClient = client.NewClient(host, token, uuid)
-	clusterService = cluster.New(proxmoxClient)
 
 	fmt.Println("[WASM] client initialized for", host)
 	return true
@@ -79,14 +77,20 @@ func main() {
 		"initClient": js.FuncOf(initClient),
 		"cluster": map[string]any{
 			"GetNextId": asyncWrapper(func() (any, error) {
-				res, err := clusterService.GetNextId()
+
+				clusterSvc := cluster.New(proxmoxClient)
+
+				res, err := clusterSvc.GetNextId()
 				if err != nil {
 					return nil, err
 				}
 				return map[string]any{"VMID": res.VMID}, nil
 			}),
 			"GetTasks": asyncWrapper(func() (any, error) {
-				res, err := clusterService.GetTasks()
+
+				clusterSvc := cluster.New(proxmoxClient)
+
+				res, err := clusterSvc.GetTasks()
 				if err != nil {
 					return nil, err
 				}
