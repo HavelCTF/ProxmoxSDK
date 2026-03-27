@@ -38,7 +38,15 @@ Returns [`*types.NodesResponse`](/types/nodes.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const nodes = await client.getNodes();
+if (nodes instanceof Error) {
+    console.error("nodes.getNodes:", nodes);
+    return;
+}
+
+for (const node of nodes.Data) {
+    console.log(node.Node);
+}
 ```
 
 ---
