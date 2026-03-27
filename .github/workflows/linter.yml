@@ -41,7 +41,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      - name: Run Go linter
+      - name: Run Go & TS linter
         run: make lint
       - name: Run Go format check
         run: make fmt-check
