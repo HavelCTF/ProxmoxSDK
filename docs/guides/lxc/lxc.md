@@ -42,7 +42,15 @@ Returns [`*types.LXCsResponse`](/types/lxc.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const lxcs = await client.node("pve1").getLXCs();
+if (lxcs instanceof Error) {
+    console.error("node.getLXCs:", lxcs);
+    return;
+}
+
+for (const lxc of lxcs.Data) {
+    console.log(`[${lxc.VMID}] ${lxc.Name} - ${lxc.Status}`);
+}
 ```
 
 ---
@@ -80,7 +88,22 @@ Returns [`*types.CreateLXCResponse`](/types/lxc.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const upid = await client.node("pve1").postLXC({
+    // Mandatory
+    OSTemplate: "local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst",
+    VMID: 2222, // use client.cluster().getNextId() to get a free VMID
+
+    // Optional
+    Features: {
+        Nesting: true,
+    },
+});
+if (upid instanceof Error) {
+    console.error("node.postLXC:", upid);
+    return;
+}
+
+console.log(upid.Data); // e.g. UPID:pve1:...
 ```
 
 > [!IMPORTANT]
@@ -112,7 +135,13 @@ Returns [`*types.DeleteLXCResponse`](/types/lxc.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const upid = await client.node("pve1").lxc(2222).deleteLXC();
+if (upid instanceof Error) {
+    console.error("lxc.deleteLXC:", upid);
+    return;
+}
+
+console.log(upid.Data); // e.g. UPID:pve1:...
 ```
 
 > [!IMPORTANT]
@@ -153,7 +182,19 @@ Returns [`*types.CloneLXCResponse`](/types/lxc.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const upid = await client.node("pve1").lxc(2222).cloneLXC({
+    // Mandatory
+    newId: 2223, // use client.cluster().getNextId() to get a free VMID
+
+    // Optional
+    target: "pve2", // clone to a different node
+});
+if (upid instanceof Error) {
+    console.error("lxc.cloneLXC:", upid);
+    return;
+}
+
+console.log(upid.Data); // e.g. UPID:pve1:...
 ```
 
 > [!IMPORTANT]

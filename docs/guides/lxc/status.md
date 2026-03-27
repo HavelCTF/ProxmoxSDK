@@ -38,7 +38,13 @@ Returns [`*types.StartLXCResponse`](/types/lxc.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const upid = await client.node("pve1").lxc(100).status().startLXC();
+if (upid instanceof Error) {
+    console.error("status.startLXC:", upid);
+    return;
+}
+
+console.log(upid.Data); // e.g. UPID:pve1:...
 ```
 
 > [!IMPORTANT]
@@ -71,7 +77,13 @@ Returns [`*types.StopLXCResponse`](/types/lxc.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const upid = await client.node("pve1").lxc(100).status().stopLXC();
+if (upid instanceof Error) {
+    console.error("status.stopLXC:", upid);
+    return;
+}
+
+console.log(upid.Data); // e.g. UPID:pve1:...
 ```
 
 > [!IMPORTANT]

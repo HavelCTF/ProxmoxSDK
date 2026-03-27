@@ -41,7 +41,7 @@ Returns [`*types.NodeTasksResponse`](/types/nodes.go).
 
 **TypeScript**
 ```typescript
-const tasks = await client.Node("pve1").getTasks();
+const tasks = await client.node("pve1").getTasks();
 if (tasks instanceof Error) {
     console.error("node.getTasks:", tasks);
     return;
@@ -80,7 +80,7 @@ Returns [`*types.NodeTaskStatusResponse`](/types/nodes.go).
 
 **TypeScript**
 ```typescript
-const taskStatus = await client.Node("pve1").Tasks("UPID:pve1:...").getTaskStatus();
+const taskStatus = await client.node("pve1").tasks("UPID:pve1:...").getTaskStatus();
 if (taskStatus instanceof Error) {
     console.error("tasks.getTaskStatus:", taskStatus);
     return;
@@ -113,7 +113,7 @@ Returns [`*types.NodeTaskDeleteResponse`](/types/nodes.go).
 
 **TypeScript**
 ```typescript
-const deleteResponse = await client.Node("pve1").Tasks("UPID:pve1:...").deleteTask();
+const deleteResponse = await client.node("pve1").tasks("UPID:pve1:...").deleteTask();
 if (deleteResponse instanceof Error) {
     console.error("tasks.deleteTask:", deleteResponse);
     return;
