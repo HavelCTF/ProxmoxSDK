@@ -1,12 +1,14 @@
 # -- GLOBAL VARIABLES --
-BUILD_DIR=build
-
-# -- TYPESCRIPT VARIABLES --
 TS_DIR=pkg/typescript
-
-# -- WASM VARIABLES --
 WASM_BINARY=main_wasm.wasm
 WASM_MAIN=cmd/wasm/main_wasm.go
+WASM_OUT=$(TS_DIR)/dist/$(WASM_BINARY)
+
+# -- CI DETECTION --
+NPM_CMD=npm install
+ifeq ($(CI),true)
+	NPM_CMD=npm ci
+endif
 
 # -- COLORS --
 GREEN=\033[0;32m
@@ -30,56 +32,71 @@ define print_success
 	@printf "$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"
 endef
 
-define print_error
-	@printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"
-	@printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "$(1)"
-	@printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"
-endef
-
 # ==============================================================================
 #  MAIN TARGETS
 # ==============================================================================
 
-all: build copy-glue build-ts
-	$(call print_success,Build completed successfully)
+all: build
+
+build: deps copy-glue build-ts build-wasm
+	$(call print_success,Full SDK build completed successfully)
 
 # ==============================================================================
-#  BUILD
+#  BUILD STEPS
 # ==============================================================================
 
-build:
-	$(call print_header,BUILD)
-	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Creating build directory...$(NC)"
-	@mkdir -p $(BUILD_DIR)
+build-wasm:
+	$(call print_header,BUILDING WASM)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Creating dist directory...$(NC)"
+	@mkdir -p $(TS_DIR)/dist
 	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Compiling $(WASM_MAIN) to $(BUILD_DIR)/$(WASM_BINARY)...$(NC)"
-	@if GOOS=js GOARCH=wasm go build -o $(BUILD_DIR)/$(WASM_BINARY) $(WASM_MAIN); then \
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Compiling Go WASM directly to $(WASM_OUT)...$(NC)"
+	@if GOOS=js GOARCH=wasm go build -o $(WASM_OUT) $(WASM_MAIN); \
+	then \
 		printf " $(GREEN)[OK]$(NC)\n"; \
 	else \
-		printf " $(RED)[FAILED]$(NC)\n"; \
-		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
-		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "WASM compilation failed"; \
-		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
-		exit 1; \
+		printf " $(RED)[FAILED]$(NC)\n"; exit 1; \
 	fi
 
-copy-glue: build
-	@printf "$(CYAN)[+]$(NC) $(BOLD)$(BLUE)Copying wasm_exec.js to $(BUILD_DIR)...$(NC)"
-	@if cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(BUILD_DIR)/; then \
+copy-glue:
+	$(call print_header,COPYING GLUE CODE)
+	@printf "$(CYAN)[+]$(NC) $(BOLD)$(BLUE)Copying wasm_exec.js to $(TS_DIR)/src/wasm...$(NC)"
+	@mkdir -p $(TS_DIR)/src/wasm
+	@if cp "$$(go env GOROOT)/lib/wasm/wasm_exec.js" $(TS_DIR)/src/wasm/; then \
 		printf " $(GREEN)[OK]$(NC)\n"; \
 	else \
-		printf " $(RED)[FAILED]$(NC)\n"; \
-		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
-		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Failed to copy wasm_exec.js"; \
-		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
-		exit 1; \
+		printf " $(RED)[FAILED]$(NC)\n"; exit 1; \
 	fi
 
 build-ts:
-	@printf "$(CYAN)[+]$(NC) $(BOLD)$(BLUE)Compiling TypeScript...$(NC)"
+	$(call print_header,BUILDING TYPESCRIPT)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Compiling TypeScript...$(NC)\n"
 	@cd $(TS_DIR) && npm run build
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Copying wasm_exec.js to dist/wasm...$(NC)\n"
+	@mkdir -p $(TS_DIR)/dist/wasm
+	@cp $(TS_DIR)/src/wasm/wasm_exec.js $(TS_DIR)/dist/wasm/
 	@printf " $(GREEN)[OK]$(NC)\n"
 
+# ==============================================================================
+#  DEPENDENCIES
+# ==============================================================================
+
+deps: deps-go deps-ts
+
+deps-go:
+	$(call print_header,GO DEPENDENCIES)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Downloading Go modules...$(NC)"
+	@go mod download || (printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Tidying Go modules...$(NC)"
+	@go mod tidy || (printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+
+deps-ts:
+	$(call print_header,TYPECRIPT DEPENDENCIES)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Installing NPM modules ($(NPM_CMD))...$(NC)\n"
+	@cd $(TS_DIR) && $(NPM_CMD) || (printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
 
 # ==============================================================================
 #  TESTING
@@ -88,16 +105,8 @@ build-ts:
 test:
 	$(call print_header,TESTING)
 	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go test...$(NC)\n"
-	@if go test -v ./... ; then \
-		printf "\n$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
-		printf "$(BOLD)$(GREEN)|$(NC) [OK] %-37s$(BOLD)$(GREEN)|$(NC)\n" "All tests passed"; \
-		printf "$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
-	else \
-		printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
-		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Some tests failed"; \
-		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
-		exit 1; \
-	fi
+	@go test -v ./... || exit 1
+	$(call print_success,All tests passed)
 
 test-coverage:
 	$(call print_header,TEST COVERAGE)
@@ -113,78 +122,49 @@ test-coverage:
 	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Generating coverage report...$(NC)"
 	@go tool cover -html=coverage.out -o coverage.html || \
 		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
-	@printf " $(GREEN)[OK]$(NC)\n"
-	$(call print_success,Coverage report: coverage.html)
 
 # ==============================================================================
 #  LINTING & FORMATTING
 # ==============================================================================
 
-lint:
-	$(call print_header,LINTING)
+lint: lint-go lint-ts
+	$(call print_success,All Linting passed)
+
+lint-go: deps-go
+	$(call print_header,GO LINTING)
 	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go vet...$(NC)\n"
-	@if go vet ./... 2>&1; then \
-		printf "\n$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
-		printf "$(BOLD)$(GREEN)|$(NC) [OK] %-37s$(BOLD)$(GREEN)|$(NC)\n" "Linting passed"; \
-		printf "$(BOLD)$(GREEN)+-------------------------------------------+$(NC)\n"; \
-	else \
-		printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
-		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Linting errors found"; \
-		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
-		exit 1; \
-	fi
+	@go vet ./... || exit 1
+	$(call print_success,Go linting passed)
+
+lint-ts: deps-ts
+	$(call print_header,TYPESCRIPT LINTING)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running TypeScript linter...$(NC)\n"
+	@cd $(TS_DIR) && npm run lint || exit 1
+	$(call print_success,TypeScript linting passed)
 
 fmt-check:
-	$(call print_header,FORMATTING)
+	$(call print_header,FORMATTING CHECK)
 	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Checking go fmt...$(NC)"
-	@test -z "$$(gofmt -l .)" || \
-		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@test -z "$$(gofmt -l .)" || (printf " $(RED)[FAILED]$(NC) Unformatted files found\n" && exit 1)
 	@printf " $(GREEN)[OK]$(NC)\n"
-	$(call print_success,Code formatted)
 
 fmt:
 	$(call print_header,FORMATTING)
 	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go fmt...$(NC)"
-	@go fmt ./... || \
-		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@go fmt ./... || (printf " $(RED)[FAILED]$(NC)\n" && exit 1)
 	@printf " $(GREEN)[OK]$(NC)\n"
-	$(call print_success,Code formatted)
+
 
 # ==============================================================================
-#  DEPENDENCIES
-# ==============================================================================
-
-deps:
-	$(call print_header,DEPENDENCIES)
-	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Downloading Go modules...$(NC)"
-	@go mod download || \
-		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
-	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Tidying Go modules...$(NC)"
-	@go mod tidy || \
-		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
-	@printf " $(GREEN)[OK]$(NC)\n"
-	$(call print_success,Dependencies installed)
-
-# ==============================================================================
-#  CLEANUP
+#  CLEANUP & CI
 # ==============================================================================
 
 clean:
 	$(call print_header,CLEANUP)
-	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(YELLOW)Removing $(BUILD_DIR) directory...$(NC)"
-	@rm -rf $(BUILD_DIR)
-	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(YELLOW)Removing coverage files...$(NC)"
-	@rm -f coverage.out coverage.html
-	@printf " $(GREEN)[OK]$(NC)\n"
-	$(call print_success,Clean completed)
+	@rm -rf $(TS_DIR)/dist $(TS_DIR)/node_modules $(TS_DIR)/src/wasm/wasm_exec.js coverage.*
+	@printf " $(GREEN)[OK] Clean completed$(NC)\n"
 
-# ==============================================================================
-#  CI/CD
-# ==============================================================================
-
-ci: lint test build
+ci: lint fmt-check test build
 	$(call print_success,CI pipeline completed successfully)
 
 # ==============================================================================
@@ -197,15 +177,17 @@ help:
 	@printf "$(BOLD)$(CYAN)+-------------------------------------------+$(NC)\n\n"
 	@printf "$(BOLD)Usage:$(NC) make $(CYAN)<target>$(NC)\n\n"
 	@printf "$(BOLD)Targets:$(NC)\n"
-	@printf "  $(CYAN)all$(NC)            Build the WASM binary (default)\n"
-	@printf "  $(CYAN)build$(NC)          Compile Go to WASM\n"
-	@printf "  $(CYAN)test$(NC)           Run all tests\n"
-	@printf "  $(CYAN)test-coverage$(NC)  Run tests with coverage report\n"
-	@printf "  $(CYAN)lint$(NC)           Run go vet linter\n"
-	@printf "  $(CYAN)fmt$(NC)            Format code with go fmt\n"
-	@printf "  $(CYAN)deps$(NC)           Download and tidy Go modules\n"
-	@printf "  $(CYAN)clean$(NC)          Remove build artifacts\n"
+	@printf "  $(CYAN)build$(NC)          Build the full SDK (TS + WASM) (default)\n"
+	@printf "  $(CYAN)build-wasm$(NC)     Compile only the Go code to WASM\n"
+	@printf "  $(CYAN)build-ts$(NC)       Compile only the TypeScript code\n"
+	@printf "  $(CYAN)test$(NC)           Run all Go tests\n"
+	@printf "  $(CYAN)test-coverage$(NC)  Run tests with coverage and generate report\n"
+	@printf "  $(CYAN)fmt-check$(NC)      Check if Go code is formatted properly\n"
+	@printf "  $(CYAN)fmt$(NC)            Format Go code\n"
+	@printf "  $(CYAN)lint$(NC)           Run Go and TypeScript linters (use lint-go or lint-ts for individual checks)\n"
+	@printf "  $(CYAN)deps$(NC)           Download Go modules and NPM dependencies\n (use deps-go or deps-ts for individual steps)\n"
+	@printf "  $(CYAN)clean$(NC)          Remove build artifacts (dist, node_modules)\n"
 	@printf "  $(CYAN)ci$(NC)             Run lint, test, and build (for CI/CD)\n"
 	@printf "  $(CYAN)help$(NC)           Show this help message\n"
 
-.PHONY: all build copy-glue build-ts test test-coverage fmt lint deps clean ci help
+.PHONY: all build build-wasm copy-glue build-ts test test-coverage fmt-check fmt lint lint-go lint-ts deps deps-go deps-ts clean ci help

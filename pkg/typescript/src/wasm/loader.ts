@@ -1,3 +1,5 @@
+import './wasm_exec.js';
+
 export async function loadWasm(source: string | Buffer | Uint8Array): Promise<void> {
     if (typeof globalThis.Go === 'undefined') {
         throw new Error('wasm_exec.js must be loaded before calling loadWasm()');
