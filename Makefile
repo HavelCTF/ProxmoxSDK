@@ -38,7 +38,6 @@ endef
 
 all: build
 
-# La cible 'build' publique génère maintenant le SDK complet et utilisable !
 build: deps copy-glue build-ts build-wasm
 	$(call print_success,Full SDK build completed successfully)
 
@@ -100,7 +99,7 @@ deps-ts:
 	@printf " $(GREEN)[OK]$(NC)\n"
 
 # ==============================================================================
-#  TESTING & FORMATTING
+#  TESTING
 # ==============================================================================
 
 test:
@@ -109,20 +108,8 @@ test:
 	@go test -v ./... || exit 1
 	$(call print_success,All tests passed)
 
-fmt-check:
-	$(call print_header,FORMATTING CHECK)
-	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Checking go fmt...$(NC)"
-	@test -z "$$(gofmt -l .)" || (printf " $(RED)[FAILED]$(NC) Unformatted files found\n" && exit 1)
-	@printf " $(GREEN)[OK]$(NC)\n"
-
-fmt:
-	$(call print_header,FORMATTING)
-	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go fmt...$(NC)"
-	@go fmt ./... || (printf " $(RED)[FAILED]$(NC)\n" && exit 1)
-	@printf " $(GREEN)[OK]$(NC)\n"
-
 # ==============================================================================
-#  LINTING
+#  LINTING & FORMATTING
 # ==============================================================================
 
 lint: lint-go lint-ts
@@ -140,13 +127,26 @@ lint-ts: deps-ts
 	@cd $(TS_DIR) && npm run lint || exit 1
 	$(call print_success,TypeScript linting passed)
 
+fmt-check:
+	$(call print_header,FORMATTING CHECK)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Checking go fmt...$(NC)"
+	@test -z "$$(gofmt -l .)" || (printf " $(RED)[FAILED]$(NC) Unformatted files found\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+
+fmt:
+	$(call print_header,FORMATTING)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go fmt...$(NC)"
+	@go fmt ./... || (printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+	@printf " $(GREEN)[OK]$(NC)\n"
+
+
 # ==============================================================================
 #  CLEANUP & CI
 # ==============================================================================
 
 clean:
 	$(call print_header,CLEANUP)
-	@rm -rf $(TS_DIR)/dist $(TS_DIR)/node_modules $(TS_DIR)/src/wasm/wasm_exec.js coverage.*
+	@rm -rf $(TS_DIR)/dist $(TS_DIR)/node_modules $(TS_DIR)/src/wasm/wasm_exec.js
 	@printf " $(GREEN)[OK] Clean completed$(NC)\n"
 
 ci: lint fmt-check test build
