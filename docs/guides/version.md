@@ -37,7 +37,14 @@ Returns [`*types.VersionResponse`](/types/version.go).
 
 **TypeScript**
 ```typescript
-// Work In Progress
+const version = await client.getVersion();
+
+if (version instanceof Error) {
+    console.error("version.getVersion:", version);
+    return;
+}
+
+console.log(version.Data.Version); // e.g. 8.1.4
 ```
 
 ---
