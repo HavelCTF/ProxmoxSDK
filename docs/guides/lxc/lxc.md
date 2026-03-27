@@ -184,10 +184,10 @@ Returns [`*types.CloneLXCResponse`](/types/lxc.go).
 ```typescript
 const upid = await client.node("pve1").lxc(2222).cloneLXC({
     // Mandatory
-    newId: 2223, // use client.cluster().getNextId() to get a free VMID
+    NewId: 2223, // use client.cluster().getNextId() to get a free VMID
 
     // Optional
-    target: "pve2", // clone to a different node
+    Target: "pve2", // clone to a different node
 });
 if (upid instanceof Error) {
     console.error("lxc.cloneLXC:", upid);
