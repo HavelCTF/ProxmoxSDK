@@ -5,7 +5,6 @@ WASM_MAIN=cmd/wasm/main_wasm.go
 WASM_OUT=$(TS_DIR)/dist/$(WASM_BINARY)
 
 # -- CI DETECTION --
-# Automatically use 'npm ci' in GitHub Actions, and 'npm install' locally
 NPM_CMD=npm install
 ifeq ($(CI),true)
 	NPM_CMD=npm ci
