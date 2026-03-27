@@ -108,6 +108,21 @@ test:
 	@go test -v ./... || exit 1
 	$(call print_success,All tests passed)
 
+test-coverage:
+	$(call print_header,TEST COVERAGE)
+	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Running tests with coverage...$(NC)\n"
+	@if go test -covermode=count -coverpkg=./... -coverprofile=coverage.out -v ./... ; then \
+		printf " $(GREEN)[OK]$(NC)\n"; \
+	else \
+		printf "\n$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		printf "$(BOLD)$(RED)|$(NC) [FAILED] %-33s$(BOLD)$(RED)|$(NC)\n" "Tests failed during coverage"; \
+		printf "$(BOLD)$(RED)+-------------------------------------------+$(NC)\n"; \
+		exit 1; \
+	fi
+	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Generating coverage report...$(NC)"
+	@go tool cover -html=coverage.out -o coverage.html || \
+		(printf " $(RED)[FAILED]$(NC)\n" && exit 1)
+
 # ==============================================================================
 #  LINTING & FORMATTING
 # ==============================================================================
@@ -146,7 +161,7 @@ fmt:
 
 clean:
 	$(call print_header,CLEANUP)
-	@rm -rf $(TS_DIR)/dist $(TS_DIR)/node_modules $(TS_DIR)/src/wasm/wasm_exec.js
+	@rm -rf $(TS_DIR)/dist $(TS_DIR)/node_modules $(TS_DIR)/src/wasm/wasm_exec.js coverage.*
 	@printf " $(GREEN)[OK] Clean completed$(NC)\n"
 
 ci: lint fmt-check test build
@@ -166,6 +181,7 @@ help:
 	@printf "  $(CYAN)build-wasm$(NC)     Compile only the Go code to WASM\n"
 	@printf "  $(CYAN)build-ts$(NC)       Compile only the TypeScript code\n"
 	@printf "  $(CYAN)test$(NC)           Run all Go tests\n"
+	@printf "  $(CYAN)test-coverage$(NC)  Run tests with coverage and generate report\n"
 	@printf "  $(CYAN)fmt-check$(NC)      Check if Go code is formatted properly\n"
 	@printf "  $(CYAN)fmt$(NC)            Format Go code\n"
 	@printf "  $(CYAN)lint$(NC)           Run Go and TypeScript linters (use lint-go or lint-ts for individual checks)\n"
@@ -174,4 +190,4 @@ help:
 	@printf "  $(CYAN)ci$(NC)             Run lint, test, and build (for CI/CD)\n"
 	@printf "  $(CYAN)help$(NC)           Show this help message\n"
 
-.PHONY: all build build-wasm copy-glue build-ts test fmt-check fmt lint lint-go lint-ts deps deps-go deps-ts clean ci help
+.PHONY: all build build-wasm copy-glue build-ts test test-coverage fmt-check fmt lint lint-go lint-ts deps deps-go deps-ts clean ci help
