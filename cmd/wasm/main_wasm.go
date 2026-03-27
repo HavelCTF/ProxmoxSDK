@@ -148,6 +148,31 @@ func main() {
 			}),
 		},
 		"tasks": map[string]any{
+			"GetTasks": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				nodeName := args[0].String()
+				nodeSvc := nodes.New(proxmoxClient, nodeName)
+
+				res, err := nodeSvc.GetTasks()
+				if err != nil {
+					return nil, err
+				}
+
+				jsData := make([]any, len(res.Data))
+				for i, task := range res.Data {
+					jsData[i] = map[string]any{
+						"UPID":      task.UPID,
+						"Node":      task.Node,
+						"PID":       task.PID,
+						"PStart":    task.PStart,
+						"StartTime": task.StartTime,
+						"Type":      task.Type,
+						"User":      task.User,
+						"Status":    task.Status,
+					}
+				}
+
+				return map[string]any{"Data": jsData}, nil
+			}),
 			"GetTaskStatus": asyncWrapperArgs(func(args []js.Value) (any, error) {
 				node := args[0].String()
 				upid := args[1].String()

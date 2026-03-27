@@ -1,34 +1,35 @@
-import {
-    type CloneLXCData,
-    type CreateLXCData,
-    type LXCsResponse,
-    LXCsResponseSchema,
-    type TaskBaseResponse,
-    TaskBaseResponseSchema,
-} from '../types/lxc';
+import { type CloneLXCData, type TaskBaseResponse, TaskBaseResponseSchema } from '../types/lxc';
 
-export class LxcModule {
-    async getLXCs(node: string): Promise<LXCsResponse> {
-        return LXCsResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.GetLXCs(node));
+export class LxcStatusService {
+    constructor(
+        private readonly nodeName: string,
+        private readonly vmid: number,
+    ) {}
+
+    async start(): Promise<TaskBaseResponse> {
+        return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.StartLXC(this.nodeName, this.vmid));
     }
 
-    async postLXC(node: string, data: CreateLXCData): Promise<TaskBaseResponse> {
-        return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.PostLXC(node, data));
+    async stop(): Promise<TaskBaseResponse> {
+        return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.StopLXC(this.nodeName, this.vmid));
+    }
+}
+
+export class LxcService {
+    constructor(
+        private readonly nodeName: string,
+        private readonly vmid: number,
+    ) {}
+
+    async delete(): Promise<TaskBaseResponse> {
+        return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.DeleteLXC(this.nodeName, this.vmid));
     }
 
-    async startLXC(node: string, vmid: number): Promise<TaskBaseResponse> {
-        return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.StartLXC(node, vmid));
+    async clone(data: CloneLXCData): Promise<TaskBaseResponse> {
+        return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.CloneLXC(this.nodeName, this.vmid, data));
     }
 
-    async stopLXC(node: string, vmid: number): Promise<TaskBaseResponse> {
-        return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.StopLXC(node, vmid));
-    }
-
-    async deleteLXC(node: string, vmid: number): Promise<TaskBaseResponse> {
-        return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.DeleteLXC(node, vmid));
-    }
-
-    async cloneLXC(node: string, vmid: number, data: CloneLXCData): Promise<TaskBaseResponse> {
-        return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.CloneLXC(node, vmid, data));
+    status(): LxcStatusService {
+        return new LxcStatusService(this.nodeName, this.vmid);
     }
 }

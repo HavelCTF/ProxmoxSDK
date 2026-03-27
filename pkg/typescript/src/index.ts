@@ -1,10 +1,8 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { ClusterModule } from './modules/cluster';
-import { LxcModule } from './modules/lxc';
-import { NodesModule } from './modules/nodes';
-import { TasksModule } from './modules/tasks';
-import { VersionModule } from './modules/version';
+import { ClusterService } from './modules/cluster';
+import { getNodes, NodeService } from './modules/nodes';
+import { getVersion } from './modules/version';
 import { loadWasm } from './wasm/loader';
 
 export * from './types/cluster';
@@ -18,11 +16,21 @@ export interface ProxmoxSDKOptions {
 }
 
 export class ProxmoxSDK {
-    public readonly cluster = new ClusterModule();
-    public readonly version = new VersionModule();
-    public readonly nodes = new NodesModule();
-    public readonly tasks = new TasksModule();
-    public readonly lxc = new LxcModule();
+    async getVersion() {
+        return getVersion();
+    }
+
+    async getNodes() {
+        return getNodes();
+    }
+
+    cluster(): ClusterService {
+        return new ClusterService();
+    }
+
+    node(nodeName: string): NodeService {
+        return new NodeService(nodeName);
+    }
 
     static async create(host: string, token: string, uuid: string, options?: ProxmoxSDKOptions): Promise<ProxmoxSDK> {
         if (options?.insecure && typeof process !== 'undefined') {

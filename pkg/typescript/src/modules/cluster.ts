@@ -5,12 +5,12 @@ import {
     ClusterTasksResponseSchema,
 } from '../types/cluster';
 
-export class ClusterModule {
-    async getNextId(): Promise<ClusterNextIdResponse> {
-        return ClusterNextIdResponseSchema.parse(await globalThis.ProxmoxWASM.cluster.GetNextId());
-    }
-
+export class ClusterService {
     async getTasks(): Promise<ClusterTasksResponse> {
         return ClusterTasksResponseSchema.parse(await globalThis.ProxmoxWASM.cluster.GetTasks());
+    }
+
+    async getNextId(): Promise<ClusterNextIdResponse> {
+        return ClusterNextIdResponseSchema.parse(await globalThis.ProxmoxWASM.cluster.GetNextId());
     }
 }

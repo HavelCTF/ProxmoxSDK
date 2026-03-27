@@ -24,6 +24,18 @@ declare global {
             }>;
         };
         tasks: {
+            GetTasks: (node: string) => Promise<{
+                Data: {
+                    UPID: string;
+                    Node?: string;
+                    PID?: number;
+                    PStart?: number;
+                    StartTime?: number;
+                    Type?: string;
+                    User?: string;
+                    Status?: string;
+                }[];
+            }>;
             GetTaskStatus: (
                 node: string,
                 upid: string,

@@ -1,16 +1,18 @@
-import {
-    type NodeTaskDeleteResponse,
-    NodeTaskDeleteResponseSchema,
-    type NodeTaskStatusResponse,
-    NodeTaskStatusResponseSchema,
-} from '../types/tasks';
+import { type NodeTaskStatusResponse, NodeTaskStatusResponseSchema } from '../types/tasks';
 
-export class TasksModule {
-    async getTaskStatus(node: string, upid: string): Promise<NodeTaskStatusResponse> {
-        return NodeTaskStatusResponseSchema.parse(await globalThis.ProxmoxWASM.tasks.GetTaskStatus(node, upid));
+export class TaskService {
+    constructor(
+        private readonly nodeName: string,
+        private readonly upid: string,
+    ) {}
+
+    async getTaskStatus(): Promise<NodeTaskStatusResponse> {
+        return NodeTaskStatusResponseSchema.parse(
+            await globalThis.ProxmoxWASM.tasks.GetTaskStatus(this.nodeName, this.upid),
+        );
     }
 
-    async deleteTask(node: string, upid: string): Promise<NodeTaskDeleteResponse> {
-        return NodeTaskDeleteResponseSchema.parse(await globalThis.ProxmoxWASM.tasks.DeleteTask(node, upid));
+    async delete(): Promise<void> {
+        await globalThis.ProxmoxWASM.tasks.DeleteTask(this.nodeName, this.upid);
     }
 }
