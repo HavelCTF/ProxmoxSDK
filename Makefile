@@ -119,14 +119,20 @@ fmt:
 #  LINTING
 # ==============================================================================
 
-lint: deps copy-glue
-	$(call print_header,LINTING)
-	@printf "$(CYAN)[1/2]$(NC) $(BOLD)$(BLUE)Running go vet...$(NC)\n"
-	@go vet ./... || exit 1
-	@printf " $(GREEN)[OK]$(NC)\n"
-	@printf "$(CYAN)[2/2]$(NC) $(BOLD)$(BLUE)Running TypeScript linter...$(NC)\n"
-	@cd $(TS_DIR) && npm run lint || exit 1
+lint: deps lint-go lint-ts
 	$(call print_success,All Linting passed)
+
+lint-go: deps
+	$(call print_header,GO LINTING)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running go vet...$(NC)\n"
+	@go vet ./... || exit 1
+	$(call print_success,Go linting passed)
+
+lint-ts: deps
+	$(call print_header,TYPESCRIPT LINTING)
+	@printf "$(CYAN)[1/1]$(NC) $(BOLD)$(BLUE)Running TypeScript linter...$(NC)\n"
+	@cd $(TS_DIR) && npm run lint || exit 1
+	$(call print_success,TypeScript linting passed)
 
 # ==============================================================================
 #  CLEANUP & CI
@@ -156,7 +162,7 @@ help:
 	@printf "  $(CYAN)test$(NC)           Run all Go tests\n"
 	@printf "  $(CYAN)fmt-check$(NC)      Check if Go code is formatted properly\n"
 	@printf "  $(CYAN)fmt$(NC)            Format Go code\n"
-	@printf "  $(CYAN)lint$(NC)           Run Go and TypeScript linters (includes fmt-check)\n"
+	@printf "  $(CYAN)lint$(NC)           Run Go and TypeScript linters (use lint-go or lint-ts for individual checks)\n"
 	@printf "  $(CYAN)deps$(NC)           Download Go modules and NPM dependencies\n"
 	@printf "  $(CYAN)clean$(NC)          Remove build artifacts (dist, node_modules)\n"
 	@printf "  $(CYAN)ci$(NC)             Run lint, test, and build (for CI/CD)\n"
