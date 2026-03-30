@@ -82,7 +82,13 @@ feat(scope): short description
 
 ## Code Conventions
 
+### Go
 Code follows the guidelines defined in [Effective Go](https://go.dev/doc/effective_go).
+
+### TypeScript
+```ts
+// Work In Progress
+```
 
 ---
 
