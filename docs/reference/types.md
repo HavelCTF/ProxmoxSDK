@@ -1,6 +1,6 @@
 # Types
 
-> All types are defined in the `types/` package at the root of the repository.
+> All types are defined for the ProxmoxSDK
 
 ## Table of Contents
 
@@ -15,28 +15,38 @@
 
 ## Shared
 
-### Go
+**Go**
 
 | Type | Description |
 |------|-------------|
 | `TaskBaseResponse` | Returned by all asynchronous operations — contains the `UPID` to track task progress |
 
+**TypeScript**
+```typescript
+// Work In Progress
+```
+
 ---
 
 ## Cluster
 
-### Go
+**Go**
 
 | Type | Description |
 |------|-------------|
 | `ClusterNextIdResponse` | Returned by `Cluster.GetNextId()` |
 | `ClusterTasksResponse` | Returned by `Cluster.GetTasks()` |
 
+**TypeScript**
+```typescript
+// Work In Progress
+```
+
 ---
 
 ## Nodes
 
-### Go
+**Go**
 
 | Type | Description |
 |------|-------------|
@@ -45,11 +55,16 @@
 | `NodeTaskStatusResponse` | Returned by `TaskService.GetTaskStatus()` |
 | `NodeTaskDeleteResponse` | Returned by `TaskService.DeleteTask()` |
 
+**TypeScript**
+```typescript
+// Work In Progress
+```
+
 ---
 
 ## LXC
 
-### Go
+**Go**
 
 | Type | Description |
 |------|-------------|
@@ -62,15 +77,25 @@
 | `StartLXCResponse` | Returned by `StatusService.StartLXC()` — alias of `TaskBaseResponse` |
 | `StopLXCResponse` | Returned by `StatusService.StopLXC()` — alias of `TaskBaseResponse` |
 
+**TypeScript**
+```typescript
+// Work In Progress
+```
+
 ---
 
 ## Version
 
-### Go
+**Go**
 
 | Type | Description |
 |------|-------------|
 | `VersionResponse` | Returned by `Client.GetVersion()` |
+
+**TypeScript**
+```typescript
+// Work In Progress
+```
 
 ---
 
