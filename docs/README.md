@@ -25,6 +25,10 @@
 
 ## Reference
 
+- [API Reference](./reference/api-reference.md)
+- [Errors](./reference/errors.md)
+- [Types](./reference/types.md)
+
 ## Contributing
 
 - [Architecture](./contributing/architecture.md)
