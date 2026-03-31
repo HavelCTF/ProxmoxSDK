@@ -109,7 +109,50 @@ Found 1 node(s):
 
 ### TypeScript
 
-> Work In Progress
+```typescript
+import { ProxmoxSDK } from "@havelctf/proxmox-sdk";
+
+(async () => {
+    // Create client with your token
+    const client = await ProxmoxSDK.create(
+        "https://your-host:8006", // Base URL
+        "PVEAPIToken=root@pam!token=your-token-uuid", // Token
+        "your-app-uuid", // App generated uuid
+    );
+
+    // Test the connection
+    const version = await client.getVersion();
+    if (version instanceof Error) {
+        console.error("Failed to get version:", version);
+        return;
+    }
+
+    console.log("✅ Successfully connected to Proxmox VE:", version.Data.Version)
+
+    // List nodes to verify permissions
+    const nodes = await client.getNodes()
+    if (nodes instanceof Error) {
+        console.error("Failed to get nodes:", nodes)
+        return;
+    }
+    console.log(`Found ${nodes.Data.length} node(s):`);
+    for (const node of nodes.Data) {
+        console.log(`  - ${node.Node} (status: ${node.Status})`);
+    }
+})();
+```
+
+**Run:**
+```bash
+npx tsx index.ts
+```
+
+**Expected output:**
+```
+✅ Successfully connected to Proxmox VE: 8.1.3
+Found 1 node(s):
+  - pve (status: online)
+```
 
 ## Permissions
 
