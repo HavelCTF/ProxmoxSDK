@@ -1,6 +1,6 @@
 # Errors
 
-> All errors returned by ProxmoxSDK are standard Go errors wrapped with `fmt.Errorf`.
+> All errors returned by ProxmoxSDK are standard Go errors wrapped with `fmt.Errorf`. In TypeScript, errors are surfaced as rejected Promises and can be checked with `instanceof Error`.
 
 ## Table of Contents
 
@@ -44,6 +44,8 @@ Error messages vary depending on where the error occurred in the request pipelin
 
 ## Inspecting Errors
 
+### Go
+
 **Check for a timeout**
 ```go
 if errors.Is(err, context.DeadlineExceeded) {
@@ -57,6 +59,31 @@ version, err := client.GetVersion()
 if err != nil {
     log.Println(err)
     // [test-0] (http://your-host:8006/api2/json/version) Request failed with status 500: internal server error
+}
+```
+
+### TypeScript
+
+Errors are propagated as rejected Promises. The rejection value is a JavaScript `Error` object whose message follows the same format as the Go error.
+
+**Check with try/catch**
+```typescript
+try {
+    const version = await client.getVersion();
+} catch (err) {
+    if (err instanceof Error) {
+        console.error(err.message);
+        // [test-0] (http://your-host:8006/api2/json/version) Request failed with status 500: internal server error
+    }
+}
+```
+
+**Check with instanceof Error on resolved value**
+```typescript
+const version = await client.getVersion();
+if (version instanceof Error) {
+    console.error("client.getVersion:", version.message);
+    return;
 }
 ```
 
@@ -81,7 +108,7 @@ if err != nil {
 > `POST` requests are never retried. If a creation or action call fails due to a transient error, verify the resource state before retrying manually.
 
 > [!WARNING]
-> The internal timeout of 30 seconds is not configurable. If `context.DeadlineExceeded` is returned, verify that the Proxmox instance is reachable and responsive.
+> The internal timeout of 30 seconds is not configurable. If `context.DeadlineExceeded` is returned in Go or a timeout error is caught in TypeScript, verify that the Proxmox instance is reachable and responsive.
 
 ---
 
