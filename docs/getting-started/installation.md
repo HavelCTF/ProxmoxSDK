@@ -55,7 +55,7 @@ RUN go get github.com/HavelCTF/ProxmoxSDK
 
 ### Prerequisites
 
-- **Node.js 18+ (LTS recommended)**
+- **Node.js 25+ (LTS recommended)**
 - **npm or yarn**
 
 ### Installation Methods
