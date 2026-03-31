@@ -1,6 +1,6 @@
 import { type CloneLXCData, type TaskBaseResponse, TaskBaseResponseSchema } from '../types/lxc';
 
-export class LxcStatusService {
+export class LXCStatusService {
     constructor(
         private readonly nodeName: string,
         private readonly vmid: number,
@@ -15,7 +15,7 @@ export class LxcStatusService {
     }
 }
 
-export class LxcService {
+export class LXCService {
     constructor(
         private readonly nodeName: string,
         private readonly vmid: number,
@@ -29,7 +29,7 @@ export class LxcService {
         return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.CloneLXC(this.nodeName, this.vmid, data));
     }
 
-    status(): LxcStatusService {
-        return new LxcStatusService(this.nodeName, this.vmid);
+    status(): LXCStatusService {
+        return new LXCStatusService(this.nodeName, this.vmid);
     }
 }

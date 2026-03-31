@@ -11,7 +11,7 @@ import {
     type NodeTasksResponse,
     NodeTasksResponseSchema,
 } from '../types/nodes';
-import { LxcService } from './lxc';
+import { LXCService } from './lxc';
 import { TaskService } from './tasks';
 
 export class NodeService {
@@ -33,8 +33,8 @@ export class NodeService {
         return TaskBaseResponseSchema.parse(await globalThis.ProxmoxWASM.lxc.PostLXC(this.nodeName, data));
     }
 
-    lxc(vmid: number): LxcService {
-        return new LxcService(this.nodeName, vmid);
+    lxc(vmid: number): LXCService {
+        return new LXCService(this.nodeName, vmid);
     }
 }
 
