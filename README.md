@@ -1,83 +1,26 @@
-# ProxmoxSDK Monorepo
+# ProxmoxSDK
 
-A dual-implementation SDK for Proxmox VE in both **TypeScript** and **Go**, designed to provide identical functionality and behavior across both languages.
+> Go + TypeScript SDK for the Proxmox VE API.
 
-## 🏗️ Repository Structure
+![Go Version](https://img.shields.io/badge/go-1.26+-blue)
+![License](https://img.shields.io/badge/license-ISC-green)
 
-```
-ProxmoxSDK/
-├── cmd
-│   └── wasm
-│       └── main_wasm.go
-├── go.mod
-├── go.sum
-├── internal
-│   ├── client
-│   │   ├── client.go
-│   │   └── request.go
-│   ├── cluster
-│   │   └── cluster.go
-│   ├── http
-│   │   └── http.go
-│   ├── lxc
-│   │   ├── container
-│   │   │   └── container.go
-│   │   └── lxc.go
-│   ├── nodes
-│   │   ├── nodes.go
-│   │   └── tasks
-│   │       └── tasks.go
-│   └── version
-│       └── version.go
-├── Makefile
-├── pkg
-│   ├── proxmox
-│   │   └── proxmox.go
-│   └── typescript
-│       └── example.ts
-├── README.md
-└── types
-    ├── cluster.go
-    ├── container.go
-    ├── lxc.go
-    ├── nodes.go
-    └── version.go
+
+## Installation
+
+**Go**
+```bash
+go get github.com/HavelCTF/ProxmoxSDK
 ```
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Go** (v1.26+)
-
-### Installation
-
-```
-Work in Progress
+**TypeScript**
+```bash
+npm install @havelctf/proxmox-sdk
 ```
 
-### Building
+## Quick Start
 
-```
-Work in Progress
-```
-
-### Testing
-
-```
-Work in Progress
-```
-
-## 📚 SDK Usage
-
-### TypeScript
-
-```
-Work in Progress
-```
-
-### Go
-
+**Go**
 ```go
 package main
 
@@ -90,85 +33,61 @@ import (
 
 func main() {
     client := proxmox.NewClient(
-        "https://proxmox.example.com",
-        "PVEAPIToken=user@pam!token=...",
-        "unique-client-id",
+        "https://your-host:8006",
+        "PVEAPIToken=root@pam!token=your-token-uuid",
+        "your-app-uuid",
     )
 
-    // Get version information
     version, err := client.GetVersion()
     if err != nil {
-        log.Fatal(err)
+        log.Fatalf("failed to get version: %v", err)
     }
 
-    fmt.Printf("Version: %s\n", version.Data)
+    fmt.Printf("Proxmox VE %s\n", version.Data.Version)
 }
 ```
 
-## 🛠️ Development
+**TypeScript**
+```typescript
+import { ProxmoxSDK } from "@havelctf/proxmox-sdk";
 
-### Code Formatting
+(async () => {
+    const client = await ProxmoxSDK.create(
+        "https://your-host:8006",
+        "PVEAPIToken=root@pam!token=your-token-uuid",
+        "your-app-uuid",
+    );
 
-```
-Work in Progress
-```
+    const version = await client.getVersion();
+    if (version instanceof Error) {
+        console.error("failed to get version:", version);
+        return;
+    }
 
-### Linting
-
-```
-Work in Progress
-```
-
-### Cleaning Build Artifacts
-
-```
-Work in Progress
-```
-
-## 📦 Publishing
-
-### TypeScript Package
-
-```
-Work in Progress
+    console.log("Proxmox VE", version.Data.Version);
+})();
 ```
 
-### Go Module
+## Documentation
 
-The Go module is automatically available via:
+- [Getting Started](docs/getting-started/installation.md)
+- [Guides](docs/guides/)
+- [API Reference](docs/reference/api-reference.md)
+- [Changelog](docs/CHANGELOG.md)
+
+## Development
 ```bash
-go get github.com/HavelCTF/ProxmoxSDK
+# Install dependencies
+make deps
+
+# Build
+make build
+
+# Run tests
+make test
+
+# Run CI checks
+make ci
 ```
 
-## 🎯 Design Goals
-
-1. **Feature Parity**: Both implementations provide identical functionality
-2. **Behavioral Consistency**: Same inputs produce same outputs across languages
-3. **Idiomatic Code**: Each implementation follows language-specific best practices
-4. **Maintainability**: Parallel development with automated behavioral verification
-5. **Testing**: Comprehensive unit tests and cross-language behavioral tests
-
-## 🤝 Contributing
-
-When adding new features:
-
-1. Implement the feature in both TypeScript and Go
-2. Add unit tests in both implementations
-4. Update documentation
-5. Ensure all tests pass
-
-## 📝 Available Commands
-
-```
-Work in Progress
-```
-
-## 📄 License
-
-ISC
-
-## 🔗 Links
-
-- [Repository](https://github.com/HavelCTF/ProxmoxSDK)
-- [Issues](https://github.com/HavelCTF/ProxmoxSDK/issues)
-- [Proxmox VE API Documentation](https://pve.proxmox.com/pve-docs/api-viewer/)
+See [Contributing](docs/contributing/contributing.md) for full guidelines.

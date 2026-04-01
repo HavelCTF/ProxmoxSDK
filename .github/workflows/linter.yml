@@ -24,12 +24,8 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: pkg/typescript/package-lock.json
-      - name: Install dependencies
-        working-directory: pkg/typescript
-        run: npm ci
-      - name: Run Biome check
-        working-directory: pkg/typescript
-        run: npx biome check .
+      - name: Run TypeScript linter
+        run: make lint-ts
 
   lint-go:
     runs-on: ubuntu-24.04
@@ -42,6 +38,6 @@ jobs:
         with:
           go-version-file: go.mod
       - name: Run Go linter
-        run: make lint
+        run: make lint-go
       - name: Run Go format check
         run: make fmt-check

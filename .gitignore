@@ -39,3 +39,6 @@ coverage/
 # Misc
 .tmp/
 .cache/
+
+# Wasm executables
+pkg/typescript/src/wasm/wasm_exec.js

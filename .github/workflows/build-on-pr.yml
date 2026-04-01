@@ -27,13 +27,5 @@ jobs:
           cache: npm
           cache-dependency-path: pkg/typescript/package-lock.json
 
-      - name: Build WASM binary
-        run: make build copy-glue
-
-      - name: Install TS dependencies
-        working-directory: pkg/typescript
-        run: npm ci
-
-      - name: Build TS package
-        working-directory: pkg/typescript
-        run: npm run build
+      - name: Build the SDK
+        run: make build

@@ -33,17 +33,6 @@ type NodesData struct {
 	MEM            int        `json:"mem,omitempty"`
 }
 
-// NodeResponse maps to the GET /nodes/{node} API response
-// from Proxmox. See:
-// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}
-type NodeResponse struct {
-	Data []NodeData `json:"data"`
-}
-
-type NodeData struct {
-	Name string `json:"name"`
-}
-
 // NodeTasksResponse maps to the GET /nodes/{node}/tasks API response
 // from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/tasks
