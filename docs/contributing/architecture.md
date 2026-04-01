@@ -64,7 +64,10 @@ This layout follows the established Go project conventions:
 
 | Package | Responsibility |
 |---------|---------------|
-| Work In Progress | Work In Progress |
+| `src/wasm/loader.ts` | Loads and runs the Go WASM binary |
+| `src/modules/` | Service classes wrapping `globalThis.ProxmoxWASM` calls |
+| `src/types/` | Zod schemas and TypeScript types mirroring Go `types/` |
+| `src/index.ts` | Public API exported `ProxmoxSDK` class and types |
 
 ---
 
@@ -80,11 +83,11 @@ func NewClient(baseURL string, token string, uuid string, opts ...ClientOption) 
 ```
 
 **TypeScript**
-```ts
-// Work In Progress
 
-// When completed, this section should document:
-// - TypeScript equivalent of `NewClient` and its options
+The TypeScript client is initialized via `ProxmoxSDK.create` in `src/index.ts`. It loads the WASM binary, runs the Go runtime, and initializes the Proxmox client before returning a `ProxmoxSDK` instance:
+
+```typescript
+static async create(host: string, token: string, uuid: string, options?: ProxmoxSDKOptions): Promise<ProxmoxSDK>
 ```
 
 | Parameter | Description |
@@ -92,15 +95,16 @@ func NewClient(baseURL string, token string, uuid string, opts ...ClientOption) 
 | `baseURL` | Proxmox instance URL (e.g. `https://your-host:8006`) |
 | `token` | Proxmox API token (`PVEAPIToken=user@realm!name=uuid`) |
 | `uuid` | Your App UUID used for logs |
-| `opts` | Optional configuration via `ClientOption` |
+| `opts` / `options` | Optional configuration via `ClientOption` / `ProxmoxSDKOptions` |
 
-**Available Go options**
+**Available options**
 
-| Option | Description |
-|--------|-------------|
-| `WithHTTPClient(c *http.Client)` | Override the HTTP client used by the retry client |
+| Option | Go | TypeScript |
+|--------|----|------------|
+| Override HTTP client | `WithHTTPClient(c *http.Client)` | / |
+| Disable SSL verification | / | `insecure?: boolean` |
 
-All services are available immediately after `NewClient` — no deferred initialization.
+All services are available immediately after initialization. There isn't deferred initialization.
 
 ### Retry Policy
 
@@ -157,34 +161,45 @@ client.Node("pve1")
 The internal `client.Client` is never exposed. Each service layer receives only the context it needs and keeps it private.
 
 **TypeScript**
-```ts
-// Work In Progress
 
-// When completed, this section should document:
-// - How the service chain is exposed through the WASM interface
+Service classes receive their context (node name, VMID, UPID) as constructor parameters and call `globalThis.ProxmoxWASM` directly. Responses are validated against Zod schemas before being returned:
 ```
+client.node("pve1")
+└── new NodeService("pve1")
+    └── .lxc(100)
+        └── new LXCService("pve1", 100)
+            └── .status()
+                └── new StatusService("pve1", 100)
+```
+
+`globalThis.ProxmoxWASM` is registered by the Go WASM binary at runtime and exposes all service methods as JavaScript functions.
 
 ---
 
 ## WASM
-```ts
-// Work In Progress
 
-// When completed, this section should document:
-// - How Go functions are exported and made callable from TypeScript
-// - How `cmd/wasm/main_wasm.go` registers the exported functions
-// - How to build the WASM binary and where the output is expected by the TypeScript package
+The WASM entry point is located at `cmd/wasm/main_wasm.go`. It registers all service methods under `globalThis.ProxmoxWASM` at startup. The compiled binary is consumed by the TypeScript package via `src/wasm/loader.ts`.
+
+`loadWasm` handles both browser and Node.js environments transparently:
+
+- **Browser:** uses `WebAssembly.instantiateStreaming` with a `fetch` call from a URL
+- **Node.js:** uses `WebAssembly.instantiate` directly from a `Buffer` or `Uint8Array`
+```typescript
+// Browser
+await loadWasm("path/to/main_wasm.wasm");
+
+// Node.js
+const wasmSource = fs.readFileSync("path/to/main_wasm.wasm");
+await loadWasm(wasmSource);
 ```
 
-The WASM entry point is located at `cmd/wasm/main_wasm.go`. The compiled output is consumed by the TypeScript package at `pkg/typescript/`, which exposes the SDK functionality to TypeScript consumers via `pkg/typescript/src/wasm/loader.ts`.
-
-Platform-specific HTTP transport is handled transparently:
+Platform-specific HTTP transport is handled transparently at the Go level:
 
 | File | Target |
 |------|--------|
 | `internal/client/transport_default.go` | Native Go builds |
 | `internal/client/transport_wasm.go` | WASM builds (`GOARCH=wasm`) |
-| `internal/client/roundtrip_wasm.go` | WASM HTTP round-tripper |
+| `internal/client/roundtrip_wasm.go` | WASM HTTP round-tripper via JavaScript `fetch()` |
 
 ---
 
@@ -204,9 +219,17 @@ All request and response types are defined in the `types/` package, organized by
 Types are accessible to both `internal/` and `pkg/` packages and are part of the public API surface.
 
 **TypeScript**
-```ts
-// Work In Progress
-```
+
+TypeScript types mirror the Go `types/` package and are defined using [Zod](https://zod.dev/) schemas for runtime validation. Each schema validates the raw WASM output before it is returned to the caller:
+
+| File | Contents |
+|------|----------|
+| `src/types/cluster.ts` | `ClusterTasksResponse`, `ClusterNextIdResponse` schemas and types |
+| `src/types/nodes.ts` | `NodesResponse`, `NodeTasksResponse`, `NodeTaskStatusResponse` schemas and types |
+| `src/types/lxc.ts` | `LXCsResponse`, `CreateLXCResponse`, `CloneLXCResponse` schemas and types |
+| `src/types/tasks.ts` | `TaskBaseResponse` schema and type |
+| `src/types/version.ts` | `VersionResponse` schema and type |
+| `src/types/global.d.ts` | `globalThis.ProxmoxWASM` global type declaration |
 
 ---
 
@@ -216,3 +239,4 @@ Types are accessible to both `internal/` and `pkg/` packages and are part of the
 - [Testing](./testing.md)
 - [Effective Go](https://go.dev/doc/effective_go)
 - [Go project layout conventions](https://github.com/golang-standards/project-layout)
+- [Zod documentation](https://zod.dev/)

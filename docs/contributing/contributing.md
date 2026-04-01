@@ -21,7 +21,7 @@
 
 **Prerequisites**
 - Go 1.26+
-- Node.js 18+
+- Node.js 25+
 - Git
 
 **Clone the repository**
@@ -86,9 +86,13 @@ feat(scope): short description
 Code follows the guidelines defined in [Effective Go](https://go.dev/doc/effective_go).
 
 ### TypeScript
-```ts
-// Work In Progress
-```
+Code follows the established TypeScript conventions:
+
+- **Naming:** `camelCase` for variables and functions, `PascalCase` for classes and types. Well-known acronyms keep their capitalization (e.g. `LXCService`, `WASMLoader`), `UPPER_SNAKE_CASE` for constants
+- **Types:** explicit type annotations on function signatures. Avoid `any`
+- **Imports:** named imports preferred over default imports
+- **Async:** `async/await` over raw Promises
+- Linting and formatting enforced via [Biome](https://biomejs.dev/)
 
 ---
 

@@ -25,7 +25,7 @@ func NewClient(baseURL string, token string, uuid string, opts ...ClientOption) 
 
 **TypeScript**
 ```typescript
-// Work In Progress
+static async create(host: string, token: string, uuid: string, options?: ProxmoxSDKOptions): Promise<ProxmoxSDK>
 ```
 
 | Parameter | Type | Description |
@@ -33,13 +33,14 @@ func NewClient(baseURL string, token string, uuid string, opts ...ClientOption) 
 | `baseURL` | `string` | Proxmox instance URL (e.g. `https://your-host:8006`) |
 | `token` | `string` | Proxmox API token (`PVEAPIToken=user@realm!name=uuid`) |
 | `uuid` | `string` | Your app UUID for logs |
-| `opts` | `...ClientOption` | Optional configuration |
+| `opts` / `options` | `...ClientOption` / `ProxmoxSDKOptions` | Optional configuration |
 
 **Available options**
 
 | Option | Go | TypeScript |
 |--------|----|------------|
-| Override HTTP client | `WithHTTPClient(c *http.Client)` | Work In Progress |
+| Override HTTP client | `WithHTTPClient(c *http.Client)` | / |
+| Disable SSL verification | / | `insecure?: boolean` |
 
 ### Service Accessors
 
@@ -51,8 +52,8 @@ func (c *Client) Node(node string) *nodes.NodeService
 
 **TypeScript**
 ```typescript
-client.cluster()
-client.node(node: string)
+client.cluster(): ClusterService
+client.node(nodeName: string): NodeService
 ```
 
 ### Methods
@@ -65,9 +66,12 @@ func (c *Client) GetVersion() (*types.VersionResponse, error)
 
 **TypeScript**
 ```typescript
-// Work In Progress
+async getVersion(): Promise<VersionResponse>
+async getNodes(): Promise<NodesResponse>
 ```
 
+> [!WARNING]
+> Promises may reject with an `Error` if the request fails. Handle rejections with `try/catch` or check `instanceof Error` on the resolved value.
 ---
 
 ## ClusterService
@@ -82,14 +86,18 @@ func (s *ClusterService) GetTasks() (*types.ClusterTasksResponse, error)
 
 **TypeScript**
 ```typescript
-// Work In Progress
+async getTasks(): Promise<ClusterNextIdResponse>
+async getNextId(): Promise<ClusterTasksResponse>
 ```
+
+> [!WARNING]
+> Promises may reject with an `Error` if the request fails. Handle rejections with `try/catch` or check `instanceof Error` on the resolved value.
 
 ---
 
 ## NodeService
 
-Initialized via `client.Node(node string)` / `client.node(node: string)`.
+Initialized via `client.Node(node string)` / `client.node(nodeName: string)`.
 
 ### Service Accessors
 
@@ -101,8 +109,8 @@ func (s *NodeService) LXC(vmid int) *lxc.LXCService
 
 **TypeScript**
 ```typescript
-client.node(node).tasks(upid: string)
-client.node(node).lxc(vmid: number)
+tasks(upid: string): TaskService
+lxc(vmid: number): LXCService
 ```
 
 ### Methods
@@ -116,14 +124,19 @@ func (s *NodeService) PostLXC(data types.CreateLXCData) (*types.CreateLXCRespons
 
 **TypeScript**
 ```typescript
-// Work In Progress
+async getLXCs(): Promise<LXCsResponse>
+async getTasks(): Promise<NodeTasksResponse>
+async postLXC(data: CreateLXCData): Promise<TaskBaseResponse>
 ```
+
+> [!WARNING]
+> Promises may reject with an `Error` if the request fails. Handle rejections with `try/catch` or check `instanceof Error` on the resolved value.
 
 ---
 
 ## TaskService
 
-Initialized via `client.Node(node).Tasks(upid string)` / `client.node(node).tasks(upid: string)`.
+Initialized via `client.Node(node).Tasks(upid string)` / `client.node(nodeName).tasks(upid: string)`.
 
 **Go**
 ```go
@@ -133,14 +146,18 @@ func (s *TaskService) DeleteTask() (*types.NodeTaskDeleteResponse, error)
 
 **TypeScript**
 ```typescript
-// Work In Progress
+async getTaskStatus(): Promise<NodeTaskStatusResponse>
+async deleteTask(): Promise<void>
 ```
+
+> [!WARNING]
+> Promises may reject with an `Error` if the request fails. Handle rejections with `try/catch` or check `instanceof Error` on the resolved value.
 
 ---
 
 ## LXCService
 
-Initialized via `client.Node(node).LXC(vmid int)` / `client.node(node).lxc(vmid: number)`.
+Initialized via `client.Node(node).LXC(vmid int)` / `client.node(nodeName).lxc(vmid: number)`.
 
 ### Service Accessors
 
@@ -151,7 +168,7 @@ func (s *LXCService) Status() *status.StatusService
 
 **TypeScript**
 ```typescript
-client.node(node).lxc(vmid).status()
+status(): LXCStatusService 
 ```
 
 ### Methods
@@ -164,14 +181,18 @@ func (s *LXCService) DeleteLXC() (*types.DeleteLXCResponse, error)
 
 **TypeScript**
 ```typescript
-// Work In Progress
+async cloneLXC(data: CloneLXCData): Promise<TaskBaseResponse>
+async deleteLXC(): Promise<TaskBaseResponse>
 ```
+
+> [!WARNING]
+> Promises may reject with an `Error` if the request fails. Handle rejections with `try/catch` or check `instanceof Error` on the resolved value.
 
 ---
 
 ## StatusService
 
-Initialized via `client.Node(node).LXC(vmid).Status()` / `client.node(node).lxc(vmid).status()`.
+Initialized via `client.Node(node).LXC(vmid).Status()` / `client.node(nodeName).lxc(vmid).status()`.
 
 **Go**
 ```go
@@ -181,8 +202,12 @@ func (s *StatusService) StopLXC() (*types.StopLXCResponse, error)
 
 **TypeScript**
 ```typescript
-// Work In Progress
+async startLXC(): Promise<TaskBaseResponse>
+async stopLXC(): Promise<TaskBaseResponse>
 ```
+
+> [!WARNING]
+> Promises may reject with an `Error` if the request fails. Handle rejections with `try/catch` or check `instanceof Error` on the resolved value.
 
 ---
 

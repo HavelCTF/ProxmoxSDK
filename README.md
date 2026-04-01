@@ -49,7 +49,23 @@ func main() {
 
 **TypeScript**
 ```typescript
-// Work In Progress
+import { ProxmoxSDK } from "@havelctf/proxmox-sdk";
+
+(async () => {
+    const client = await ProxmoxSDK.create(
+        "https://your-host:8006",
+        "PVEAPIToken=root@pam!token=your-token-uuid",
+        "your-app-uuid",
+    );
+
+    const version = await client.getVersion();
+    if (version instanceof Error) {
+        console.error("failed to get version:", version);
+        return;
+    }
+
+    console.log("Proxmox VE", version.Data.Version);
+})();
 ```
 
 ## Documentation
