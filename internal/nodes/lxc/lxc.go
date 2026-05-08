@@ -40,6 +40,20 @@ func New(ctx LXCContext) *LXCService {
 	}
 }
 
+// Get returns the current status of the LXC container, including running state,
+// uptime, memory, CPU, and network info. Maps to GET /nodes/{node}/lxc/{vmid}/status/current.
+func (s *LXCService) Get() (*types.LXCStatusResponse, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	return http.DoRequest[types.LXCStatusResponse](ctx, s.c,
+		http.RequestContent{
+			Method:   "GET",
+			Endpoint: fmt.Sprintf("/nodes/%s/lxc/%d/status/current", s.node, s.vmid),
+		},
+	)
+}
+
 func (s *LXCService) DeleteLXC() (*types.DeleteLXCResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
 	defer cancel()

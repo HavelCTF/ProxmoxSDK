@@ -1,5 +1,10 @@
 import { type NodeTaskStatusResponse, NodeTaskStatusResponseSchema } from '../types/tasks';
 
+export interface WaitOptions {
+    pollIntervalMs?: number;
+    timeoutMs?: number;
+}
+
 export class TaskService {
     constructor(
         private readonly nodeName: string,
@@ -14,5 +19,15 @@ export class TaskService {
 
     async deleteTask(): Promise<void> {
         await globalThis.ProxmoxWASM.tasks.DeleteTask(this.nodeName, this.upid);
+    }
+
+    async wait(opts?: WaitOptions): Promise<NodeTaskStatusResponse> {
+        const wasmOpts = {
+            PollIntervalMs: opts?.pollIntervalMs ?? 1000,
+            TimeoutMs: opts?.timeoutMs ?? 0,
+        };
+        return NodeTaskStatusResponseSchema.parse(
+            await globalThis.ProxmoxWASM.tasks.Wait(this.nodeName, this.upid, wasmOpts),
+        );
     }
 }

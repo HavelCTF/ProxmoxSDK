@@ -60,3 +60,31 @@ export const LXCsResponseSchema = z.object({
     LXCs: z.array(LXCsDataSchema),
 });
 export type LXCsResponse = z.infer<typeof LXCsResponseSchema>;
+
+export const LXCStatusDataSchema = z.object({
+    Name: z.string().optional(),
+    Status: z.string(),
+    VMID: z.number().optional(),
+    Uptime: z.number().optional(),
+    CPUs: z.number().optional(),
+    CPU: z.number().optional(),
+    Mem: z.number().optional(),
+    MaxMem: z.number().optional(),
+    Disk: z.number().optional(),
+    MaxDisk: z.number().optional(),
+    Swap: z.number().optional(),
+    MaxSwap: z.number().optional(),
+    NetIn: z.number().optional(),
+    NetOut: z.number().optional(),
+    DiskRead: z.number().optional(),
+    DiskWrite: z.number().optional(),
+    Lock: z.string().optional(),
+    Tags: z.string().optional(),
+    Type: z.string().optional(),
+});
+export type LXCStatusData = z.infer<typeof LXCStatusDataSchema>;
+
+export const LXCStatusResponseSchema = z.object({
+    Data: LXCStatusDataSchema,
+});
+export type LXCStatusResponse = z.infer<typeof LXCStatusResponseSchema>;

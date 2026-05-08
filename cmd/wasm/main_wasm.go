@@ -1,13 +1,17 @@
 package main
 
 import (
+	"bytes"
+	"context"
 	"fmt"
 	"syscall/js"
+	"time"
 
 	"github.com/HavelCTF/ProxmoxSDK/internal/client"
 	"github.com/HavelCTF/ProxmoxSDK/internal/cluster"
 	"github.com/HavelCTF/ProxmoxSDK/internal/nodes"
 	"github.com/HavelCTF/ProxmoxSDK/internal/nodes/lxc"
+	"github.com/HavelCTF/ProxmoxSDK/internal/nodes/storage"
 	"github.com/HavelCTF/ProxmoxSDK/internal/nodes/tasks"
 	"github.com/HavelCTF/ProxmoxSDK/internal/version"
 	"github.com/HavelCTF/ProxmoxSDK/types"
@@ -220,6 +224,54 @@ func main() {
 
 				return map[string]any{"Data": res.Data}, nil
 			}),
+			"Wait": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				upid := args[1].String()
+
+				pollIntervalMs := 1000
+				timeoutMs := 0
+				if len(args) > 2 && !args[2].IsUndefined() && !args[2].IsNull() {
+					if v := args[2].Get("PollIntervalMs"); !v.IsUndefined() && !v.IsNull() {
+						pollIntervalMs = v.Int()
+					}
+					if v := args[2].Get("TimeoutMs"); !v.IsUndefined() && !v.IsNull() {
+						timeoutMs = v.Int()
+					}
+				}
+
+				ctx := context.Background()
+				if timeoutMs > 0 {
+					var cancel context.CancelFunc
+					ctx, cancel = context.WithTimeout(ctx, time.Duration(timeoutMs)*time.Millisecond)
+					defer cancel()
+				}
+
+				taskSvc := tasks.New(tasks.TaskContext{
+					C:    proxmoxClient,
+					Node: node,
+					UPID: upid,
+				})
+
+				res, err := taskSvc.Wait(ctx, time.Duration(pollIntervalMs)*time.Millisecond)
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{
+					"Data": map[string]any{
+						"ID":         res.Data.ID,
+						"Node":       res.Data.Node,
+						"PID":        res.Data.PID,
+						"PStart":     res.Data.PStart,
+						"StartTime":  res.Data.StartTime,
+						"Type":       res.Data.Type,
+						"UPID":       res.Data.UPID,
+						"User":       res.Data.User,
+						"Status":     res.Data.Status,
+						"ExitStatus": res.Data.ExitStatus,
+					},
+				}, nil
+			}),
 		},
 		"lxc": map[string]any{
 			"StartLXC": asyncWrapperArgs(func(args []js.Value) (any, error) {
@@ -341,6 +393,45 @@ func main() {
 
 				return map[string]any{"LXCs": jsData}, nil
 			}),
+			"Get": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				vmid := args[1].Int()
+
+				svc := lxc.New(lxc.LXCContext{
+					Client: proxmoxClient,
+					Node:   node,
+					VMID:   vmid,
+				})
+
+				res, err := svc.Get()
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{
+					"Data": map[string]any{
+						"Name":      res.Data.Name,
+						"Status":    string(res.Data.Status),
+						"VMID":      res.Data.VMID,
+						"Uptime":    res.Data.Uptime,
+						"CPUs":      res.Data.CPUs,
+						"CPU":       res.Data.CPU,
+						"Mem":       res.Data.Mem,
+						"MaxMem":    res.Data.MaxMem,
+						"Disk":      res.Data.Disk,
+						"MaxDisk":   res.Data.MaxDisk,
+						"Swap":      res.Data.Swap,
+						"MaxSwap":   res.Data.MaxSwap,
+						"NetIn":     res.Data.NetIn,
+						"NetOut":    res.Data.NetOut,
+						"DiskRead":  res.Data.DiskRead,
+						"DiskWrite": res.Data.DiskWrite,
+						"Lock":      res.Data.Lock,
+						"Tags":      res.Data.Tags,
+						"Type":      res.Data.Type,
+					},
+				}, nil
+			}),
 			"PostLXC": asyncWrapperArgs(func(args []js.Value) (any, error) {
 				nodeName := args[0].String()
 				dataObj := args[1]
@@ -362,6 +453,69 @@ func main() {
 					VMID:       vmid,
 					Features:   features,
 				})
+				if err != nil {
+					return nil, err
+				}
+
+				return map[string]any{"Data": res.UPID}, nil
+			}),
+		},
+		"storage": map[string]any{
+			"GetContent": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				storageName := args[1].String()
+				contentType := ""
+				if len(args) > 2 && !args[2].IsUndefined() && !args[2].IsNull() {
+					contentType = args[2].String()
+				}
+
+				svc := storage.New(storage.StorageContext{
+					Client:  proxmoxClient,
+					Node:    node,
+					Storage: storageName,
+				})
+
+				res, err := svc.GetContent(contentType)
+				if err != nil {
+					return nil, err
+				}
+
+				jsData := make([]any, len(res.Data))
+				for i, item := range res.Data {
+					jsData[i] = map[string]any{
+						"VolID":   item.VolID,
+						"Content": item.Content,
+						"Format":  item.Format,
+						"Size":    item.Size,
+						"Used":    item.Used,
+						"CTime":   item.CTime,
+						"VMID":    item.VMID,
+						"Notes":   item.Notes,
+						"Parent":  item.Parent,
+					}
+				}
+
+				return map[string]any{"Data": jsData}, nil
+			}),
+			"UploadTemplate": asyncWrapperArgs(func(args []js.Value) (any, error) {
+				node := args[0].String()
+				storageName := args[1].String()
+				filename := args[2].String()
+				bodyJS := args[3]
+
+				// JS passes the payload as a Uint8Array; copy it into a Go []byte
+				// and wrap it in bytes.NewReader so the multipart pipe can consume it.
+				length := bodyJS.Get("byteLength").Int()
+				buf := make([]byte, length)
+				js.CopyBytesToGo(buf, bodyJS)
+
+				svc := storage.New(storage.StorageContext{
+					Client:  proxmoxClient,
+					Node:    node,
+					Storage: storageName,
+				})
+
+				res, err := svc.UploadTemplate(filename, bytes.NewReader(buf), int64(length))
 				if err != nil {
 					return nil, err
 				}
