@@ -12,6 +12,7 @@ import {
     NodeTasksResponseSchema,
 } from '../types/nodes';
 import { LXCService } from './lxc';
+import { StorageService } from './storage';
 import { TaskService } from './tasks';
 
 export class NodeService {
@@ -35,6 +36,10 @@ export class NodeService {
 
     lxc(vmid: number): LXCService {
         return new LXCService(this.nodeName, vmid);
+    }
+
+    storage(name: string): StorageService {
+        return new StorageService(this.nodeName, name);
     }
 }
 

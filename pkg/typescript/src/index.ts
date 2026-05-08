@@ -8,6 +8,7 @@ import { loadWasm } from './wasm/loader';
 export * from './types/cluster';
 export * from './types/lxc';
 export * from './types/nodes';
+export * from './types/storage';
 export * from './types/tasks';
 export * from './types/version';
 

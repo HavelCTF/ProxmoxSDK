@@ -102,6 +102,78 @@ func TasksStatus(baseUrl string) {
 }`)
 }
 
+// TaskWaitSequence registers two sequential mocks for the same UPID:
+// the first reply is "running", the second is "stopped". Each mock
+// matches a single request — gock pops them in order.
+func TaskWaitSequence(baseUrl string) {
+	upid := "UPID:node1:00000099:00000099:00000099:test:waitme:root@pam:"
+
+	gock.New(baseUrl).
+		Get("/nodes/node1/tasks/" + upid + "/status").
+		Times(1).
+		Reply(200).
+		JSON(`
+{
+    "data": {
+        "status": "running",
+        "upid": "` + upid + `",
+        "type": "test",
+        "id": "waitme",
+        "user": "root@pam",
+        "node": "node1",
+        "pid": 99,
+        "pstart": 99,
+        "starttime": 1693252591
+    }
+}`)
+
+	gock.New(baseUrl).
+		Get("/nodes/node1/tasks/" + upid + "/status").
+		Times(1).
+		Reply(200).
+		JSON(`
+{
+    "data": {
+        "status": "stopped",
+        "exitstatus": "OK",
+        "upid": "` + upid + `",
+        "type": "test",
+        "id": "waitme",
+        "user": "root@pam",
+        "node": "node1",
+        "pid": 99,
+        "pstart": 99,
+        "starttime": 1693252591,
+        "endtime": 1693252600
+    }
+}`)
+}
+
+// TaskWaitRunningPersist always replies "running" for the configured UPID,
+// so callers can assert that a context cancellation interrupts Wait.
+func TaskWaitRunningPersist(baseUrl string) {
+	upid := "UPID:node1:00000098:00000098:00000098:test:cancelme:root@pam:"
+
+	gock.New(baseUrl).
+		Persist().
+		Get("/nodes/node1/tasks/" + upid + "/status").
+		Reply(200).
+		JSON(`
+{
+    "data": {
+        "status": "running",
+        "upid": "` + upid + `",
+        "type": "test",
+        "id": "cancelme",
+        "user": "root@pam",
+        "node": "node1",
+        "pid": 98,
+        "pstart": 98,
+        "starttime": 1693252591
+    }
+}`)
+}
+
 func StopTask(baseUrl string) {
 	gock.New(baseUrl).
 		Persist().

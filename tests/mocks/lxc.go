@@ -80,3 +80,51 @@ func CloneLXC(baseUrl string) {
 		Reply(200).
 		JSON(`{"data": "UPID:node1:00001234:00005678:5A3B7C8D:vzmigrate:101:root@pam:"}`)
 }
+
+func LXCStatusCurrent(baseUrl string) {
+	gock.New(baseUrl).
+		Get("/nodes/node1/lxc/100/status/current").
+		Reply(200).
+		JSON(`
+{
+    "data": {
+        "name": "ct-test-1",
+        "status": "running",
+        "vmid": 100,
+        "uptime": 12345,
+        "cpus": 2,
+        "cpu": 0.05,
+        "mem": 268435456,
+        "maxmem": 2147483648,
+        "disk": 1073741824,
+        "maxdisk": 10737418240,
+        "swap": 0,
+        "maxswap": 536870912,
+        "netin": 1024,
+        "netout": 2048,
+        "diskread": 0,
+        "diskwrite": 0,
+        "tags": "prod;web",
+        "type": "lxc"
+    }
+}`)
+}
+
+func LXCStatusCurrentStopped(baseUrl string) {
+	gock.New(baseUrl).
+		Get("/nodes/node1/lxc/101/status/current").
+		Reply(200).
+		JSON(`
+{
+    "data": {
+        "name": "ct-test-2",
+        "status": "stopped",
+        "vmid": 101,
+        "uptime": 0,
+        "cpus": 1,
+        "maxmem": 1073741824,
+        "maxdisk": 8589934592,
+        "type": "lxc"
+    }
+}`)
+}

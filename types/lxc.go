@@ -104,3 +104,33 @@ type StartLXCResponse TaskBaseResponse
 // from Proxmox. See:
 // https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}/status/stop
 type StopLXCResponse TaskBaseResponse
+
+// LXCStatusResponse maps to the GET /nodes/{node}/lxc/{vmid}/status/current API response
+// from Proxmox. See:
+// https://pve.proxmox.com/pve-docs/api-viewer/#/nodes/{node}/lxc/{vmid}/status/current
+type LXCStatusResponse struct {
+	Data LXCStatusData `json:"data"`
+}
+
+type LXCStatusData struct {
+	Name      string    `json:"name,omitempty"`
+	Status    LXCStatus `json:"status"`
+	VMID      int       `json:"vmid,omitempty"`
+	Uptime    int       `json:"uptime,omitempty"`
+	CPUs      float32   `json:"cpus,omitempty"`
+	CPU       float32   `json:"cpu,omitempty"`
+	Mem       int       `json:"mem,omitempty"`
+	MaxMem    int       `json:"maxmem,omitempty"`
+	Disk      int       `json:"disk,omitempty"`
+	MaxDisk   int       `json:"maxdisk,omitempty"`
+	Swap      int       `json:"swap,omitempty"`
+	MaxSwap   int       `json:"maxswap,omitempty"`
+	NetIn     int       `json:"netin,omitempty"`
+	NetOut    int       `json:"netout,omitempty"`
+	DiskRead  int       `json:"diskread,omitempty"`
+	DiskWrite int       `json:"diskwrite,omitempty"`
+	HA        any       `json:"ha,omitempty"`
+	Lock      string    `json:"lock,omitempty"`
+	Tags      string    `json:"tags,omitempty"`
+	Type      string    `json:"type,omitempty"`
+}

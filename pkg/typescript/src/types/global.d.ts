@@ -54,6 +54,24 @@ declare global {
                 };
             }>;
             DeleteTask: (node: string, upid: string) => Promise<{ Data: string }>;
+            Wait: (
+                node: string,
+                upid: string,
+                opts?: { PollIntervalMs?: number; TimeoutMs?: number },
+            ) => Promise<{
+                Data: {
+                    ID: string;
+                    Node: string;
+                    PID: number;
+                    PStart: number;
+                    StartTime: number;
+                    Type: string;
+                    UPID: string;
+                    User: string;
+                    Status: string;
+                    ExitStatus?: string;
+                };
+            }>;
         };
         lxc: {
             GetLXCs: (node: string) => Promise<{
@@ -94,6 +112,57 @@ declare global {
                 node: string,
                 vmid: number,
                 data: { NewId: number; Target?: string },
+            ) => Promise<{ Data: string }>;
+            Get: (
+                node: string,
+                vmid: number,
+            ) => Promise<{
+                Data: {
+                    Name?: string;
+                    Status: string;
+                    VMID?: number;
+                    Uptime?: number;
+                    CPUs?: number;
+                    CPU?: number;
+                    Mem?: number;
+                    MaxMem?: number;
+                    Disk?: number;
+                    MaxDisk?: number;
+                    Swap?: number;
+                    MaxSwap?: number;
+                    NetIn?: number;
+                    NetOut?: number;
+                    DiskRead?: number;
+                    DiskWrite?: number;
+                    Lock?: string;
+                    Tags?: string;
+                    Type?: string;
+                };
+            }>;
+        };
+        storage: {
+            GetContent: (
+                node: string,
+                storage: string,
+                contentType?: string,
+            ) => Promise<{
+                Data: {
+                    VolID: string;
+                    Content: string;
+                    Format?: string;
+                    Size?: number;
+                    Used?: number;
+                    CTime?: number;
+                    VMID?: number;
+                    Notes?: string;
+                    Parent?: string;
+                }[];
+            }>;
+            UploadTemplate: (
+                node: string,
+                storage: string,
+                filename: string,
+                body: Uint8Array,
             ) => Promise<{ Data: string }>;
         };
     };
