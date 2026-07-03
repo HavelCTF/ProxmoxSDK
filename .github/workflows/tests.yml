@@ -22,5 +22,17 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
-      - name: Run Go tests
-        run: make test
+      - name: Run Go tests with coverage
+        run: make test-coverage
+      # Uploads Go coverage to our self-hosted Codecov instance.
+      # Requires the `CODECOV_TOKEN` GitHub Actions secret on HavelCTF/ProxmoxSDK,
+      # which must match the self-hosted instance's `global_upload_token`.
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          url: https://codecov.havel-ctf.com
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.out
+          slug: HavelCTF/ProxmoxSDK
+          fail_ci_if_error: false
+          verbose: true
