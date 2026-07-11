@@ -4,7 +4,7 @@
 
 ![Go Version](https://img.shields.io/badge/go-1.26+-blue)
 ![License](https://img.shields.io/badge/license-ISC-green)
-
+[![codecov](https://codecov.havel-ctf.com/github/HavelCTF/ProxmoxSDK/graph/badge.svg?token=LLSE7FRBHK)](https://codecov.havel-ctf.com/github/HavelCTF/ProxmoxSDK)
 
 ## Installation
 
