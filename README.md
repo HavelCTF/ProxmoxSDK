@@ -6,6 +6,12 @@
 ![License](https://img.shields.io/badge/license-ISC-green)
 [![codecov](https://codecov.havel-ctf.com/github/HavelCTF/ProxmoxSDK/graph/badge.svg?token=LLSE7FRBHK)](https://codecov.havel-ctf.com/github/HavelCTF/ProxmoxSDK)
 
+## Prerequisites
+
+- Go 1.26+ : https://go.dev/doc/install  
+- Accessible Proxmox VE : https://www.proxmox.com/en/downloads/proxmox-virtual-environment
+- (Optional) Typescript : https://www.typescriptlang.org/download/
+
 ## Installation
 
 **Go**
