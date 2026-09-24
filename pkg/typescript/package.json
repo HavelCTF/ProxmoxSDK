@@ -19,7 +19,7 @@
     "sdk",
     "typescript"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "type": "commonjs",
   "devDependencies": {
     "@biomejs/biome": "2.4.6",
