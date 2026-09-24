@@ -146,13 +146,13 @@ make test-coverage
 go test -v ./...
 ```
 
-For more details on the test suite and conventions, see [Testing](./testing.md).
+For more details on the test suite and conventions, see [Testing](./docs/contributing/testing.md).
 
 ---
 
 ## See Also
 
 - [Architecture](./architecture.md)
-- [Testing](./testing.md)
+- [Testing](./docs/contributing/testing.md)
 - [Effective Go](https://go.dev/doc/effective_go)
 - [Karma Commit Convention](http://karma-runner.github.io/6.4/dev/git-commit-msg.html)

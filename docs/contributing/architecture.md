@@ -235,7 +235,6 @@ TypeScript types mirror the Go `types/` package and are defined using [Zod](http
 
 ## See Also
 
-- [Contributing](./contributing.md)
 - [Testing](./testing.md)
 - [Effective Go](https://go.dev/doc/effective_go)
 - [Go project layout conventions](https://github.com/golang-standards/project-layout)
