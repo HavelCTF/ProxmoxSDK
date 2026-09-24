@@ -167,7 +167,6 @@ go tool cover -html=coverage.out
 
 ## See Also
 
-- [Contributing](./contributing.md)
 - [Architecture](./architecture.md)
 - [testify documentation](https://github.com/stretchr/testify)
 - [gock documentation](https://github.com/h2non/gock)
