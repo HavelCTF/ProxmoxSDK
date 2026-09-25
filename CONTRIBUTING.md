@@ -48,7 +48,7 @@ make build
 
 | Type | Pattern | Example |
 |------|---------|---------|
-| Issue branch | `{issue-number}/{author}/{description}` | `4.1.6/MaxenceLgt/doc-sdk` |
+| Issue branch | `issue-{issue-number}/{author}/{description}` | `issue-1/MaxenceLgt/resolve-doc-install-proxmox` |
 | Dev branch | `dev` | `dev` |
 | Stable | `main` | `main` |
 
