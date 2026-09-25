@@ -9,10 +9,30 @@
 ## Prerequisites
 
 - Go 1.26+ : https://go.dev/doc/install  
-- Accessible Proxmox VE : https://www.proxmox.com/en/downloads/proxmox-virtual-environment
+- [Proxmox VE Setup](#installation)
 - (Optional) Typescript : https://www.typescriptlang.org/download/
 
 ## Installation
+
+### Proxmox VE
+
+You can install Proxmox directly from the website or using an automated script.
+
+**From the website**
+
+- Download ISO Installer file from the [website](https://www.proxmox.com/en/downloads/proxmox-virtual-environment).
+- Install and run a Virtual Machine software (VirtualBox, VMWare, qemu, ...).
+- Create a Virtual Machine and run the ISO file in it. You can find the hardware requirements in the [proxmox documentation](https://www.proxmox.com/en/products/proxmox-virtual-environment/requirements).
+
+**Using script**
+
+```
+sudo apt install qemu-system-x86 qemu-utils # install script dependencies
+./vm.sh setup # download the ISO and Virtual Machine disk
+./vm.sh install # boot the ISO to install Proxmox in Virtual Machine
+```
+
+### Other dependencies
 
 **Go**
 ```bash
@@ -25,6 +45,14 @@ npm install @havelctf/proxmox-sdk
 ```
 
 ## Quick Start
+
+**Proxmox**
+
+To run Proxmox Virtual Machine, if installed using [script](#installation):
+
+```
+./vm.sh
+```
 
 **Go**
 ```go
