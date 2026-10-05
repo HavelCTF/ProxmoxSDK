@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 declare global {
     var ProxmoxWASM: {
         initClient: (host: string, token: string, uuid: string) => boolean;

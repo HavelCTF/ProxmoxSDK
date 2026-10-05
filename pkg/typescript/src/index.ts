@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { ClusterService } from './modules/cluster';
