@@ -13,6 +13,8 @@
 - (Optional) Typescript : https://www.typescriptlang.org/download/
 
 ## Installation
+> [!WARNING]
+> Make sure to have access to the private repository
 
 ### Proxmox VE
 
@@ -35,14 +37,43 @@ sudo apt install qemu-system-x86 qemu-utils # install script dependencies
 ### Other dependencies
 
 **Go**
+
+```bash
+export GOPRIVATE=github.com/HavelCTF/ProxmoxSDK
+```
+```bash
+# Use SSH over HTTPS
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+```
 ```bash
 go get github.com/HavelCTF/ProxmoxSDK
 ```
+```bash
+# Reset to HTTPS
+git config --global --remove-section url."git@github.com:"
+```
 
 **TypeScript**
+> [!NOTE]
+> You need to have a Personal Access Token (PAT) on GitHub: `Settings > Developer Settings > PAT > Tokens (classic) > Generate new token (classic)` with appropriate rights
+
 ```bash
-npm install @havelctf/proxmox-sdk
+export NPM_TOKEN=your_pat
 ```
+
+Make sure to have an `.npmrc` file at the root of your repository with the following content:
+```
+engine-strict=true
+
+@havelctf:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+```
+
+```bash
+npm install @havelctf/proxmox-sdk@latest
+```
+
+Versions accessible here: [pkg versions](https://github.com/HavelCTF/ProxmoxSDK/pkgs/npm/proxmox-sdk)
 
 ## Quick Start
 
