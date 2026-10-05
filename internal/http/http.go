@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 // Package http provides a typed request executor for the Proxmox API.
 // It handles request encoding (form-encoded POST), execution,
 // and response decoding using a shared client.

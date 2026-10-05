@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 package types
 
 // ClusterNextIdResponse maps to the GET /cluster/nextid API response

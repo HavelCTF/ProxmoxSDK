@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 package types
 
 // StorageContentResponse maps to the GET /nodes/{node}/storage/{storage}/content API response

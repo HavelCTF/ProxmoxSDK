@@ -1,5 +1,8 @@
 //go:build !(js && wasm)
 
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 package client
 
 import (
