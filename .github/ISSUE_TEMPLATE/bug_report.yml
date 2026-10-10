@@ -89,3 +89,11 @@ body:
       description: Screenshots or screen recordings that demonstrate the issue.
     validations:
       required: false   
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
