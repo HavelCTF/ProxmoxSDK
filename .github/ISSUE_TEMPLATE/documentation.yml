@@ -1,0 +1,60 @@
+name: Documentation
+description: Report an error or suggest an improvement in the documentation
+title: "[Docs] "
+labels: ["documentation"]
+type: bug
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve the documentation.
+
+  - type: input
+    id: page
+    attributes:
+      label: Page / Section
+      description: Link or name of the affected documentation page.
+      placeholder: "https://github.com/HavelCTF/ProxmoxSDK/tree/main/docs"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue_type
+    attributes:
+      label: Type of issue
+      options:
+        - Typo / grammar
+        - Inaccurate information
+        - Missing content
+        - Outdated example
+        - Confusing wording
+        - Broken link
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What is wrong or missing?
+      placeholder: "The install command references a flag that was removed in v2.0."
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix
+      description: The corrected text or the content you would like to see added.
+      render: markdown
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
