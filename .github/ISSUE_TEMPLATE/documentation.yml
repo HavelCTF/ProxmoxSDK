@@ -3,6 +3,7 @@ description: Report an error or suggest an improvement in the documentation
 title: "[Docs] "
 labels: ["documentation"]
 type: bug
+
 body:
   - type: markdown
     attributes:
@@ -49,3 +50,11 @@ body:
       render: markdown
     validations:
       required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true
