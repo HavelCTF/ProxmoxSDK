@@ -26,4 +26,18 @@ Closes #
 -
 
 ## How to test
-   
+
+<!-- How to test your implementation -->
+
+-
+
+## Self-check
+
+- [ ] Code follows the project's style guidelines
+- [ ] Self-review completed
+- [ ] Tests added or updated if applicable
+- [ ] Existing tests pass locally
+- [ ] Documentation updated if applicable
+- [ ] No secrets / credentials in the diff
+- [ ] No new warnings or linter errors
+- [ ] PR title follows the conventional format   
