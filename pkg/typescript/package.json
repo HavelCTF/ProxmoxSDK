@@ -32,5 +32,15 @@
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HavelCTF/ProxmoxSDK.git",
+    "directory": "pkg/typescript"
+  },
+  "homepage": "https://github.com/HavelCTF/ProxmoxSDK#readme",
+  "bugs": {
+    "url": "https://github.com/HavelCTF/ProxmoxSDK/issues"
+  },
+  "author": "HavelCTF"
 }
