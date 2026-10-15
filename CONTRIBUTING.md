@@ -13,6 +13,7 @@
 - [Reporting Bugs](#reporting-bugs)
 - [Suggesting Features](#suggesting-features)
 - [Running Tests](#running-tests)
+- [Licensing of contributions](#licensing-of-contributions)
 - [See Also](#see-also)
 
 ---
@@ -149,6 +150,11 @@ go test -v ./...
 For more details on the test suite and conventions, see [Testing](./docs/contributing/testing.md).
 
 ---
+
+## Licensing of contributions
+
+By submitting a contribution, you agree that it is licensed under the [MIT License](LICENSE) and that you have the right to submit it.
+We use the Developer Certificate of Origin (https://developercertificate.org): sign your commits with `git commit -s`.
 
 ## See Also
 
