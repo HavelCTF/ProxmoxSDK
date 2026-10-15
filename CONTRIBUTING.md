@@ -1,7 +1,5 @@
 # Contributing
 
-> ProxmoxSDK is not open to direct code contributions at this time. However, external feedback, technical reviews, and suggestions on existing code are welcome and appreciated.
-
 ## Table of Contents
 
 - [Development Setup](#development-setup)
