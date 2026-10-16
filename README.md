@@ -124,4 +124,13 @@ make test
 make ci
 ```
 
+## License
+
+Released under the [MIT License](LICENSE).
+Third-party software bundled in the npm package is listed in [THIRD_PARTY_NOTICES.md](pkg/typescript/THIRD_PARTY_NOTICES.md).
+The Code of Conduct is adapted from the Contributor Covenant (CC BY 4.0).
+
+> Unofficial SDK. Not affiliated with or endorsed by Proxmox Server Solutions GmbH.
+> "Proxmox" is a trademark of its respective owner.
+
 See [Contributing](docs/contributing/contributing.md) for full guidelines.

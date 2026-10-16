@@ -22,3 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Documentation: Guides (cluster, nodes, tasks, lxc, lxc status, version)
 - Documentation: Contributing (architecture, contributing, testing)
 - Documentation: Reference (api-reference, errors, types)
+- License: MIT, third-party notices for the npm package (WASM bundle)
+- Tooling: `vm.sh` script to set up a Proxmox VE virtual machine (QEMU)
+- GitHub: issue templates (bug, feature, documentation) and pull request template
+- Documentation: Open source community files (Security policy, Code of Conduct)

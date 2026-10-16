@@ -1,7 +1,5 @@
 # Contributing
 
-> ProxmoxSDK is not open to direct code contributions at this time. However, external feedback, technical reviews, and suggestions on existing code are welcome and appreciated.
-
 ## Table of Contents
 
 - [Development Setup](#development-setup)
@@ -13,6 +11,7 @@
 - [Reporting Bugs](#reporting-bugs)
 - [Suggesting Features](#suggesting-features)
 - [Running Tests](#running-tests)
+- [Licensing of contributions](#licensing-of-contributions)
 - [See Also](#see-also)
 
 ---
@@ -149,6 +148,11 @@ go test -v ./...
 For more details on the test suite and conventions, see [Testing](./docs/contributing/testing.md).
 
 ---
+
+## Licensing of contributions
+
+By submitting a contribution, you agree that it is licensed under the [MIT License](LICENSE) and that you have the right to submit it.
+We use the Developer Certificate of Origin (https://developercertificate.org): sign your commits with `git commit -s`.
 
 ## See Also
 
