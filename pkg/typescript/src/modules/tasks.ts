@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 import { type NodeTaskStatusResponse, NodeTaskStatusResponseSchema } from '../types/tasks';
 
 export interface WaitOptions {

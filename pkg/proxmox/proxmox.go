@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 // Package proxmox provides functions and services to communicate with
 // the Proxmox API.
 package proxmox

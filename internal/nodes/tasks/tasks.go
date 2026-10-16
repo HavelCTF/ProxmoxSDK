@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 // Package tasks provides functions for the Proxmox API nodes/tasks/{upid} endpoint.
 package tasks
 

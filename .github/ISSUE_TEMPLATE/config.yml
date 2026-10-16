@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Documentation
+    url: https://github.com/HavelCTF/ProxmoxSDK/tree/main/docs
+    about: Before opening an issue, please check the documentation to see if your question has already been answered.
+  - name: Discord
+    url: https://discord.gg/6yNACMQqV9
+    about: For any questions or discussions, please join our Discord server.

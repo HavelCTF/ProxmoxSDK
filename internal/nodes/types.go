@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 package nodes
 
 import "github.com/HavelCTF/ProxmoxSDK/types"

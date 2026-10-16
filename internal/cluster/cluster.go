@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 // Package cluster provides functions for the Proxmox API /cluster endpoint.
 package cluster
 

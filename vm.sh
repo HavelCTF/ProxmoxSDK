@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 HavelCTF
+
 # Proxmox VE QEMU VM.
 #   ./vm.sh setup     download the ISO (resumable), verify it, create the disk
 #   ./vm.sh install   boot the ISO to install Proxmox onto disk.qcow2

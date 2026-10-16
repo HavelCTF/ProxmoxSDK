@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 import { z } from 'zod';
 
 export const ClusterNextIdResponseSchema = z.object({ VMID: z.string() });

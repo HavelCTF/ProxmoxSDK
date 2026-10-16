@@ -17,22 +17,24 @@ Guide to install Proxmox SDK in your project.
 ### Prerequisites
 
 - **Go 1.26+**
+- **Access to private repository**
 
 ### Installation Methods
 
 #### Install via go get
 ```bash
+export GOPRIVATE=github.com/HavelCTF/ProxmoxSDK
+```
+```bash
+# Use SSH over HTTPS
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+```
+```bash
 go get github.com/HavelCTF/ProxmoxSDK
 ```
-
-#### Install Specific Version
 ```bash
-go get github.com/HavelCTF/ProxmoxSDK@v1.0.0
-```
-
-#### Update to Latest Version
-```bash
-go get -u github.com/HavelCTF/ProxmoxSDK
+# Reset to HTTPS
+git config --global --remove-section url."git@github.com:"
 ```
 
 #### Verify Installation
@@ -42,13 +44,7 @@ go list -m github.com/HavelCTF/ProxmoxSDK
 
 **Expected output:**
 ```
-github.com/HavelCTF/ProxmoxSDK v1.0.0
-```
-
-#### Install via Docker
-```dockerfile
-FROM golang:1.26-alpine
-RUN go get github.com/HavelCTF/ProxmoxSDK
+github.com/HavelCTF/ProxmoxSDK
 ```
 
 ## TypeScript Installation
@@ -56,24 +52,31 @@ RUN go get github.com/HavelCTF/ProxmoxSDK
 ### Prerequisites
 
 - **Node.js 25+ (LTS recommended)**
-- **npm or yarn**
+- **npm**
 
 ### Installation Methods
 
 #### Install via npm
+> [!NOTE]
+> You need to have a Personal Access Token (PAT) on GitHub: `Settings > Developer Settings > PAT > Tokens (classic) > Generate new token (classic)` with appropriate rights
+
 ```bash
-npm install @havelctf/proxmox-sdk
+export NPM_TOKEN=your_pat
 ```
 
-#### Install via yarn
-```bash
-yarn add @havelctf/proxmox-sdk
+Make sure to have an `.npmrc` file at the root of your repository with the following content:
+```
+engine-strict=true
+
+@havelctf:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
 ```
 
-#### Verify Installation
 ```bash
-npm list @havelctf/proxmox-sdk
+npm install @havelctf/proxmox-sdk@latest
 ```
+
+Versions accessible here: [pkg versions](https://github.com/HavelCTF/ProxmoxSDK/pkgs/npm/proxmox-sdk)
 
 ## Troubleshooting
 

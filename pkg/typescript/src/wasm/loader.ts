@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 import './wasm_exec.js';
 
 export async function loadWasm(source: string | Buffer | Uint8Array): Promise<void> {

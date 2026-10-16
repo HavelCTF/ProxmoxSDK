@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 // Package client provides tools to create a client capable of communicating
 // with the Proxmox API using a retryable HTTP configuration.
 package client

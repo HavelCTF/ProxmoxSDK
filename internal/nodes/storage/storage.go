@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 HavelCTF
+
 // Package storage provides functions for the Proxmox API
 // /nodes/{node}/storage/{storage} endpoints (content listing, template upload).
 package storage

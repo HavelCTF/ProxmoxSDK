@@ -1,0 +1,99 @@
+name: Bug Report
+description: Notify a bug in the project
+title: "[Bug] "
+labels: ["bug"]
+assignees:
+  - MaxenceLgt
+  - mlargeot
+  - neo-jgrec
+  - dlucasdoo
+type: bug
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what the bug is.
+      placeholder: "The app crashes when I click Save."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The shortest sequence to reproduce the issue.
+      placeholder: |
+        1. Go to...
+        2. Click on...
+        3. Observe...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened. Include the exact error message if any.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Affected version of the project.
+      placeholder: v1.0.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Relevant terminal output or stack trace.
+      render: shell
+    validations:
+      required: false
+
+  - type: upload
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Screenshots or screen recordings that demonstrate the issue.
+    validations:
+      required: false   
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues and this is not a duplicate
+          required: true

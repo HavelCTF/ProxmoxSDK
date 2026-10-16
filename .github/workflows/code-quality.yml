@@ -41,3 +41,18 @@ jobs:
         run: make lint-go
       - name: Run Go format check
         run: make fmt-check
+
+  check-liscence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Check license headers
+        run: |
+          go install github.com/google/addlicense@latest
+          addlicense -check -l mit -s=only -c "HavelCTF" -ignore="**/*.yml" .
