@@ -42,7 +42,7 @@ jobs:
       - name: Run Go format check
         run: make fmt-check
 
-  check-liscence:
+  check-license:
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
@@ -56,3 +56,52 @@ jobs:
         run: |
           go install github.com/google/addlicense@latest
           addlicense -check -l mit -s=only -c "HavelCTF" -ignore="**/*.yml" .
+
+  licenses:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: pkg/typescript/package-lock.json
+  
+      - name: Install tools
+        run: go install github.com/google/go-licenses@latest
+      - name: Go licenses report
+        run: |
+          mkdir -p reports
+          go-licenses report ./... --template=/dev/null >/dev/null 2>&1 || true
+          go-licenses csv ./... > reports/go-licenses.csv
+          GOOS=js GOARCH=wasm go-licenses csv ./cmd/wasm >> reports/go-licenses-wasm.csv
+
+      - name: Go licenses check
+        run: |
+          go-licenses check ./... \
+            --allowed_licenses=MIT,Apache-2.0,BSD-2-Clause,BSD-3-Clause,ISC,MPL-2.0
+
+      - name: npm licenses report
+        working-directory: pkg/typescript
+        run: |
+          npm ci
+          npx --yes license-checker-rseidelsohn --csv --out ../../reports/npm-licenses.csv
+
+      - name: npm licenses check
+        working-directory: pkg/typescript
+        run: |
+          npx --yes license-checker-rseidelsohn \
+            --onlyAllow "MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;0BSD;MIT OR Apache-2.0;MPL-2.0"
+
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-reports
+          path: reports/
