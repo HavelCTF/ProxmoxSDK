@@ -5,6 +5,7 @@
 - [Development Setup](#development-setup)
 - [Workflow](#workflow)
   - [Branches](#branches)
+  - [Branch Protection](#branch-protection)
   - [Commits](#commits)
 - [Code Conventions](#code-conventions)
 - [Pull Requests](#pull-requests)
@@ -47,11 +48,50 @@ make build
 
 | Type | Pattern | Example |
 |------|---------|---------|
-| Issue branch | `issue-{issue-number}/{author}/{description}` | `issue-1/MaxenceLgt/resolve-doc-install-proxmox` |
+| Issue branch | `{general-type}/({issue-number}-){description}` | `docs/(7-)resolve-doc-install-proxmox` |
 | Dev branch | `dev` | `dev` |
 | Stable | `main` | `main` |
 
 Branches are created from `dev`. `main` receives merges from `dev` only on validated releases.
+
+The `{general-type}` prefix is based on the [Karma](http://karma-runner.github.io/6.4/dev/git-commit-msg.html) types used for commits (see [Commits](#commits)). It describes the main purpose of the branch:
+
+| General type | Usage | Example |
+|--------------|-------|---------|
+| `feat` | New feature or addition | `feat/12-add-storage-service` |
+| `fix` | Bug fix | `fix/15-retry-on-post` |
+| `docs` | Documentation only | `docs/7-resolve-doc-install-proxmox` |
+| `refactor` | Code change that is not a fix nor a feature | `refactor/split-lxc-service` |
+| `test` | Adding or updating tests | `test/task-wait-coverage` |
+| `chore` | Build, CI, dependencies | `chore/bump-biome` |
+| `ci` | GitHub Actions, Makefile | `ci/add-codecov-upload` |
+
+- The `{issue-number}-` part is optional: omit it when the branch is not linked to an issue.
+- `{description}` is short, lowercase and uses hyphens as separators.
+- Pick the type matching the **main** change of the branch. The squash commit message on merge should use the same type.
+
+### Branch Protection
+
+`main` is protected by a [repository ruleset](https://github.com/HavelCTF/ProxmoxSDK/rules/25721394) (enforcement: `active`). The rule has **no bypass actor**: it applies to everyone, administrators included. Direct pushes to `main` are refused, and every change must go through a pull request.
+
+| Rule | Requirement |
+|------|-------------|
+| Pull request | Changes reach `main` only through a pull request |
+| Review | At least **1 approving review** from another member, never the author of the last push |
+| Code owners | The approval must come from a code owner (`@HavelCTF/developers`, see [CODEOWNERS](./.github/CODEOWNERS)) |
+| Stale reviews | New commits dismiss existing approvals, and the most recent push must be approved |
+| Conversations | All review threads must be resolved before merging |
+| Status checks | `lint-go`, `lint-typescript`, `check-liscence`, `test-go` and `build` must pass |
+| Up to date | The branch must be up to date with `main` before merging |
+| Signed commits | All commits must have a verified signature |
+| Merge method | `squash` only |
+| History | Force pushes and branch deletion are blocked |
+
+> [!NOTE]
+> A direct push is rejected with `GH013: Repository rule violations found`.
+
+> [!IMPORTANT]
+> Run `make ci` locally before opening a pull request: it runs the same lint, test and build steps as the required checks.
 
 ### Commits
 
