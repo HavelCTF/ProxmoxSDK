@@ -27,7 +27,7 @@
 
 **Prerequisites**
 - Go 1.26+
-- Node.js 22+ (the version used by the CI)
+- Node.js 25+
 - Git
 - Make
 
@@ -63,17 +63,18 @@ Run `make help` to list every available target.
 
 Branches are created from `dev`. `main` receives merges from `dev` only on validated releases.
 
-The `{general-type}` prefix is based on the [Karma](http://karma-runner.github.io/6.4/dev/git-commit-msg.html) types used for commits (see [Commits](#commits)). It describes the main purpose of the branch:
+The `{general-type}` prefix is based on the [Karma](http://karma-runner.github.io/6.4/dev/git-commit-msg.html) types used for commits. It describes the main purpose of the branch:
 
 | General type | Usage | Example |
 |--------------|-------|---------|
-| `feat` | New feature or addition | `feat/12-add-storage-service` |
-| `fix` | Bug fix | `fix/15-retry-on-post` |
+| `feat` | New feature for the user | `feat/12-add-storage-service` |
+| `fix` | Bug fix for the user | `fix/15-retry-on-post` |
+| `perf` | Performance improvements | `perf/20-cache-vm-list` |
 | `docs` | Documentation only | `docs/7-resolve-doc-install-proxmox` |
-| `refactor` | Code change that is not a fix nor a feature | `refactor/split-lxc-service` |
-| `test` | Adding or updating tests | `test/task-wait-coverage` |
-| `chore` | Build, CI, dependencies | `chore/bump-biome` |
-| `ci` | GitHub Actions, Makefile | `ci/add-codecov-upload` |
+| `style` | Formatting changes, missing semicolons, etc. | `style/format-with-biome` |
+| `refactor` | Refactoring production code, e.g. renaming a variable | `refactor/split-lxc-service` |
+| `test` | Adding missing tests, refactoring tests; no production code change | `test/task-wait-coverage` |
+| `build` | Build configuration, development tools, CI, dependencies | `build/bump-biome` |
 
 - The `{issue-number}-` part is optional: omit it when the branch is not linked to an issue.
 - `{description}` is short, lowercase and uses hyphens as separators.
@@ -118,26 +119,23 @@ feat(scope): short description
 
 | Type | Usage |
 |------|-------|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `refactor` | Code change that is not a fix nor a feature |
-| `test` | Adding or updating tests |
-| `chore` | Build, CI, dependencies |
-| `ci` | GitHub Actions, Makefile |
+| `feat` | New feature for the user |
+| `fix` | Bug fix for the user |
+| `perf` | Performance improvements |
+| `docs` | Changes to the documentation |
+| `style` | Formatting changes, missing semicolons, etc. |
+| `refactor` | Refactoring production code, e.g. renaming a variable |
+| `test` | Adding missing tests, refactoring tests; no production code change |
+| `build` | Updating build configuration, development tools or other changes irrelevant to the user |
 
 > [!IMPORTANT]
-> **Every commit must be signed.** A commit without a verified signature is not accepted: it is required by the [branch protection](#branch-protection) rules, and signing off is also part of [Licensing of contributions](#licensing-of-contributions).
->
-> Two different things are expected, and the same command covers both:
-> - `-S` adds a **cryptographic signature** (GPG or SSH key registered on your GitHub account) so the commit shows as *Verified*.
-> - `-s` adds the **DCO sign-off** (`Signed-off-by:` line).
+> **Every commit must be signed off** with `git commit -s`. This adds a `Signed-off-by:` line certifying that you wrote the code (or have the right to submit it) under the project's license, as described in [Licensing of contributions](#licensing-of-contributions) (Developer Certificate of Origin). A commit without it may be refused.
 >
 > ```bash
-> git commit -S -s -m "feat(lxc): add snapshot support"
+> git commit -s -m "feat(lxc): add snapshot support"
 > ```
 >
-> To sign every commit automatically: `git config --global commit.gpgsign true` (works for SSH keys too, with `gpg.format ssh`). See GitHub's guide on [signing commits](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).
+> If you forgot it on your last commit: `git commit --amend --no-edit -s`.
 
 ---
 
