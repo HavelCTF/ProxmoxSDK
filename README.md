@@ -1,38 +1,28 @@
 # ProxmoxSDK
-
+ 
 > Go + TypeScript SDK for the Proxmox VE API.
-
+ 
 ![Go Version](https://img.shields.io/badge/go-1.26+-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 [![codecov](https://codecov.havel-ctf.com/github/HavelCTF/ProxmoxSDK/graph/badge.svg?token=LLSE7FRBHK)](https://codecov.havel-ctf.com/github/HavelCTF/ProxmoxSDK)
+ 
+> [!NOTE]
+> **Project status:** under active development, no stable release has been published yet. The public API may still change. See the [Changelog](docs/CHANGELOG.md).
 
-## Prerequisites
+## Requirements
+ 
+- **Go 1.26+** to use the Go package
+- **Node.js 25+** and npm to use the TypeScript package
+- A **Proxmox VE** instance reachable over HTTPS (port `8006` by default) and an **API token**, see [Authentication](docs/getting-started/authentication.md)
 
-- Go 1.26+ : https://go.dev/doc/install  
-- [Proxmox VE Setup](#installation)
-- (Optional) Typescript : https://www.typescriptlang.org/download/
+> [!NOTE]
+> You don't have a **Proxmox VE instance**? Follow the [Proxmox VE installation guide](#proxmox-ve) to set one up. It is only needed to **try the SDK on a real server**, the test suite runs without one.
 
 ## Installation
 
 ### Proxmox VE
 
-You can install Proxmox directly from the website or using an automated script.
-
-**From the website**
-
-- Download ISO Installer file from the [website](https://www.proxmox.com/en/downloads/proxmox-virtual-environment).
-- Install and run a Virtual Machine software (VirtualBox, VMWare, qemu, ...).
-- Create a Virtual Machine and run the ISO file in it. You can find the hardware requirements in the [proxmox documentation](https://www.proxmox.com/en/products/proxmox-virtual-environment/requirements).
-
-**Using script**
-
-```
-sudo apt install qemu-system-x86 qemu-utils # install script dependencies
-./vm.sh setup # download the ISO and Virtual Machine disk
-./vm.sh install # boot the ISO to install Proxmox in Virtual Machine
-```
-
-### Other dependencies
+The SDK needs a Proxmox VE instance. If you don't have one, follow the [installation guide](docs/getting-started/installation.md) to set one up.
 
 **Go**
 ```bash
@@ -44,9 +34,12 @@ go get github.com/HavelCTF/ProxmoxSDK
 npm install @havelctf/proxmox-sdk
 ```
 
+> [!NOTE]
+> The TypeScript package is hosted on the GitHub Packages registry and requires authentication (`.npmrc` and a GitHub token with the `read:packages` scope). See the [installation guide](docs/getting-started/installation.md) for the setup.
+
 ## Quick Start
 
-**Proxmox**
+### Proxmox
 
 To run Proxmox Virtual Machine, if installed using [script](#installation):
 
@@ -54,7 +47,8 @@ To run Proxmox Virtual Machine, if installed using [script](#installation):
 ./vm.sh
 ```
 
-**Go**
+### Go
+
 ```go
 package main
 
@@ -81,7 +75,8 @@ func main() {
 }
 ```
 
-**TypeScript**
+### TypeScript
+
 ```typescript
 import { ProxmoxSDK } from "@havelctf/proxmox-sdk";
 
@@ -103,34 +98,37 @@ import { ProxmoxSDK } from "@havelctf/proxmox-sdk";
 ```
 
 ## Documentation
-
-- [Getting Started](docs/getting-started/installation.md)
-- [Guides](docs/guides/)
-- [API Reference](docs/reference/api-reference.md)
+ 
+The full documentation is indexed in [docs/README.md](docs/README.md).
+ 
+- **Getting started:** [Installation](docs/getting-started/installation.md), [Authentication](docs/getting-started/authentication.md), [Configuration](docs/getting-started/configuration.md)
+- **Guides:** [Version, Cluster, ...](docs/guides/)
+- **Reference:** [API, Errors, Types](docs/reference/)
 - [Changelog](docs/CHANGELOG.md)
 
 ## Development
+
 ```bash
-# Install dependencies
-make deps
-
-# Build
-make build
-
-# Run tests
-make test
-
-# Run CI checks
-make ci
+make deps   # install dependencies
+make build  # build the SDK (TypeScript + WASM)
+make test   # run the tests
+make ci     # run the CI checks (lint, format, tests, build)
+make help   # list all targets
 ```
 
-## License
+## Contributing
+ 
+Contributions are welcome. Read the [Contributing guide](CONTRIBUTING.md) first: it covers the development setup, the branch and commit conventions, and how to open pull requests and issues.
+ 
+- **Questions and discussions:** [Discord](https://discord.gg/6yNACMQqV9)
+- **Bugs, feature requests, documentation issues:** [open an issue](https://github.com/HavelCTF/ProxmoxSDK/issues/new/choose)
+- **Security vulnerabilities:** do not open a public issue, follow the [security policy](.github/SECURITY.md)
+- **Code of Conduct:** [Code of Conduct](.github/CODE_OF_CONDUCT.md), adapted from the Contributor Covenant (CC BY 4.0)
 
+## License
+ 
 Released under the [MIT License](LICENSE).
 Third-party software bundled in the npm package is listed in [THIRD_PARTY_NOTICES.md](pkg/typescript/THIRD_PARTY_NOTICES.md).
-The Code of Conduct is adapted from the Contributor Covenant (CC BY 4.0).
-
+ 
 > Unofficial SDK. Not affiliated with or endorsed by Proxmox Server Solutions GmbH.
 > "Proxmox" is a trademark of its respective owner.
-
-See [Contributing](docs/contributing/contributing.md) for full guidelines.
