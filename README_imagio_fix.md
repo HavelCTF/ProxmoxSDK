@@ -1,4 +1,3 @@
-## License
+view_thought## Contributing
 
-Released under the [MIT License](LICENSE).
-Third-party software bundled in the npm package is listed in [THIRD
+Contributions are welcome! Please refer to the [CONTRIBUTING.md](../CONTRIBUT
