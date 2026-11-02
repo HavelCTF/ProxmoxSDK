@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2026 HavelCTF
 
-// Package version provides functions for the Proxmox API /nodes & /nodes/{node} endpoints.
+// Package nodes provides functions for the Proxmox API /nodes and /nodes/{node} endpoints.
 package nodes
 
 import (

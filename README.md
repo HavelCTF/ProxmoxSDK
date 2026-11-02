@@ -34,9 +34,6 @@ go get github.com/HavelCTF/ProxmoxSDK
 npm install @havelctf/proxmox-sdk
 ```
 
-> [!NOTE]
-> The TypeScript package is hosted on the GitHub Packages registry and requires authentication (`.npmrc` and a GitHub token with the `read:packages` scope). See the [installation guide](docs/getting-started/installation.md) for the setup.
-
 ## Quick Start
 
 ### Proxmox
@@ -109,26 +106,17 @@ The full documentation is indexed in [docs/README.md](docs/README.md).
 ## Development
 
 ```bash
-make deps   # install dependencies
-make build  # build the SDK (TypeScript + WASM)
-make test   # run the tests
-make ci     # run the CI checks (lint, format, tests, build)
-make help   # list all targets
+# Install dependencies
+make deps
+
+# Build
+make build
+
+# Run tests
+make test
+
+# Run CI checks
+make ci
 ```
 
-## Contributing
- 
-Contributions are welcome. Read the [Contributing guide](CONTRIBUTING.md) first: it covers the development setup, the branch and commit conventions, and how to open pull requests and issues.
- 
-- **Questions and discussions:** [Discord](https://discord.gg/6yNACMQqV9)
-- **Bugs, feature requests, documentation issues:** [open an issue](https://github.com/HavelCTF/ProxmoxSDK/issues/new/choose)
-- **Security vulnerabilities:** do not open a public issue, follow the [security policy](.github/SECURITY.md)
-- **Code of Conduct:** [Code of Conduct](.github/CODE_OF_CONDUCT.md), adapted from the Contributor Covenant (CC BY 4.0)
-
-## License
- 
-Released under the [MIT License](LICENSE).
-Third-party software bundled in the npm package is listed in [THIRD_PARTY_NOTICES.md](pkg/typescript/THIRD_PARTY_NOTICES.md).
- 
-> Unofficial SDK. Not affiliated with or endorsed by Proxmox Server Solutions GmbH.
-> "Proxmox" is a trademark of its respective owner.
+See [Contributing](docs/contributing/contributing.md) for full guidelines.

@@ -79,6 +79,7 @@ The web interface uses a self-signed certificate, so your browser shows a warnin
 ### Prerequisites
  
 - **Go 1.26+**
+- **Access to private repository**
 
 ### Installation Methods
  
@@ -112,6 +113,7 @@ github.com/HavelCTF/ProxmoxSDK v1.0.0
 
 - **Node.js 25+ (LTS recommended)**
 - **npm**
+- **npm**
 
 ### Installation Methods
 
@@ -131,9 +133,23 @@ engine-strict=true
 //npm.pkg.github.com/:_authToken=${NPM_TOKEN}
 ```
 
+export NPM_TOKEN=your_pat
+```
+
+Make sure to have an `.npmrc` file at the root of your repository with the following content:
+```
+engine-strict=true
+
+@havelctf:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NPM_TOKEN}
+```
+
 ```bash
 npm install @havelctf/proxmox-sdk@latest
+npm install @havelctf/proxmox-sdk@latest
 ```
+
+Versions accessible here: [pkg versions](https://github.com/HavelCTF/ProxmoxSDK/pkgs/npm/proxmox-sdk)
 
 Versions accessible here: [pkg versions](https://github.com/HavelCTF/ProxmoxSDK/pkgs/npm/proxmox-sdk)
 
