@@ -19,7 +19,6 @@
   - [Security Vulnerabilities](#security-vulnerabilities)
 - [Running Tests](#running-tests)
 - [Licensing of contributions](#licensing-of-contributions)
-- [Licensing of contributions](#licensing-of-contributions)
 - [See Also](#see-also)
 
 ---
