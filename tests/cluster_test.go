@@ -14,10 +14,12 @@ import (
 func TestClusterGetNextId(t *testing.T) {
 	defer gock.Off()
 	mockClient := initTestClient()
-	mocks.ClusterNextId(mockClient.BaseURL())
+	err := mocks.InitMocker(mockClient.BaseURL(), "GET", "/cluster/nextid", 200, "cluster/nextid.json")
+	if err != nil {
+		assert.NoError(t, err, "Failed to initialize mocker: %v", err)
+	}
 
 	nextId, err := mockClient.Cluster().GetNextId()
-
 	assert.NoError(t, err)
 	assert.Equal(t, "100", nextId.VMID)
 	assert.True(t, gock.IsDone())
@@ -26,7 +28,10 @@ func TestClusterGetNextId(t *testing.T) {
 func TestClusterGetTasks(t *testing.T) {
 	defer gock.Off()
 	mockClient := initTestClient()
-	mocks.ClusterTasks(mockClient.BaseURL())
+	err := mocks.InitMocker(mockClient.BaseURL(), "GET", "/cluster/tasks", 200, "cluster/tasks.json")
+	if err != nil {
+		assert.NoError(t, err, "Failed to initialize mocker: %v", err)
+	}
 
 	tasks, err := mockClient.Cluster().GetTasks()
 	assert.NoError(t, err)
